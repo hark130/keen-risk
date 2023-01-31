@@ -50,4 +50,15 @@ TO DO: DON'T DO NOW... see KERI-2
 
 ### Manual
 
-TO DO: DON'T DO NOW... do this later
+Example commands to build raw `.rst` files into a "compiled" HTML page.
+These commands are Linux-centric.  More generic commands, in the form of a Makefile, to come.
+
+From the top-level repo directory:
+
+```
+cd slides_raw
+bourbon install
+cd ..
+hovercraft --slide-numbers ./slides_raw/00_00-EXAMPLES.rst ./slides_built/
+firefox ./slides_built/index.html  # As one example of what to open and how to open it
+```
