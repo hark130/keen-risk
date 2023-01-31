@@ -22,11 +22,11 @@ See: Installation
 
 ## Repository Structure
 
-`LICENSE`: Repository license file.
-`README.md`: This file.
-`slides_raw`: Directory containing raw `.rst` "source" files.
-`slides_build`: Directory containing HTML pages "compiled" from the raw `.rst` "source" files.
-`slides_archive`: Directory containing zip-formatted archive files containing the "compiled" HTML pages.
+* `LICENSE`: Repository license file.
+* `README.md`: This file.
+* `slides_raw`: Directory containing raw `.rst` "source" files.
+* `slides_build`: Directory containing HTML pages "compiled" from the raw `.rst` "source" files.
+* `slides_archive`: Directory containing zip-formatted archive files containing the "compiled" HTML pages.
 
 ## Installation
 
