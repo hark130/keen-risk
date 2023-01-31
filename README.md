@@ -5,7 +5,7 @@ KEEN RISK (KERI) - C Programming course material delivered by slides-as-code.
 ## Description
 
 KERI was created to aid in the revision and formatting of C programming training material.
-KERI was named in honor of [Kernighan](https://en.wikipedia.org/wiki/Brian_Kernighan) and [Ritchie](https://en.wikipedia.org/wiki/Dennis_Ritchie), without whom the landscape of our global society would be surprisingly unfamiliar.
+KERI was named in honor of [KErnighan](https://en.wikipedia.org/wiki/Brian_Kernighan) and [RItchie](https://en.wikipedia.org/wiki/Dennis_Ritchie), without whom the landscape of our global society would be surprisingly unfamiliar.  Additionally, I believe the phrase "keen risk" is a vaguely accurate description of the C programming languge.
 
 ## Dependencies
 
@@ -22,7 +22,7 @@ See: Installation
 
 ## Repository Structure
 
-`LICENSE`: Repository license.
+`LICENSE`: Repository license file.
 `README.md`: This file.
 `slides_raw`: Directory containing raw `.rst` "source" files.
 `slides_build`: Directory containing HTML pages "compiled" from the raw `.rst` "source" files.
