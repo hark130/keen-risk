@@ -57,7 +57,7 @@ From the top-level repo directory:
 
 ```
 cd slides_raw
-bourbon install
+bourbon install  # This only needs to be done once
 cd ..
 hovercraft --slide-numbers ./slides_raw/00_00-EXAMPLES.rst ./slides_built/
 firefox ./slides_built/index.html  # As one example of what to open and how to open it
