@@ -27,7 +27,7 @@
 .flex-image img {
 	@include display(inline-flex);
 	@include justify-content(flex-end);
-	width:175%;
+	width: 100%;
 	height: auto;
 }
 
@@ -48,6 +48,11 @@
 
 .flex-image p {
 	font-size: 8pt;
+}
+
+.center-image img {
+	margin: auto;
+	display: block;
 }
 
 pre {
