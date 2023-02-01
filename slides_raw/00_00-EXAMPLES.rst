@@ -1,12 +1,12 @@
-:title: <TEMPLATE_TITLE>
+:title: <EXAMPLE_TITLE>
 :data-transition-duration: 1500
 :css: keri.css
 
-<TEMPLATE_DESCRIPTION>
+<EXAMPLE_DESCRIPTION>
 
 ----
 
-<TEMPLATE_TITLE_SLIDE>
+<EXAMPLE_TITLE_SLIDE>
 ======================
 
 ----
@@ -106,6 +106,62 @@ This is an example of code
 +---------+---------+---------+
 
 ----
+
+<EXAMPLE_IMAGE_1>
+=================
+
+<SMALL_IMAGE>
+
+.. image:: images/00_00-01-SHED_logo.jpg
+
+----
+
+:class: flex-image
+
+<EXAMPLE_IMAGE_2>
+=================
+
+<SMALL_IMAGE_EXAPANDED>
+
+.. image:: images/00_00-01-SHED_logo.jpg
+
+----
+
+<EXAMPLE_IMAGE_3>
+=================
+
+<MANUALLY SIZE THE IMAGE OR SPECIFY HEIGHT AND WIDTH>
+
+<HERE, I'VE MANUALLY CALCULATED 75% OF THE RAW IMAGE SIZE>
+
+.. image:: images/00_00-02-next_slide_please.png
+    :height: 560.25px
+    :width: 371.25px
+
+----
+
+:class: shrink-image
+
+<EXAMPLE_IMAGE_4>
+=================
+
+<SHRINK LARGE IMAGES>
+
+.. image:: images/00_00-02-next_slide_please.png
+
+----
+
+:class: shrink-image block-image center-image
+
+<EXAMPLE_IMAGE_5>
+=================
+
+<COMBINE IMAGE CLASSES: SHRUNK, BLOCKED, AND CENTERED>
+
+.. image:: images/00_00-02-next_slide_please.png
+
+----
+
 
 <EXAMPLE_PRESENTER_NOTES>
 =========================
