@@ -10,8 +10,9 @@
 	box-shadow: 2px 2px 2px 5px rgba(0,0,0,0.3);
 }
 
-.split-table td {
+.split-table th, td {
 	padding: 10px;
+	border: 1px solid;
 	@include border-style(solid);
 } 	
 
