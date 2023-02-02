@@ -106,6 +106,7 @@ $(ARCHIVE_DIR)/%$(ARCHIVE_FILE_EXT): $(BUILD_DIR)/%$(HTML_DIR_EXT)/
 	@echo "    Archiving "$^" into "$@
 	@cd $(BUILD_DIR); zip --quiet -r ../$@ $(*F)$(HTML_DIR_EXT)/
 
+.PRECIOUS: $(BUILD_DIR)/%$(HTML_DIR_EXT)/  # Do NOT remove these intermediate files
 $(BUILD_DIR)/%$(HTML_DIR_EXT)/: $(RAW_DIR)/%$(RAW_FILE_EXT)
 	@echo "    Building "$@" from "$^
 	$(CALL_MAKE) bourbon_install
