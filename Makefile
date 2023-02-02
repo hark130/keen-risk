@@ -32,6 +32,7 @@ ARCHIVE_FILE_EXT = .zip
 ### DYNAMIC VARIABLES ###
 # RST_FILES = $(addprefix $(RAW_DIR)/,$(addsuffix $(RAW_FILE_EXT),$(PRESENTATIONS)))
 ARCHIVE_FILES = $(addprefix $(ARCHIVE_DIR)/,$(addsuffix $(ARCHIVE_FILE_EXT),$(PRESENTATIONS)))
+HTML_DIRS = $(addprefix $(BUILD_DIR)/,$(addsuffix $(HTML_DIR_EXT),$(PRESENTATIONS)))
 
 ### OS-DYNAMIC VARIABLES ###
 # Where to shunt output to silence it?
@@ -48,9 +49,7 @@ all:
 .PHONY: all
 
 bourbon_install:
-	@cd $(RAW_DIR)
-	@BOURBON_RESULTS="$(shell bourbon install)"  # Silence bourbon results
-	@cd ..
+	@BOURBON_RESULTS="$(shell cd $(RAW_DIR); bourbon install)"  # Silence bourbon results
 
 compile:
 	@echo
@@ -71,7 +70,7 @@ clean_archive:
 
 clean_build:
 	@echo "    Cleaning "$(BUILD_DIR)" directory"
-	@echo "        TO DO: DON'T DO NOW... implement clean_build, agnostic of host OS"
+	@$(foreach HTML_DIR, $(HTML_DIRS), $(RM) -r $(HTML_DIR))
 
 validate:
 	@echo
