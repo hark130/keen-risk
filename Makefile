@@ -1,13 +1,19 @@
 ##########################
+###### INSTRUCTIONS ######
+##########################
+#
+# 1. Save <YOUR_PRESENTATION>.rst file into the slides_raw directory
+# 2. make
+# 3. Open slides_built/<YOUR_PRESENTATION>_html/index.html in a web browser
+# 4. Distrubute slides_archive/<YOUR_PRESENTATION>.zip as you see fit
+#
+# Source: https://github.com/hark130/keen-risk
+#
+
+
+##########################
 ### MAKEFILE VARIABLES ###
 ##########################
-
-### INSTRUCTOR PRESENTATIONS ###
-# Update this variable with the base filename (no file extension) whenever you add a new
-# presentation source file to the RAW_DIR.
-PRESENTATIONS = \
-	00_00-EXAMPLES \
-	00_01-TEMPLATE
 
 ### HOVERCRAFT ARGUMENTS ###
 HC_ARGS = --slide-numbers
@@ -29,18 +35,26 @@ RAW_FILE_EXT = .rst
 HTML_DIR_EXT = _html
 ARCHIVE_FILE_EXT = .zip
 
-### DYNAMIC VARIABLES ###
-# RST_FILES = $(addprefix $(RAW_DIR)/,$(addsuffix $(RAW_FILE_EXT),$(PRESENTATIONS)))
-ARCHIVE_FILES = $(addprefix $(ARCHIVE_DIR)/,$(addsuffix $(ARCHIVE_FILE_EXT),$(PRESENTATIONS)))
-HTML_DIRS = $(addprefix $(BUILD_DIR)/,$(addsuffix $(HTML_DIR_EXT),$(PRESENTATIONS)))
-
 ### OS-DYNAMIC VARIABLES ###
 # Where to shunt output to silence it?
 NULL = /dev/null
+# What is the command to list directory contents?
+LSD = ls
 
-######################
-### MAKEFILE RULES ###
-######################
+### DYNAMIC VARIABLES ###
+# All .rst filenames found in RAW_DIR
+RAW_FILENAMES=$(shell cd $(RAW_DIR); $(LSD) *$(RAW_FILE_EXT))
+# All RAW_FILENAMES with the file extension stripped
+PRESENTATIONS=$(basename $(RAW_FILENAMES))
+# Relative directory names for the per-presentation BUILD_DIR directories
+HTML_DIRS = $(addprefix $(BUILD_DIR)/,$(addsuffix $(HTML_DIR_EXT),$(PRESENTATIONS)))
+# Relative filenames for the pre-presentation archive files
+ARCHIVE_FILES = $(addprefix $(ARCHIVE_DIR)/,$(addsuffix $(ARCHIVE_FILE_EXT),$(PRESENTATIONS)))
+
+
+##########################
+##### MAKEFILE RULES #####
+##########################
 all:
 	$(CALL_MAKE) validate
 	$(CALL_MAKE) clean
