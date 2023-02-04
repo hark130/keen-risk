@@ -8,29 +8,13 @@
 #
 
 
-##########################
-### MAKEFILE VARIABLES ###
-##########################
+##################################
+### WINDOWS MAKEFILE VARIABLES ###
+##################################
 
-### HOVERCRAFT ARGUMENTS ###
-HC_ARGS = --slide-numbers
-
-### MAKEFILE ARGUMENTS ###
-MF_ARGS = --no-print-directory
-CALL_MAKE = @$(MAKE) $(MF_ARGS)
-
-### DIRECTORIES ###
-# Relative path to the directory holding the rst source files
-RAW_DIR = slides_raw
-# Relative path to the directory to store the "compiled" HTML files
-BUILD_DIR = slides_built
-# Relative path to the directory to store the zip-formatted HTML archives
-ARCHIVE_DIR = slides_archive
-
-### FILE EXTENSIONS ###
-RAW_FILE_EXT = .rst
-HTML_DIR_EXT = _html
-ARCHIVE_FILE_EXT = .zip
+### CONSTANT VARIABLES ###
+# This was made to avoid circular dependencies and redundancies
+include Makefile_constants
 
 ### OS-DYNAMIC VARIABLES ###
 # $(CHECK) - Checkmark
@@ -44,7 +28,7 @@ endif
 # $(NULL) - Shunt output here to silence it
 NULL :=
 ifeq ($(OS),Windows_NT)
-	# It is nul in cmd.exe but we're using Powershell now so it's NULL
+	# It is nul in cmd.exe but we're using Powershell now so it's $null
 	NULL = \$null
 else
 $(error Wrong operating system.  This is $(OS).)
@@ -62,23 +46,18 @@ endif
 
 ### DYNAMIC VARIABLES ###
 # All .rst filenames found in RAW_DIR
-# RAW_FILENAMES:=$(shell cd $(RAW_DIR); $(LSD) *$(RAW_FILE_EXT))
-RAW_FILENAMES = 00_00-EXAMPLES.rst 00_01-TEMPLATE.rst 
+RAW_FILENAMES := $(shell Get-ChildItem -Path .\slides_raw\\*$(RAW_FILE_EXT) -File -Name)
 # All RAW_FILENAMES with the file extension stripped
 PRESENTATIONS := $(basename $(RAW_FILENAMES))
 # Relative directory names for the per-presentation BUILD_DIR directories
-# HTML_DIRS := $(addprefix $(BUILD_DIR),$(addsuffix $(HTML_DIR_EXT),$(PRESENTATIONS)))
 HTML_DIRS := $(addsuffix $(HTML_DIR_EXT),$(PRESENTATIONS))
 # Relative filenames for the pre-presentation archive files
 ARCHIVE_FILES := $(addsuffix $(ARCHIVE_FILE_EXT),$(PRESENTATIONS))
-# ARCHIVE_FILES := $(addprefix $(ARCHIVE_DIR)\,$(addsuffix $(ARCHIVE_FILE_EXT),$(PRESENTATIONS)))
-# ARCHIVE_FILES := $(shell Join-Path -Path $(ARCHIVE_DIR) -ChildPath $path2)
-# FILES := $(foreach DIR,$(RAW_DIR),$(wildcard $(DIR)\*))
 
 
-##########################
-##### MAKEFILE RULES #####
-##########################
+##################################
+##### WINDOWS MAKEFILE RULES #####
+##################################
 _all:
 	$(CALL_MAKE) validate
 	$(CALL_MAKE) clean
@@ -110,11 +89,13 @@ _validate:
 
 _validate_bourbon:
 	@echo "    Validating bourbon"
+	@# This check will short-circuit the rule before printing anything
 	@bourbon --version > $(NULL)
 	@echo "        $(CHECK) $(shell bourbon --version)"
 
 _validate_hovercraft:
 	@echo "    Validating hovercraft"
+	@# This check will short-circuit the rule before printing anything
 	@hovercraft --version > $(NULL)
 	@echo "        $(CHECK) $(shell hovercraft --version)"
 
