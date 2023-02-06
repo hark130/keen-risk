@@ -1,0 +1,104 @@
+##########################
+###### INSTRUCTIONS ######
+##########################
+#
+# 1. Stop reading this
+# 2. Read Makefile instead
+# 3. Thank Linus for this wonderful kernel!
+#
+
+
+##################################
+#### LINUX MAKEFILE VARIABLES ####
+##################################
+
+### CONSTANT VARIABLES ###
+# This was made to avoid circular dependencies and redundancies
+include Makefile_constants
+
+### OS-DYNAMIC VARIABLES ###
+# $(CHECK) - Checkmark
+CHECK :=
+ifneq ($(OS),Windows_NT)
+	CHECK = [✓]
+else
+$(error Wrong operating system.  This is $(OS).)
+endif
+
+# $(NULL) - Shunt output here to silence it
+NULL :=
+ifneq ($(OS),Windows_NT)
+	NULL = /dev/null
+else
+$(error Wrong operating system.  This is $(OS).)
+endif
+
+### DYNAMIC VARIABLES ###
+# All .rst filenames found in RAW_DIR
+RAW_FILENAMES := $(shell cd $(RAW_DIR); ls *$(RAW_FILE_EXT))
+# All RAW_FILENAMES with the file extension stripped
+PRESENTATIONS := $(basename $(RAW_FILENAMES))
+# Relative directory names for the per-presentation BUILD_DIR directories
+HTML_DIRS := $(addsuffix $(HTML_DIR_EXT),$(PRESENTATIONS))
+# Relative filenames for the pre-presentation archive files
+ARCHIVE_FILES := $(addsuffix $(ARCHIVE_FILE_EXT),$(PRESENTATIONS))
+
+
+##################################
+###### LINUX MAKEFILE RULES ######
+##################################
+_all:
+	$(CALL_MAKE) validate
+	$(CALL_MAKE) clean
+	$(CALL_MAKE) compile
+
+.PHONY: _all _bourbon_install _compile _clean _clean_archive _clean_build _validate _validate_bourbon _validate_hovercraft
+
+_bourbon_install:
+	@BOURBON_RESULTS="$(shell cd $(RAW_DIR); bourbon install)"  # Silence bourbon results
+
+_compile: $(foreach ARCHIVE_FILE, $(ARCHIVE_FILES), $(ARCHIVE_FILE))
+
+_clean:
+	$(CALL_MAKE) _clean_build
+	$(CALL_MAKE) _clean_archive
+
+_clean_archive:
+	@echo "    Cleaning "$(ARCHIVE_DIR)" directory"
+	@$(foreach ARCHIVE_FILE, $(ARCHIVE_FILES), rm --force $(ARCHIVE_DIR)/$(ARCHIVE_FILE);)
+
+_clean_build:
+	@echo "    Cleaning "$(BUILD_DIR)" directory"
+	@$(foreach HTML_DIR, $(HTML_DIRS), rm --recursive --force $(BUILD_DIR)/$(HTML_DIR))
+
+_validate:
+	$(CALL_MAKE) _validate_bourbon
+	$(CALL_MAKE) _validate_hovercraft
+
+_validate_bourbon:
+	@echo "    Validating bourbon"
+	@bourbon --version > $(NULL)
+	@echo "        $(CHECK) $(shell bourbon --version)"
+
+_validate_hovercraft:
+	@echo "    Validating hovercraft"
+	@hovercraft --version > $(NULL)
+	@echo "        $(CHECK) $(shell hovercraft --version)"
+
+%$(ARCHIVE_FILE_EXT): %$(HTML_DIR_EXT)
+	@echo "    Archiving $(BUILD_DIR)/$^ into $(ARCHIVE_DIR)/$@"
+	@cd $(BUILD_DIR); zip --quiet -r ../$(ARCHIVE_DIR)/$@ $^/
+	@echo ""
+
+.PRECIOUS: %$(HTML_DIR_EXT)
+
+%$(HTML_DIR_EXT): %$(RAW_FILE_EXT)
+	@echo "    Building $(BUILD_DIR)/$@ from $(RAW_DIR)/$^"
+	$(CALL_MAKE) --silent _bourbon_install
+	@mkdir $(BUILD_DIR)/$@
+	@if ! [ -d $(BUILD_DIR)/$@ ] ; then echo "Unable to locate the $(BUILD_DIR)/$@ directory" >&2 && exit 2 ; fi
+	@hovercraft $(HC_ARGS) $(RAW_DIR)/$^ $(BUILD_DIR)/$@
+
+%$(RAW_FILE_EXT):
+	@echo "    Verifying $(RAW_DIR)/$@"
+	@if ! [ -f $(RAW_DIR)/$@ ] ; then echo "Unable to locate the $(RAW_DIR)/$@ file" >&2 && exit 2 ; fi
