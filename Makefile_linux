@@ -64,6 +64,7 @@ _clean:
 	$(CALL_MAKE) _clean_archive
 
 _clean_archive:
+	@echo "    Cleaning "$(ARCHIVE_DIR)" directory"
 	@$(foreach ARCHIVE_FILE, $(ARCHIVE_FILES), rm --force $(ARCHIVE_DIR)/$(ARCHIVE_FILE);)
 
 _clean_build:
@@ -71,32 +72,33 @@ _clean_build:
 	@$(foreach HTML_DIR, $(HTML_DIRS), rm --recursive --force $(BUILD_DIR)/$(HTML_DIR))
 
 _validate:
-	$(CALL_MAKE) validate_bourbon
-	$(CALL_MAKE) validate_hovercraft
+	$(CALL_MAKE) _validate_bourbon
+	$(CALL_MAKE) _validate_hovercraft
 
 _validate_bourbon:
 	@echo "    Validating bourbon"
 	@bourbon --version > $(NULL)
-	@echo         $(CHECK) $(shell bourbon --version)
+	@echo "        $(CHECK) $(shell bourbon --version)"
 
 _validate_hovercraft:
 	@echo "    Validating hovercraft"
 	@hovercraft --version > $(NULL)
-	@echo         $(CHECK) $(shell hovercraft --version)
+	@echo "        $(CHECK) $(shell hovercraft --version)"
 
 %$(ARCHIVE_FILE_EXT): %$(HTML_DIR_EXT)
 	@echo "    Archiving $(BUILD_DIR)/$^ into $(ARCHIVE_DIR)/$@"
 	@cd $(BUILD_DIR); zip --quiet -r ../$(ARCHIVE_DIR)/$@ $^/
+	@echo ""
 
 .PRECIOUS: %$(HTML_DIR_EXT)
 
 %$(HTML_DIR_EXT): %$(RAW_FILE_EXT)
-	@echo "    Building $(BUILD_DIR)\$@ from $(RAW_DIR)\$^"
+	@echo "    Building $(BUILD_DIR)/$@ from $(RAW_DIR)/$^"
 	$(CALL_MAKE) --silent _bourbon_install
-	@mkdir $(BUILD_DIR)\$@
-	@echo "TO DO: DON'T DO NOW... test the creation of the $(BUILD_DIR)\$@ here"
-	@hovercraft $(HC_ARGS) $(RAW_DIR)\$^ $(BUILD_DIR)\$@
+	@mkdir $(BUILD_DIR)/$@
+	@if ! [ -d $(BUILD_DIR)/$@ ] ; then echo "Unable to locate the $(BUILD_DIR)/$@ directory" >&2 && exit 2 ; fi
+	@hovercraft $(HC_ARGS) $(RAW_DIR)/$^ $(BUILD_DIR)/$@
 
 %$(RAW_FILE_EXT):
-	@echo "    Verifying $(RAW_DIR)\$(@F)"
-	@echo "TO DO: DON'T DO NOW... check for the .rst file here"
+	@echo "    Verifying $(RAW_DIR)/$@"
+	@if ! [ -f $(RAW_DIR)/$@ ] ; then echo "Unable to locate the $(RAW_DIR)/$@ file" >&2 && exit 2 ; fi
