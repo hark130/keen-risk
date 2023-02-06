@@ -46,7 +46,21 @@ See: Installation
 
 ### Scripted
 
-TO DO: DON'T DO NOW... see KERI-2
+This will validate dependencies, clean existing files/directories, and compile all `.rst` files found in the `slides_raw` directory.
+
+`make`
+
+(AKA `make all`)
+
+Each of the individual steps may be manually executed:
+
+```
+make validate  # Validates software dependencies: bourbon, hovercraft.
+make clean     # Deletes HTML directories from slides_build and all archive files from slides_archive.
+make compile   # Builds everything from scratch for all .rst files found in the slides_raw directory.
+```
+
+These Makefile recipes work in both Linux and Windows operating systems.
 
 ### Manual
 
