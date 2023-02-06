@@ -2,4 +2,6 @@
 */bourbon/
 # Ignore any HTML files
 slides_built/
+# Ignore any archive files
+slides_archive/
 

@@ -1,0 +1,33 @@
+##########################
+###### INSTRUCTIONS ######
+##########################
+#
+# 1. Stop reading this
+# 2. Read Makefile instead
+# 3. Take care to avoid circular inclusion and redundancies
+#
+
+
+##########################
+### MAKEFILE VARIABLES ###
+##########################
+
+### DIRECTORIES ###
+# Relative path to the directory holding the rst source files
+RAW_DIR = slides_raw
+# Relative path to the directory to store the "compiled" HTML files
+BUILD_DIR = slides_built
+# Relative path to the directory to store the zip-formatted HTML archives
+ARCHIVE_DIR = slides_archive
+
+### FILE EXTENSIONS ###
+RAW_FILE_EXT = .rst
+HTML_DIR_EXT = _html
+ARCHIVE_FILE_EXT = .zip
+
+### HOVERCRAFT ARGUMENTS ###
+HC_ARGS = --slide-numbers
+
+### MAKEFILE ARGUMENTS ###
+MF_ARGS = --no-print-directory
+CALL_MAKE = @$(MAKE) $(MF_ARGS)

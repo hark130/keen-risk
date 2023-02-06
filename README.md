@@ -41,12 +41,28 @@ See: Installation
         * [Download](https://www.gnu.org/software/make/#download) and install manually
     * Windows
         * [Download](https://gnuwin32.sourceforge.net/packages/make.htm) and install manually
+        * Override the default installation directory to be `C:\GnuWin32`, or something similar, because Powershell doesn't like the `(x86)` directory name
+        * Add the absolute path to the `make.exe` file (`C:\GnuWin32\bin\` in this example) to the `PATH` environment variable so you can execute `make` commands
 
 ## Compile Slides
 
 ### Scripted
 
-TO DO: DON'T DO NOW... see KERI-2
+This will validate dependencies, clean existing files/directories, and compile all `.rst` files found in the `slides_raw` directory.  From the Makefile's local directory:
+
+`make`
+
+(AKA `make all`)
+
+Each of the individual steps may be manually executed:
+
+```
+make validate  # Validates software dependencies: bourbon, hovercraft.
+make clean     # Deletes HTML directories from slides_build and all archive files from slides_archive.
+make compile   # Builds everything from scratch for all .rst files found in the slides_raw directory.
+```
+
+These Makefile recipes work in both Linux and Windows operating systems.
 
 ### Manual
 
@@ -59,6 +75,7 @@ From the top-level repo directory:
 cd slides_raw
 bourbon install  # This only needs to be done once
 cd ..
-hovercraft --slide-numbers ./slides_raw/00_00-EXAMPLES.rst ./slides_built/
-firefox ./slides_built/index.html  # As one example of what to open and how to open it
+mkdir ./slides_built/00_00-EXAMPLES/
+hovercraft --slide-numbers ./slides_raw/00_00-EXAMPLES.rst ./slides_built/00_00-EXAMPLES/
+firefox ./slides_built/00_00-EXAMPLES/index.html  # As one example of what to open and how to open it
 ```

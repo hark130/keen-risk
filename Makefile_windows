@@ -1,0 +1,120 @@
+##########################
+###### INSTRUCTIONS ######
+##########################
+#
+# 1. Stop reading this
+# 2. Read Makefile instead
+# 3. Defenestrate Windows!
+#
+
+
+##################################
+### WINDOWS MAKEFILE VARIABLES ###
+##################################
+
+### CONSTANT VARIABLES ###
+# This was made to avoid circular dependencies and redundancies
+include Makefile_constants
+
+### OS-DYNAMIC VARIABLES ###
+# $(CHECK) - Checkmark
+CHECK := 
+ifeq ($(OS),Windows_NT)
+	CHECK = [*]
+else
+$(error Wrong operating system.  This is $(OS).)
+endif
+
+# $(NULL) - Shunt output here to silence it
+NULL :=
+ifeq ($(OS),Windows_NT)
+	# It is nul in cmd.exe but we're using Powershell now so it's $null
+	NULL = \$null
+else
+$(error Wrong operating system.  This is $(OS).)
+endif
+
+# $(SHELL) - OS-specific shell to execute commands in
+ifeq ($(OS),Windows_NT)
+	# Windows commands are wonky in GNU Make since it defaults to cmd.exe
+	# We're going to force powershell usage.
+	SHELL := powershell.exe
+	.SHELLFLAGS := -NoProfile -Command
+else
+$(error Wrong operating system.  This is $(OS).)
+endif
+
+### DYNAMIC VARIABLES ###
+# All .rst filenames found in RAW_DIR
+RAW_FILENAMES := $(shell Get-ChildItem -Path .\slides_raw\\*$(RAW_FILE_EXT) -File -Name)
+# All RAW_FILENAMES with the file extension stripped
+PRESENTATIONS := $(basename $(RAW_FILENAMES))
+# Relative directory names for the per-presentation BUILD_DIR directories
+HTML_DIRS := $(addsuffix $(HTML_DIR_EXT),$(PRESENTATIONS))
+# Relative filenames for the pre-presentation archive files
+ARCHIVE_FILES := $(addsuffix $(ARCHIVE_FILE_EXT),$(PRESENTATIONS))
+
+
+##################################
+##### WINDOWS MAKEFILE RULES #####
+##################################
+_all:
+	$(CALL_MAKE) validate
+	$(CALL_MAKE) clean
+	$(CALL_MAKE) compile
+
+.PHONY: _all _bourbon_install _compile _clean _clean_archive _clean_build _validate _validate_bourbon _validate_hovercraft
+
+_bourbon_install:
+	@$(shell cd $(RAW_DIR); bourbon install > $(NULL) 2>&1)
+
+_compile: $(foreach ARCHIVE_FILE, $(ARCHIVE_FILES), $(ARCHIVE_FILE))
+
+_clean:
+	$(CALL_MAKE) _clean_build
+	$(CALL_MAKE) _clean_archive
+
+_clean_archive:
+	@echo "    Cleaning $(ARCHIVE_DIR) directory"
+	@$(foreach ARCHIVE_FILE, $(ARCHIVE_FILES), if (Test-Path $(ARCHIVE_DIR)\$(ARCHIVE_FILE)) {Remove-Item $(ARCHIVE_DIR)\$(ARCHIVE_FILE) -Force -ErrorAction Ignore};)
+
+_clean_build:
+	@echo "    Cleaning $(BUILD_DIR) directory"
+	@$(foreach HTML_DIR, $(HTML_DIRS), Get-ChildItem -Path $(BUILD_DIR)\$(HTML_DIR) -Recurse | Remove-Item -force -recurse;)
+	@$(foreach HTML_DIR, $(HTML_DIRS), if (Test-Path -Path $(BUILD_DIR)\$(HTML_DIR)) {Remove-Item $(BUILD_DIR)\$(HTML_DIR) -Force -ErrorAction Ignore};)
+
+_validate:
+	$(CALL_MAKE) _validate_bourbon
+	$(CALL_MAKE) _validate_hovercraft
+
+_validate_bourbon:
+	@echo "    Validating bourbon"
+	@# This check will short-circuit the rule before printing anything
+	@bourbon --version > $(NULL)
+	@echo "        $(CHECK) $(shell bourbon --version)"
+
+_validate_hovercraft:
+	@echo "    Validating hovercraft"
+	@# This check will short-circuit the rule before printing anything
+	@hovercraft --version > $(NULL)
+	@echo "        $(CHECK) $(shell hovercraft --version)"
+
+%$(ARCHIVE_FILE_EXT): %$(HTML_DIR_EXT)
+	@echo "    Archiving $(BUILD_DIR)\$^ into $(ARCHIVE_DIR)\$@"
+	@$(shell Compress-Archive -Path $(BUILD_DIR)\$^ -DestinationPath $(ARCHIVE_DIR)\$@;)
+	@echo ""
+
+.PRECIOUS: %$(HTML_DIR_EXT)
+
+%$(HTML_DIR_EXT): %$(RAW_FILE_EXT)
+	@echo "    Building $(BUILD_DIR)\$@ from $(RAW_DIR)\$^"
+	$(CALL_MAKE) --silent _bourbon_install
+	@$(shell New-Item -Path "$(BUILD_DIR)\$@" -ItemType Directory > $(NULL) 2>&1)
+	@# Since the conditional is a Powershell command, the catalyst for failing the recipe must also be Powershell.
+	@if("$(shell Test-Path "$(BUILD_DIR)\$@" -PathType Container)" -ne "True"){Write-Error "Unable to locate $(BUILD_DIR)\$@."}
+	@hovercraft $(HC_ARGS) $(RAW_DIR)\$^ $(BUILD_DIR)\$@
+
+%$(RAW_FILE_EXT):
+	@echo "    Verifying $(RAW_DIR)\$(@F)"
+	@# Since the conditional is a Powershell command, the catalyst for failing the recipe must also be Powershell.
+	@if("$(shell Test-Path "$(RAW_DIR)\$@" -PathType Leaf)" -ne "True"){Write-Error "Unable to locate $(RAW_DIR)\$@."}
