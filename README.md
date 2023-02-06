@@ -41,12 +41,14 @@ See: Installation
         * [Download](https://www.gnu.org/software/make/#download) and install manually
     * Windows
         * [Download](https://gnuwin32.sourceforge.net/packages/make.htm) and install manually
+        * Override the default installation directory to be `C:\GnuWin32`, or something similar, because Powershell doesn't like the `(x86)` directory name
+        * Add the absolute path to the `make.exe` file (`C:\GnuWin32\bin\` in this example) to the `PATH` environment variable so you can execute `make` commands
 
 ## Compile Slides
 
 ### Scripted
 
-This will validate dependencies, clean existing files/directories, and compile all `.rst` files found in the `slides_raw` directory.
+This will validate dependencies, clean existing files/directories, and compile all `.rst` files found in the `slides_raw` directory.  From the Makefile's local directory:
 
 `make`
 
