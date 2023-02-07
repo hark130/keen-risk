@@ -25,7 +25,9 @@ Overview
 * make what?
 * make why?
 * make how?
+* make details!
 * Common Pitfalls
+* Student Labs
 * Resources
 
 ----
@@ -45,7 +47,6 @@ Make Description
 * A tool which controls the generation of executables and other non-source files of a program from the program's source files.
 * "Generation" is controlled by one or more Makefiles.
 * GNU Make features:
-    * Build/install without knowing how
     * Build only what you need
     * Language independent
     * Can do more than just build
@@ -68,6 +69,7 @@ Key Terms
 * *rule* - One or more commands needed to generate a target
 * *target* - A "thing" to generate
 * *dependencies* - A list of zero or more pre-requisites to generate a target
+* *recipe* - The commands executed by a rule
 
 Here is what a simple rule looks like:
 
@@ -125,12 +127,159 @@ Usage
 
 ----
 
+:class: center-image
+
+Basic Examples
+========================================
+
+Example 3: Dependencies
+
+Makefile
+
+.. image:: images/06-17_003_01-Dependent_Makefile-cropped.png
+
+Usage
+
+.. image:: images/06-17_003_02-Dependent_Makefile_execution-cropped.png
+
+.. note::
+
+	This example shows basic dependencies.
+
+	A couple GNU Make features have been snuck in:
+	    - The first rule is the default rule
+	    - Make commands can be silenced using a @
+
+----
+
 make why?
 ========================================
 
+.. note::
+
+	Ask the students to brainstorm reasons why GNU Make is useful
+	"Why create a Makefile?"
+
 ----
 
-<SECTION_2_1>
+make why?
+========================================
+
+* Accessible: Build/install without knowing how
+* Documentation: It's already written down
+* SPOT: Developers, stakeholders, testers, customers, developers
+* Automation: Defend against human error
+* Shorthand: Compilation commands are cumbersome
+* Speed: Compile the minimum necessary
+
+.. note::
+
+	See how many the class brainstormed
+
+	Accessible - Many of the students will join established teams.  Will they need to know how to manually compile on Day 1?
+
+	SPOT - Single Point Of Truth
+
+----
+
+make how?
+========================================
+
+Linux: Use your package manager
+
+.. code:: bash
+
+	apt install build-essential
+
+Windows:
+    * Download GNU Make for Windows: https://www.gnu.org/software/make/
+    * Install to a normalized directory (e.g., C:\\GnuWin32)
+    * Add the make.exe path (e.g., C:\\GnuWin32\\bin\\) to the PATH environment variable
+
+.. note::
+
+	"GNU Make seems awesome.  How do I use it?"
+
+----
+
+make details!
+=========================
+
+Recipes
+
+.. note::
+
+	<PRESENTER_NOTE>
+
+----
+
+make details!
+========================================
+
+Dependencies
+
+.. note::
+
+	<PRESENTER_NOTE>
+
+----
+
+make details!
+========================================
+
+Variables
+
+.. note::
+
+	<PRESENTER_NOTE>
+
+----
+
+make details!
+========================================
+
+Wildcards
+
+.. note::
+
+	<PRESENTER_NOTE>
+
+----
+
+make details!
+========================================
+
+CONTINUE HERE
+
+.. note::
+
+	<PRESENTER_NOTE>
+
+----
+
+make details!
+========================================
+
+Special Built-in Target Names
+
+.. note::
+
+	<PRESENTER_NOTE>
+
+----
+
+make details!
+========================================
+
+* <STUDENTS_SEE_THIS>
+
+.. note::
+
+	<PRESENTER_NOTE>
+
+----
+
+make details!
 =========================
 
 * <STUDENTS_SEE_THIS>
@@ -141,7 +290,7 @@ make why?
 
 ----
 
-<SECTION_2_2>
+make details!
 ========================================
 
 * <STUDENTS_SEE_THIS>
@@ -152,45 +301,7 @@ make why?
 
 ----
 
-<SECTION_2_3>
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
-
-----
-
-<SECTION_3>
-========================================
-
-----
-
-<SECTION_3_1>
-=========================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
-
-----
-
-<SECTION_3_2>
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
-
-----
-
-<SECTION_3_3>
+make details!
 ========================================
 
 * <STUDENTS_SEE_THIS>
@@ -206,6 +317,7 @@ COMMON PITFALLS
 
 * Using spaces instead of tabs
 * Trying to mix Make "code" with shell "code"
+* Forgetting each recipe command gets its own shell (by default)
 * Misleading error output
     * "missing rule" message when it should be "missing dependency"
 
