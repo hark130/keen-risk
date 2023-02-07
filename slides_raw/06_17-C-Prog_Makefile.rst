@@ -68,7 +68,7 @@ Key Terms
 
 * *rule* - One or more commands needed to generate a target
 * *target* - A "thing" to generate
-* *dependencies* - A list of zero or more pre-requisites to generate a target
+* *dependencies* - A list of zero or more pre-requisites to generate a target (AKA *prerequisites*)
 * *recipe* - The commands executed by a rule
 
 Here is what a simple rule looks like:
@@ -185,10 +185,11 @@ make why?
 make how?
 ========================================
 
-Linux: Use your package manager
+Linux: Install using your package manager
 
 .. code:: bash
 
+	# As one example...
 	apt install build-essential
 
 Windows:
@@ -207,9 +208,33 @@ make details!
 
 Recipes
 
+.. code:: makefile
+
+	# MAKE Comment: Not in a recipe so it's a Make comment
+	GLOBAL_VAR := "This variable is globally accessible"
+	MAKEFILE_CONDITIONALS := https://www.gnu.org/software/make/manual/html_node/Conditional-Syntax.html
+
+	all:
+		# SHELL Comment: This gets passed to the shell as-is
+		echo This line \
+		is split
+		LOCAL_VAR="This variable only exists right now"
+		if true; then echo "This is a /bin/sh conditional!"; fi
+		# Normally make prints each line of the recipe before it is executed.
+		# This is called "echoing".
+		@# When a line starts with ‘@’, the echoing of that line is suppressed.
+	ifneq ($(GLOBAL_VAR),)
+		echo "See: $(MAKEFILE_CONDITIONALS)"
+	endif
+		cd each && echo "...recipe command gets its own shell..." > so_chain.them
+		echo "Recipes stop on a non-zero exit code"
+		-echo "A command preceded by a ‘-’ will ignore errors"; exit 1
+		echo "make --ignore-errors or .IGNORE will have similar effects"
+
 .. note::
 
-	<PRESENTER_NOTE>
+	This may be an eye chart but it's a good introduction into deciphering recipes.
+	Go through each line one-by-one with the class.  Sometimes it's better to show them than tell them.
 
 ----
 
@@ -227,11 +252,97 @@ Dependencies
 make details!
 ========================================
 
-Variables
+(Some) Variables
+
+* User-Defined variables
+* Automatic Variables
 
 .. note::
 
-	<PRESENTER_NOTE>
+	SPOILER ALERT: There's a lot more to GNU Make variables but these are the basics.
+
+	We will scrape the surface of user-defined variables, barely mention automatic variables, and skip other variable types (e.g., Pre-Defined Variables)
+
+----
+
+make details!
+========================================
+
+Referencing Variables
+
+Write a dollar sign followed by the name of the variable in parentheses or braces:
+
+.. code:: makefile
+
+	all:
+		@echo "The default program for compiling C programs is $(CC)"
+		@echo "Extra flags to give to the C compiler: ${CFLAGS}"
+
+See: https://www.gnu.org/software/make/manual/html_node/Reference.html for more
+
+.. note::
+
+	FUN FACT: CC and CFLAGS are two examples of "Pre-Defined Variables" used by "implicit rules" but the objective doesn't call for them to know that.
+
+	See: https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html
+
+----
+
+make details!
+========================================
+
+User-Defined Variables
+
+Two types:
+  + recursive '=' - Value is resolved when used.
+  + simply expanded ':=' - Value is resolved when it's defined.
+
+.. code:: makefile
+
+	RECURSIVE1 = "R1" $(SIMPLY1) $(SIMPLY2)
+	SIMPLY1 := "S1" $(SIMPLY2)
+	SIMPLY2 := "S2" $(SIMPLY1)
+
+	all:
+		@echo $(RECURSIVE1)
+		@echo $(SIMPLY1)
+		@echo $(SIMPLY2)
+
+See:
+  + https://www.gnu.org/software/make/manual/html_node/Using-Variables.html
+  + https://makefiletutorial.com/#variables-pt-2
+
+.. note::
+
+	It helps to think about simply expanded variables as "position dependent" and recursive variables as "(run)time dependent"
+	Talk through the output with the students.
+
+	SPOILER ALERT: The output is...
+
+	R1 S1 S2 S1
+	S1
+	S2 S1
+
+----
+
+
+make details!
+========================================
+
+Automatic Variables
+
+* GNU Make documentation lists 8
+* There are several variants
+* None of them are requried for "explicit rules"
+* Two of them are very useful: $@ and $^
+
+.. code:: makefile
+
+	hello_world: hello_world.c
+    		@echo "The target is $@"
+    		@echo "All of the prerequisites are: $^"
+
+See: https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html for more
 
 ----
 
@@ -262,20 +373,47 @@ make details!
 
 Special Built-in Target Names
 
+* GNU Make documentation lists 16
+* None of them are requried for "explicit rules"
+* Some of them are useful: .IGNORE, .PHONY, .PRECIOUS, .ONESHELL
+
+.. code:: makefile
+
+	# Ignore recipe errors for listed targets
+	.IGNORE: janky error-prone
+
+	# Run listed recipes unconditionally, ignoring matching filenames
+	.PHONY: all clean
+
+	# Preserves intermediate files
+	.PRECIOUS: %.o
+
+	# All recipe commands are passed to a single invocation of the shell
+	.ONESHELL:
+
+See: https://www.gnu.org/software/make/manual/html_node/Special-Targets.html for more
+
 .. note::
 
-	<PRESENTER_NOTE>
+	.PHONY is most important of them all.  It is commonly used for targets *not* associated with files.
+	E.g., all, clean, install, uninstall.
+
+	That way, GNU Make will ignore any filenames that happen to match.
+
 
 ----
 
 make details!
 ========================================
 
-* <STUDENTS_SEE_THIS>
+A peek behind the curtain..,
+
+Implicit rules
 
 .. note::
 
-	<PRESENTER_NOTE>
+	The objective specifies "explicit rules" but knowing what's possible shouldn't hurt.
+
 
 ----
 
@@ -327,10 +465,32 @@ COMMON PITFALLS
 
 ----
 
+TROUBLESHOOTING
+=========================
+
+AKA "So now you hate GNU Make..."
+
+* Enable "echoing" (see: @) so you can see everything
+* Add DEBUGGING statements to see the value of key variables
+
+.. code:: makefile
+
+	hello_world: hello_world.c
+    		echo "DEBUGGING: The target is $@"
+    		echo "DEBUGGING: All of the prerequisites are: $^"
+    		gcc -o hello_world hello_world.c
+
+.. note::
+
+	It also helps to pull apart recipes and to test individual commands in Proof-of-Concept recipes.
+
+----
+
 RESOURCES
 =========================
 
 * GNU Make homepage: https://www.gnu.org/software/make/
+* Makefile examples: https://makefiletutorial.com/
 
 .. note::
 
