@@ -8,7 +8,7 @@ CCD Basic JQR v1.0
 ----
 
 6.15 Describe terms associated with compiling, linking, debugging, and executables
-========================================
+==================================================================================
 
 ----
 
@@ -45,6 +45,7 @@ DISCLAIMER
 ========================================
 
 Memorizing terms, for the sake of memoriziation, is useless.
+
 Meaningful memorization comes with experience.
 
 .. note::
@@ -60,17 +61,25 @@ Meaningful memorization comes with experience.
 
 ----
 
+:class: center-image
+
 C COMPILATION STAGES
 ========================================
 
-* Preprocessing
-* Compiling
-* Asssembling
-* Linking
+.. image:: images/06-15_001_01-Compilation_Stages-cropped.png
 
 .. note::
 
-	<PRESENTER_NOTE>
+	The actual overview is:
+
+	* Preprocessing
+	* Compiling
+	* Asssembling
+	* Linking
+
+	This graphic serves the purpose though.
+
+	NOTE: Different sources enumerate the compilation process in different ways. Descriptions of the process here are considered non-exhaustive as some compilers may not follow this model.
 
 ----
 
