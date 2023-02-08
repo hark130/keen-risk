@@ -176,7 +176,7 @@ RESOURCES
 =========================
 
 * GNU Compiler Collection (GCC) Online Manuals: https://gcc.gnu.org/onlinedocs/
-* 
+* 39 IOS IDF Course Material: https://39ios-idf.90cos.cdl.af.mil/4_c_module/08_c_compiler/index.html
 
 .. note::
 
