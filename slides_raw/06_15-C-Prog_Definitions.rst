@@ -32,21 +32,41 @@ Objectives
 Overview
 ========================================
 
-* <SECTION_1>
-* <SECTION_2>
-* <SECTION_3>
+* Disclaimer
+* C Compilation Stages
+* PE vs ELF
+* Libraries vs Executables
+* Calling Convention/ABI
+* Checklist
 
 ----
 
-<SECTION_1>
+DISCLAIMER
 ========================================
+
+Memorizing terms, for the sake of memoriziation, is useless.
+Meaningful memorization comes with experience.
+
+.. note::
+
+	"We will discuss these terms now but experience them later.  With that experience, comes memorization."
+
+	The students may not be able to describe all of these terms by the end of 6.15.
+	However, they should be able to describe all of these terms well before the end of the C Programming
+	block of instruction.
+
+	The post-Definitions plan is to regularly refer back to the "Checklist" until everyone can describe everything.
+	Following that, the students should be able to pass short multiple-choice quizzes.
 
 ----
 
-<SECTION_1_1>
+C COMPILATION STAGES
 ========================================
 
-* <STUDENTS_SEE_THIS>
+* Preprocessing
+* Compiling
+* Asssembling
+* Linking
 
 .. note::
 
@@ -149,6 +169,19 @@ Overview
 .. note::
 
 	<PRESENTER_NOTE>
+
+----
+
+RESOURCES
+=========================
+
+* GNU Compiler Collection (GCC) Online Manuals: https://gcc.gnu.org/onlinedocs/
+* 
+
+.. note::
+
+	Or just Google something.  It seems like every other safe-for-work webpage describes
+	the C Programming compilation stages: https://lmgtfy.app/?q=c+programming+compilation+stages
 
 ----
 
