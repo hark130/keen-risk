@@ -3,11 +3,11 @@
 :css: keri.css
 
 CCD Basic JQR v1.0
-6.15 _____
+6.15 Describe terms associated with compiling, linking, debugging, and executables
 
 ----
 
-6.15 _____
+6.15 Describe terms associated with compiling, linking, debugging, and executables
 ========================================
 
 ----
@@ -15,9 +15,17 @@ CCD Basic JQR v1.0
 Objectives
 ========================================
 
-* <OBJECTIVE_1>
-* <OBJECTIVE_2>
-* <OBJECTIVE_3>
+* [Describe terms associated with] Portable Executable (PE)
+* [Describe terms associated with] Executable and Linkable Format (ELF)
+* [Describe the] Difference between PE and ELF
+* [Describe the] Difference between a library (shared object / DLL) and a regular executable program
+* [Describe the] Calling convention/Application Binary Interface (ABI)
+
+.. note::
+
+	This JQS item seems to be missing an explicit objective covering the *actual* terms associated with compiling, linking, and debugging.
+
+	Harkjective: Describe terms associated with compiling, linking, and debugging C programs.
 
 ----
 
