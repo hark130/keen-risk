@@ -17,6 +17,10 @@ Objectives
 
 * Demonstrate the ability to build a binary from multiple C source files and headers by writing a Makefile using explicit rules
 
+.. note::
+
+	Harkjective: Demonstrate the ability to read and understand Makefiles that use implicit rules
+
 ----
 
 Overview
@@ -27,8 +31,8 @@ Overview
 * make how?
 * make details!
 * Common Pitfalls
-* Student Labs
 * Resources
+* Student Labs
 
 ----
 
@@ -61,6 +65,8 @@ Source: https://www.gnu.org/software/make/
 
 	GNU: "GNU's Not Unix" is a completely free operating system, upwards compatible with Unix.  See - https://www.gnu.org/
 
+	"Generation" is in quotes because it could mean a great number of things: assembly, compilation, linking, shell commands, etc.
+
 ----
 
 Key Terms
@@ -81,7 +87,7 @@ Here is what a simple rule looks like:
 
 .. note::
 
-	<PRESENTER_NOTE>
+	GNU Make documentation seems to lean heavily on the word "prerequisites" yet their top-level example says "dependencies"?!
 
 ----
 
@@ -206,6 +212,17 @@ Windows:
 make details!
 =========================
 
+* Recipes
+* Dependencies
+* Variables
+* Special Target Names
+* Implicit Rules
+
+----
+
+make details!
+=========================
+
 Recipes
 
 .. code:: makefile
@@ -231,6 +248,8 @@ Recipes
 		-echo "A command preceded by a ‘-’ will ignore errors"; exit 1
 		echo "make --ignore-errors or .IGNORE will have similar effects"
 
+*NOTE:* Makefiles are tab-delimited.
+
 .. note::
 
 	This may be an eye chart but it's a good introduction into deciphering recipes.
@@ -241,27 +260,43 @@ Recipes
 make details!
 ========================================
 
-Dependencies
+Dependencies (AKA Prerequisites)
+
+* Normal
+	* Order: All prerequisite recipes must be completed before the target is started
+	* Dependency: If any prerequisite is newer, the target is out-of-date and must be rebuilt
+* Order-Only
+	* Order: All prerequisite recipes must be completed before the target is started
+	* New/old/out-of-date isn't considered
+
+.. code:: makefile
+
+	targets : normal-prerequisites | order-only-prerequisites
+
+See: https://www.gnu.org/software/make/manual/html_node/Prerequisite-Types.html for more
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Order-Only prerequisites are covered in the GNU Make online manual so they're covered here.
+	The manual also includes a resonable example.
+
+	However, I'm not sure I've ever seen one in actual use.  Defaulting to Normal prerequisites is safe.
+
+	Also, feel free to reference the "Basic Example 3", which uses some easy-to-follow (and see) "normal" dependencies.
 
 ----
 
 make details!
 ========================================
 
-(Some) Variables
+Variable
 
-* User-Defined variables
-* Automatic Variables
+* Referencing
+* Types
 
 .. note::
 
-	SPOILER ALERT: There's a lot more to GNU Make variables but these are the basics.
-
-	We will scrape the surface of user-defined variables, barely mention automatic variables, and skip other variable types (e.g., Pre-Defined Variables)
+	They students have already seen plenty of "variable" examples but now is your chance to cover the topic, in some depth, with some detail.
 
 ----
 
@@ -285,6 +320,22 @@ See: https://www.gnu.org/software/make/manual/html_node/Reference.html for more
 	FUN FACT: CC and CFLAGS are two examples of "Pre-Defined Variables" used by "implicit rules" but the objective doesn't call for them to know that.
 
 	See: https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html
+
+----
+
+make details!
+========================================
+
+(Some) Variable Types
+
+* User-Defined variables
+* Automatic Variables
+
+.. note::
+
+	SPOILER ALERT: There's a lot more to GNU Make variables but these are the basics.
+
+	We will scrape the surface of user-defined variables, barely mention automatic variables, and skip other variable types (e.g., Pre-Defined Variables)
 
 ----
 
@@ -320,11 +371,12 @@ See:
 	SPOILER ALERT: The output is...
 
 	R1 S1 S2 S1
+
 	S1
+	
 	S2 S1
 
 ----
-
 
 make details!
 ========================================
@@ -343,28 +395,6 @@ Automatic Variables
     		@echo "All of the prerequisites are: $^"
 
 See: https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html for more
-
-----
-
-make details!
-========================================
-
-Wildcards
-
-.. note::
-
-	<PRESENTER_NOTE>
-
-----
-
-make details!
-========================================
-
-CONTINUE HERE
-
-.. note::
-
-	<PRESENTER_NOTE>
 
 ----
 
@@ -398,55 +428,115 @@ See: https://www.gnu.org/software/make/manual/html_node/Special-Targets.html for
 	.PHONY is most important of them all.  It is commonly used for targets *not* associated with files.
 	E.g., all, clean, install, uninstall.
 
+	.PRECIOUS is also useful.  I wrote a rule that used a directory as a dependency.  Make tried to
+	remove that "intermediate file" but failed because it wasn't a file.  Right or wrong, I added it to
+	.PRECIOUS to avoid that behavior.
+
 	That way, GNU Make will ignore any filenames that happen to match.
 
+	The % indicates a pattern rule.  % is to GNU Make as * is to your average shell.
 
 ----
 
 make details!
 ========================================
 
-A peek behind the curtain..,
+A peek behind the curtain...
 
-Implicit rules
+Explicit Rules vs. Implicit Rules
+
+Explicit example...
+
+.. code:: makefile
+
+	foo: foo.o bar.o
+		gcc -o foo foo.o bar.o
+
+	foo.o: foo.c
+		gcc -c foo.c -o foo.o
+
+	bar.o: bar.c
+		gcc -c bar.c -o bar.o
+
+made Implicit...
+
+.. code:: makefile
+
+	foo: foo.o bar.o
+		gcc -o $@ $^
+
+	%.o: %.c
+		gcc -c $^ -o $@
+
+See: https://www.gnu.org/software/make/manual/html_node/Implicit-Rules.html
 
 .. note::
 
 	The objective specifies "explicit rules" but knowing what's possible shouldn't hurt.
 
+	This is just scratching the surface of "Implicit Rules".  Make already "implicitly" knows how to compile object code, as an example.
+	This example of "Implicit Rules" is using user-defined "Pattern Rules".
+	see: https://web.mit.edu/gnu/doc/html/make_10.html#SEC91
+
+	Discuss the key advantage of implicit rules with the students: scalability.  Know that variables and $(shell) function calls
+	could be used to further future-proof(?) implicit rule sets.
+
+----
+
+make details!
+========================================
+
+Implicit Rules FTW
+
+What if *this* were your Makefile for *every* project?
+
+.. code:: makefile
+
+	CC := gcc
+	CFLAGS := 
+	SOURCE := $(shell ls *.c)
+	OBJECTS = $(SOURCE:.c=.o)
+
+	foo: $(OBJECTS)
+		$(CC) -o $@ $^
+
+	%.o: %.c
+		$(CC) -o $@ -c $^
+
+See: https://www.gnu.org/software/make/manual/html_node/Implicit-Rules.html
+
+.. note::
+
+	Now it doesn't matter what you name the source files.  It doesn't matter
+	how many there are.  This Makefile will infinitely scale with your project.
+
+	Realistically, this is just a starting point.  Libraries might be split up.
+	Headers might be in a different directory than source files.  You won't
+	always be delivering a "foo" binary.  But, this is a fantastic starting point!
 
 ----
 
 make details!
 =========================
 
-* <STUDENTS_SEE_THIS>
+* Recipes
+* Dependencies
+    * Normal
+    * Order-Only
+* Variables
+    * Recursive
+    * Simply-Expanded
+* Special Target Names
+* Implicit Rules
 
 .. note::
 
-	<PRESENTER_NOTE>
-
-----
-
-make details!
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
-
-----
-
-make details!
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
+	This was a large section so summarize by having the students recap material.
+	"Name some basic facts of recipes"
+	"What's the difference between normal and order-only dependencies?"
+	"How do you know if a variable assignment is recursive or simply-expanded?"
+	"What are some special target names?"
+	"What is the key advantage to implicit rules?"
 
 ----
 
@@ -471,6 +561,8 @@ TROUBLESHOOTING
 AKA "So now you hate GNU Make..."
 
 * Enable "echoing" (see: @) so you can see everything
+* https://www.gnu.org/software/make/manual/html_node/Error-Messages.html
+* https://stackoverflow.com/search?q=gnu+make
 * Add DEBUGGING statements to see the value of key variables
 
 .. code:: makefile
@@ -484,6 +576,9 @@ AKA "So now you hate GNU Make..."
 
 	It also helps to pull apart recipes and to test individual commands in Proof-of-Concept recipes.
 
+	GNU Make is well documented on the Internet.  The "Let me Google that for you" links may seem
+	flippant but they weren't intented to be.
+
 ----
 
 RESOURCES
@@ -494,22 +589,63 @@ RESOURCES
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Or just Google something.
+	Or just read the Makefile of an open source project.
+
+----
+
+STUDENT LABS
+=========================
+
+Ideas:
+
+* Walkthrough *real* Makefiles
+* Create a Makefile for a previous project.
+* Each student finds an open-source Makefile and explains it to the class.
+
+.. note::
+
+	"Real Makefiles"
+	1. KEEN RISK (KERI): https://github.com/hark130/keen-risk/blob/main/Makefile
+	Relatively clean and straight-forward OS-agnostic(?) set of Makefiles.
+
+	2. SUNDERING REINDEER (SURE): https://gitlab.com/teamhappyaku/sundering-reindeer/-/blob/development/Makefile
+	This is a realistic Makefile, created/updated by a team, that (frankly) could use some refactor and clean-up.
+
+	3. GNU Make: https://github.com/wkusnierczyk/make/blob/master/Makefile.DOS
+	Let's look at GNU Make eat their own dog food, as it were.
+
+	4. Radamsa: https://gitlab.com/akihe/radamsa/-/blob/develop/Makefile
+	Radamsa is an open-source fuzzer.  This Makefile includes good examples of explicit rules.
+
+	"Previous Projects"
+	As of now, the course isn't fleshed-out enough to know what they've already done.
+	Also, the "student project" is done so it's hard to know what meaningful work the students could
+	create Makefiles for.
+	Discuss the matter with the students and brainstorm a good lab.  Don't forget to tailor it to the
+	objective.
+
+	"Explains it"
+	This may not support the *actual* objective but it supports the secret Harkjective of "read and understand"
+	These students won't have to write a Makefile their first day on the team.  If that team is *using* GNU Make,
+	they'll need to be able to read and understand what that "legacy" Makefile is doing so they can use it and update it.
 
 ----
 
 Summary
 ========================================
 
-* <SECTION_1>
-* <SECTION_2>
-* <SECTION_3>
+* make what?
+* make why?
+* make how?
+* make details!
+* Common Pitfalls
+* Resources
+* Student Labs
 
 ----
 
 Objectives
 ========================================
 
-* <OBJECTIVE_1>
-* <OBJECTIVE_2>
-* <OBJECTIVE_3>
+* Demonstrate the ability to build a binary from multiple C source files and headers by writing a Makefile using explicit rules
