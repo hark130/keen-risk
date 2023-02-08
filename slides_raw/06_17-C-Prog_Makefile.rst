@@ -586,6 +586,7 @@ RESOURCES
 
 * GNU Make homepage: https://www.gnu.org/software/make/
 * Makefile examples: https://makefiletutorial.com/
+* Walk-->Run-->Sprint Makefile Examples: https://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
 
 .. note::
 
