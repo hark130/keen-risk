@@ -193,11 +193,31 @@ PE
 
 Portable Executable (PE)
 
-
+* Common binary file format for Windows operating systems
+* Used for:
+	* executables
+	* object code
+	* dynamic link libraries (DLL)
+* Magic Number: 0x4D 0x5A (MZ)
 
 .. note::
 
-	<PRESENTER_NOTE>
+	TRIVIA: The PE magic number "MZ" (4D 5A) represents the initials of the designer of the file format, Mark Zbikowski.
+
+----
+
+:class: flex-image block-image center-image shrink-image
+
+PE
+========================================
+
+.. image:: images/06-15_003_01-Portable_Executable_32_bit_Structure.png
+
+.. note::
+
+	Don't get too hung up on this graphic.  The students need to *describe* a PE, not parse it from memory.
+
+	Taken from: https://en.wikipedia.org/wiki/File:Portable_Executable_32_bit_Structure_in_SVG_fixed.svg
 
 ----
 
@@ -212,7 +232,7 @@ Executable and Linkable Format (ELF)
 	* object code
 	* shared libraries
 	* core dumps
-* Magic Number: 0x7f 0x45 0x4c 0x46
+* Magic Number: 0x7f 0x45 0x4c 0x46 (.ELF)
 
 .. note::
 
@@ -247,12 +267,23 @@ ELF
 
 ----
 
-<SECTION_2>
+PE vs ELF
+========================================
+
+.. note::
+
+	Here's the chance to bring it all together.  One of the objectives is to
+	[Describe the] Difference between PE and ELF... So lead the class in describing differences between PE and ELF.
+	While you're at it, feel free to name some similarities.
+
+----
+
+LIBRARIES vs EXECUTABLES
 ========================================
 
 ----
 
-<SECTION_2_1>
+LIBRARIES
 =========================
 
 * <STUDENTS_SEE_THIS>
@@ -263,7 +294,7 @@ ELF
 
 ----
 
-<SECTION_2_2>
+EXECUTABLES
 ========================================
 
 * <STUDENTS_SEE_THIS>
@@ -274,7 +305,7 @@ ELF
 
 ----
 
-<SECTION_2_3>
+Calling convention
 ========================================
 
 * <STUDENTS_SEE_THIS>
@@ -285,34 +316,7 @@ ELF
 
 ----
 
-<SECTION_3>
-========================================
-
-----
-
-<SECTION_3_1>
-=========================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
-
-----
-
-<SECTION_3_2>
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
-
-----
-
-<SECTION_3_3>
+/Application Binary Interface (ABI)
 ========================================
 
 * <STUDENTS_SEE_THIS>
@@ -349,8 +353,7 @@ RESOURCES
 
 .. note::
 
-	Or just Google something.  It seems like every other safe-for-work webpage describes
-	the C Programming compilation stages: https://lmgtfy.app/?q=c+programming+compilation+stages
+	It seems like every other safe-for-work webpage describes the C Programming compilation stages: https://lmgtfy.app/?q=c+programming+compilation+stages
 
 ----
 
