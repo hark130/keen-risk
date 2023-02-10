@@ -36,7 +36,7 @@ Overview
 * C Compilation Stages
 * PE vs ELF
 * Libraries vs Executables
-* Calling Convention/ABI
+* ABI
 * Checklist
 
 ----
@@ -305,10 +305,14 @@ EXECUTABLES
 
 ----
 
-Calling convention
+Application Binary Interface (ABI)
 ========================================
 
-* <STUDENTS_SEE_THIS>
+* What?
+* Why?
+* How?
+* Who?
+* Calling convention?
 
 .. note::
 
@@ -316,14 +320,211 @@ Calling convention
 
 ----
 
-/Application Binary Interface (ABI)
+Application Binary Interface (ABI)
 ========================================
 
-* <STUDENTS_SEE_THIS>
+What is an ABI and how does it differ from an Application Programming Interface (API)?
+
+API
+
+* How humans access a library
+
+ABI
+
+* How machines access a library
 
 .. note::
 
-	<PRESENTER_NOTE>
+	From: https://stackoverflow.com/a/2456882
+	"When you write source code, you access the library through an API. Once the code is compiled, your application accesses the binary data in the library through the ABI."
+
+----
+
+Application Binary Interface (ABI)
+========================================
+
+Why is an ABI important?
+
+* Processor instruction set
+* Calling convention:
+    * How parameters passed from caller to callee: order, location
+    * How values are returned from callee to caller
+    * Who cleans up the stack post-return
+    * Are function names mangled
+* Defines volatile registers
+* Stack byte alignment requirements
+* How to make system calls
+* Binary format
+
+.. note::
+
+	Different calling conventions pass parameters using registers, the stack, or a combination of the two.
+
+	The Windows ABI specifies x86 name mangling for some calling conventions:
+
+	    cdecl: leading underscore "_" (e.g., _myfunc)
+
+	    stdcall: leading underscore "_" and decorated with trailing "@X" where X is the number of bytes to allocate (e.g., _myfunc@8)
+
+	    fastcall: leading underscore and @ "_@" and stdcall-style trailing decorator (e.g., _@myfunc@8)
+
+	System call ABI specifications may include direct system calls, system call stubs, and/or system call numbers.
+
+----
+
+:class: flex-image block-image center-image shrink-image
+
+Application Binary Interface (ABI)
+========================================
+
+How can you determine the ABI of a binary file?
+
+ELF defines the ABI and version in bytes 8-9
+
+.. image:: images/06-15_004_01-ELF_ABI.png
+
+From: https://man7.org/linux/man-pages/man5/elf.5.html
+
+.. note::
+
+	Sometimes it helps to show them as well as tell them:
+
+	readelf -h helloworld.bin  # Show the header of an ELF file
+
+	ABI and ABI version are defined in the ELF header.
+
+	You could always view the ELF file raw and count the bytes:
+
+	xxd helloworld.bin | head -n 1  # Count to byte 8 to see the EI_OSABI value
+
+----
+
+:class: flex-image block-image center-image
+
+Application Binary Interface (ABI)
+========================================
+
+Microsoft supports a number of calling conventions
+
+.. image:: images/06-15_005_01-Microsoft_calling_conventions.png
+
+Microsoft also has calling conventions that target specific platforms: x64, ARM.
+
+See: https://learn.microsoft.com/en-us/cpp/cpp/argument-passing-and-naming-conventions?view=msvc-170
+
+.. note::
+
+	Microsoft doesn't have documentation or verbiage that explicitly refers to this being an ABI...
+	But it defines calling conventions, how to pass arguments, etc.  Sounds like an ABI to me.
+
+----
+
+Application Binary Interface (ABI)
+========================================
+
+What does this code do?
+What data is it operating on?
+
+.. code:: nasm
+
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; ABI??
+	; Calling convention?
+	; Parameters?
+	; Return value?
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	bits 64
+
+	global func3a
+
+	func3a:
+		push rbp
+		mov rbp, rsp
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;
+	; What does this code do?
+	;
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		push rdi
+		mov rcx, rdx
+		rep movsb
+		pop rax
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;
+	; What is the return value?
+	;
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		pop rbp
+		ret
+
+.. note::
+
+	Hard to tell what this code is doing without knowing the location and order of parameters or the return method.  That information is defined by the calling convention which is, in turn, defined by the ABI.
+
+----
+
+Application Binary Interface (ABI)
+========================================
+
+Knowing the location and order of parameters is important
+
+.. code:: nasm
+
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; System V ABI calling convention:
+	; The first six integer or pointer arguments are
+	; passed in registers RDI, RSI, RDX, RCX, R8, R9
+	; RAX holds the return value
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	bits 64
+
+	global func3a
+
+	func3a:
+		push rbp
+		mov rbp, rsp
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;
+	; What does this code do?
+	;
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		push rdi
+		mov rcx, rdx
+		rep movsb
+		pop rax
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;
+	; What is the return value?
+	;
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		pop rbp
+		ret
+
+.. note::
+
+	Knowing the calling convention is essential to determining the behavior of assembly.
+
+	SPOILER ALERT: This example replicates the behavior of memcpy()
+
+	// memcpy(dest, src, numBytes)
+	extern "C" void* func3a(void*, void*, size_t);
+
+----
+
+Application Binary Interface (ABI)
+========================================
+
+Who needs to know about ABIs?
+
+* Compilers
+* Assembly authors
+* Reverse engineers
+
+.. note::
+
+	Honestly, I'm not sure why ABIs and calling conventions are an objective in this block.
+	The concept is important, to be sure.  But the students aren't writing assembly and they're
+	not doing any reverse engineering.  Maybe move this to reverse engineering?  <shrug>  I just work here.
 
 ----
 
@@ -347,6 +548,9 @@ RESOURCES
 * GNU Compiler Collection (GCC) Online Manuals: https://gcc.gnu.org/onlinedocs/
 * GCC Man Page: https://man7.org/linux/man-pages/man1/gcc.1.html
 * 39 IOS IDF Course Material: https://39ios-idf.90cos.cdl.af.mil/4_c_module/08_c_compiler/index.html
+* PE
+    * Microsoft: https://learn.microsoft.com/en-us/windows/win32/debug/pe-format
+    * Malware researcher’s handbook (demystifying PE file): https://resources.infosecinstitute.com/topic/2-malware-researchers-handbook-demystifying-pe-file/
 * ELF
     * Man page: https://man7.org/linux/man-pages/man5/elf.5.html
     * Details: https://www.cs.cmu.edu/afs/cs/academic/class/15213-f00/docs/elf.pdf
