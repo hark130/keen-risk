@@ -582,7 +582,7 @@ AKA "So now you hate GNU Make..."
 ----
 
 RESOURCES
-=========================
+========================================
 
 * GNU Make homepage: https://www.gnu.org/software/make/
 * Makefile examples: https://makefiletutorial.com/
@@ -596,7 +596,7 @@ RESOURCES
 ----
 
 STUDENT LABS
-=========================
+========================================
 
 Ideas:
 
