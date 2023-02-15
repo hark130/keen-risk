@@ -312,12 +312,14 @@ Ways to access software libraries:
 * Static
     * Object code included by a linker
     * Required modules "copied" into the executable
-    * Accessed at compile-time
+    * First accessed at compile-time and used at run-time
 
 * Dynamic
     * Object code loaded into memory by the host
     * Accessible by multiple programs
-    * Accessed at load-time or run-time
+    * First accessed at load-time or run-time*
+
+\* Sometimes dynamic libraries are referenced, without copying code, at compile-time
 
 .. note::
 
@@ -417,6 +419,8 @@ Spot the executable...
 
 		/bin/bash is the executable ELF, hello_world.sh is merely interpreted.
 
+		cat is an executable ELF
+
 	WINDOWS
 
 		Tool.exe is an executable PE file
@@ -481,6 +485,12 @@ ABI
 
 	From: https://stackoverflow.com/a/2456882
 	"When you write source code, you access the library through an API. Once the code is compiled, your application accesses the binary data in the library through the ABI."
+
+	If "seeing" would help the students better understand an API...
+
+	man stdio  # The standard input/output library function list (along with some defined macros)
+
+	man 3 puts  # Shows the API for "output of characters and strings" functions
 
 ----
 
