@@ -286,22 +286,167 @@ LIBRARIES vs EXECUTABLES
 LIBRARIES
 =========================
 
-* <STUDENTS_SEE_THIS>
+What is a software library?
+
+* A suite of pre-written code to assist with software development
+* Developers use libraries to add or automate functionality without writing code
+
+"If I have seen a little further it is by standing on the shoulders of giants."
+- Sir Isaac Newton
 
 .. note::
 
-	<PRESENTER_NOTE>
+	From: https://en.wikipedia.org/wiki/Standing_on_the_shoulders_of_giants
+
+	The phrase "standing on the shoulders of giants" is a metaphor which means "using the understanding gained by major thinkers who have gone before in order to make intellectual progress".
+
+	It is apropos to use this metaphor when describing libraries.  Using pre-written code to add or automate functionality allows developers to see "a little further" "in order to make intellectual progress".
+
+----
+
+LIBRARIES
+=========================
+
+Ways to access software libraries:
+
+* Static
+    * Object code included by a linker
+    * Required modules "copied" into the executable
+    * Accessed at compile-time
+
+* Dynamic
+    * Object code loaded into memory by the host
+    * Accessible by multiple programs
+    * Accessed at load-time or run-time
+
+.. note::
+
+	Arguably, a static library could also be source code included by a compiler.
+
+	This isn't meant to be a discussion about the pros/cons of static and dynamic linking
+	but it can't hurt student comprehension to discuss it now.
+
+	Static Pros: library dependencies guaranteed, executable is complete and stand-alone
+
+	Static Cons: larger executable size
+
+	Dynamic Pros: smaller executable size, can be used by other programs, easier to update a libary, code only loaded if necessary, memory use more efficient (since all programs access same in-memory library)
+
+	Dynamic Cons: missing libraries, version conflicts
+
+----
+
+LIBRARIES
+=========================
+
+Library implementations:
+
+* Linux
+    * Static Library: .a
+    * Shared Library: .so
+
+* Windows
+    * Shared Library: .dll
+
+.. note::
+
+	This is a gross oversimplification, but don't forget the objective calls to "describe" the difference between libraries and executables, *not* describe details about types of libraries.
+
+	This information is included because it was referenced in the training objective verbiage.
+
+	Linux shared library "practices" can be found here: https://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html
+
+	Windows DLL "practices" can be found here: https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-libraries
 
 ----
 
 EXECUTABLES
 ========================================
 
-* <STUDENTS_SEE_THIS>
+* Tells a system how to "perform indicated tasks according to encoded instructions"
+* One or more object files are linked together
+* Additional run-time code is added:
+    * entry point
+    * start-up
+    * shutdown
+* Synonyms for an executable:
+    * program
+    * binary
+* Stored in a format that conforms to the system's ABI
 
 .. note::
 
-	<PRESENTER_NOTE>
+	NOTE: There are edge-case exceptions to these statements (e.g., embedded systems, explicit linker scripts) but this represents standard application.
+
+	Good follow-up discussion:
+
+	Q: "What are these enocded instructions?"  A: "Traditionally, machine code."
+
+	Q: "How can we create machine code?"  A: "Develop source code in a higher level language and compile it to machine code" -or- "Hand write machine code"
+
+	Q: "What are two examples of os-specific formats executables are stored in?"  A: "ELF" -and- "PE"
+
+----
+
+:class: shrink-image block-image center-image
+
+LIBRARIES vs EXECUTABLES
+========================================
+
+Spot the executable...
+
+\...Linux edition:
+
+.. image:: images/06-15_004_01-Spot_the_executable-Linux-cropped.png
+
+\...Windows edition:
+
+.. image:: images/06-15_004_02-Spot_the_executable-Windows-cropped.png
+
+.. note::
+
+	NOTE: Don't let the students get hung up on the fact that the E in PE stands for executable.  It is merely a poor choice of words (e.g., "compiling" meaning a four-step process, in which the third step is also named "compilation") when differentiating between libraries and executables.  Don't forget that "binary" is a synonym for "executable".
+
+	ANSWERS
+
+	LINUX
+
+		echo is an executable ELF
+
+		hello_world.sh is an Bourne-Again shell script
+
+		/bin/bash is the executable ELF, hello_world.sh is merely interpreted.
+
+	WINDOWS
+
+		Tool.exe is an executable PE file
+
+		cmd.exe is an executable PE file
+
+		rundll32.exe is an executable PE file
+
+		TemplateDll.dll is a PE file, but it is not executable.  You could consider rundll32.exe to be "interpreting" TemplateDll.dll's ordinal 1.  To be hair-splittingly specific, TemplateDll.dll is a PE-formatted shared library.
+
+----
+
+LIBRARIES vs EXECUTABLES
+========================================
+
+.. note::
+
+	Take this opportunity to recap the similarities and differences between libraries and executables.
+
+	Q: "What are some similiarities between libraries and executables?"
+
+	A:
+	    "Stored in an os-specific format (e.g., ELF, PE)"
+
+	    "Contain encoded instructions"
+
+	Q: "What are some differences between libraries and executables?"
+
+	A:
+	    "Executables tell a system how to perform tasks.  Libraries frequently enable executables to perform those tasks."
 
 ----
 
@@ -310,13 +455,12 @@ Application Binary Interface (ABI)
 
 * What?
 * Why?
-* How?
 * Who?
 * Calling convention?
 
 .. note::
 
-	<PRESENTER_NOTE>
+	If you managed to hand-wave the defintion of ABI while answering questions in the "LIBRARIES vs EXECUTABLES" section, now is the time to reference them.
 
 ----
 
@@ -352,7 +496,8 @@ Why is an ABI important?
     * Who cleans up the stack post-return
     * Are function names mangled
 * Defines volatile registers
-* Stack byte alignment requirements
+* Behavior and structure of the stack
+* How data is arranged in memory
 * How to make system calls
 * Binary format
 
@@ -376,8 +521,6 @@ Why is an ABI important?
 
 Application Binary Interface (ABI)
 ========================================
-
-How can you determine the ABI of a binary file?
 
 ELF defines the ABI and version in bytes 8-9
 
@@ -422,6 +565,23 @@ See: https://learn.microsoft.com/en-us/cpp/cpp/argument-passing-and-naming-conve
 Application Binary Interface (ABI)
 ========================================
 
+Who needs to know about ABIs?
+
+* Compilers
+* Assembly authors
+* Reverse engineers
+
+.. note::
+
+	Honestly, I'm not sure why ABIs and calling conventions are an objective in this block.
+	The concept is important, to be sure.  But the students aren't writing assembly and they're
+	not doing any reverse engineering.  Maybe move this to reverse engineering?  <shrug>  I just work here.
+
+----
+
+Application Binary Interface (ABI)
+========================================
+
 What does this code do?
 What data is it operating on?
 
@@ -458,6 +618,8 @@ What data is it operating on?
 		ret
 
 .. note::
+
+	This is an example of "who?" needs to know ABIs.
 
 	Hard to tell what this code is doing without knowing the location and order of parameters or the return method.  That information is defined by the calling convention which is, in turn, defined by the ABI.
 
@@ -502,11 +664,16 @@ Knowing the location and order of parameters is important
 
 .. note::
 
+	This is the continuation example of "who?" needs to know ABIs.
+
 	Knowing the calling convention is essential to determining the behavior of assembly.
+
+	Walk the students through what is happening, how many arguments func3a is expecting, what func3a is doing with those arguments, and what the return value is... all in the context of the stated ABI.
 
 	SPOILER ALERT: This example replicates the behavior of memcpy()
 
 	// memcpy(dest, src, numBytes)
+
 	extern "C" void* func3a(void*, void*, size_t);
 
 ----
@@ -514,31 +681,83 @@ Knowing the location and order of parameters is important
 Application Binary Interface (ABI)
 ========================================
 
-Who needs to know about ABIs?
-
-* Compilers
-* Assembly authors
-* Reverse engineers
+* What?
+* Why?
+* Who?
+* Calling convention?
 
 .. note::
 
-	Honestly, I'm not sure why ABIs and calling conventions are an objective in this block.
-	The concept is important, to be sure.  But the students aren't writing assembly and they're
-	not doing any reverse engineering.  Maybe move this to reverse engineering?  <shrug>  I just work here.
+	Time to recap.
+
+	Make the students answer these questions for you.
 
 ----
 
 CHECKLIST
 ========================================
 
+[ ] Application Binary Interface (ABI)
+
+[ ] Application Programming Interface (API)
+
 [ ] Assembling Stage
+
+[ ] Calling Convention
+
 [ ] Compiling Stage
+
+[ ] Dynamic Link Library (DLL)
+
+[ ] Executable
+
+[ ] Executable and Linkable Format (ELF)
+
+[ ] Library
+
 [ ] Linking Stage
+
+[ ] Macro
+
+[ ] Portable Executable (PE)
+
 [ ] Preprocessing Stage
+
+[ ] Preprocessor Directive
+
+[ ] Shared Object
 
 .. note::
 
-	<PUT ANSWERS HERE>
+	1. ABI - Establishes the processor instruction set, calling convention, behavior/structure of the stack, system call usage, and binary format for a given system.
+
+	1. API - How a human interacts with a software library.
+
+	1. Assembling Stage - C Compilation Stage 3; Inputs assembly source code and outputs object code.
+
+	1. Calling Convention - A set of rules that detail how a function can be expected to behave, as defined by an ABI.  This defintion includes, but is not limited to, the following: how parameters passed from caller to callee, how values are returned from callee to caller, who cleans up the stack post-return, how function names are mangled.
+
+	1. Compiling Stage - C Compilation Stage 2; Inputs pre-processed C source code and outputs assembly source code.
+
+	1. Dynamic Link Library (DLL) - Common Windows shared library format; .dll.
+
+	1. Executable - One or more object files linked together, with additional run-time machine code instructions, in a format which conforms to a system's ABI to tell that system how to perform indicated tasks according to encoded instructions.
+
+	1. ELF - Common Unix & Unix-like system binary file format: executables, object code, shared libraries, core dumps.
+
+	1. Library - A suite of pre-written code developers use to add or automate functionality without writing code.
+
+	1. Linking Stage - C Compilation Stage 4; Inputs object code and outputs an ABI-compliant binary file
+
+	1. Macro - 
+
+	1. PE - Common Windows binary file format: executables, object code, and DLLs.
+
+	1. Preprocessing Stage - C Compilation Stage 1; Inputs a human's C source code, removes comments, expands macros, includes files and outputs pre-processed C source code.
+
+	1. Preprocessor Directive - 
+
+	1. Shared Object - Common Unix & Unix-like system shared library format; .so.
 
 ----
 
@@ -564,15 +783,26 @@ RESOURCES
 Summary
 ========================================
 
-* <SECTION_1>
-* <SECTION_2>
-* <SECTION_3>
+* Disclaimer
+* C Compilation Stages
+* PE vs ELF
+* Libraries vs Executables
+* ABI
+* Checklist
 
 ----
 
 Objectives
 ========================================
 
-* <OBJECTIVE_1>
-* <OBJECTIVE_2>
-* <OBJECTIVE_3>
+* [Describe terms associated with] Portable Executable (PE)
+* [Describe terms associated with] Executable and Linkable Format (ELF)
+* [Describe the] Difference between PE and ELF
+* [Describe the] Difference between a library (shared object / DLL) and a regular executable program
+* [Describe the] Calling convention/Application Binary Interface (ABI)
+
+.. note::
+
+	This JQS item seems to be missing an explicit objective covering the *actual* terms associated with compiling, linking, and debugging.
+
+	Harkjective: Describe terms associated with compiling, linking, and debugging C programs.
