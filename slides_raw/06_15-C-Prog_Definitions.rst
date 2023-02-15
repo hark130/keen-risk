@@ -44,7 +44,7 @@ Overview
 DISCLAIMER
 ========================================
 
-Memorizing terms, for the sake of memoriziation, is useless.
+Memorizing terms, for the sake of memorization, is useless.
 
 Meaningful memorization comes with experience.
 
