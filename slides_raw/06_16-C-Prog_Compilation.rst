@@ -3,21 +3,21 @@
 :css: keri.css
 
 CCD Basic JQR v1.0
-6.16 _____
+6.16 Demonstrate skill in compiling, linking, and debugging
 
 ----
 
-6.16 _____
-========================================
+6.16 Demonstrate skill in compiling, linking, and debugging
+===========================================================
 
 ----
 
 Objectives
 ========================================
 
-* <OBJECTIVE_1>
-* <OBJECTIVE_2>
-* <OBJECTIVE_3>
+* Execute a program in a debugger to perform general debugging actions
+* Create a program using the compilation and linking process
+* Compile position-independent code using a cross-compiler
 
 ----
 
