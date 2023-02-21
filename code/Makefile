@@ -20,6 +20,7 @@ SO_FLAGS = -shared -Wl,-soname,$(SO_FILE).$(SO_VER_MAJ)
 SO_EXT = .so
 OBJ_EXT = .o
 SRC_EXT = .c
+HDR_EXT = .h
 OBJECTS = harklemem$(OBJ_EXT)
 SO_VER_MAJ = 1
 SO_VER_MIN = 0
@@ -38,6 +39,7 @@ all:
 %$(SO_EXT): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(DST)/$@ $(DST)/$^ $(SO_FLAGS)
 	cp $(DST)/$@ $(DST)/$(SO_FILE).$(SO_VER_MAJ).$(SO_VER_MIN).$(SO_VER_MIC)
+	sudo cp $(INC)/$(LIB_NAME)$(HDR_EXT) /usr/include/
 	sudo cp $(DST)/$(SO_FILE).$(SO_VER_MAJ).$(SO_VER_MIN).$(SO_VER_MIC) /lib
 	sudo ln -f -s /lib/$(SO_FILE).$(SO_VER_MAJ).$(SO_VER_MIN).$(SO_VER_MIC) /lib/$(SO_FILE).$(SO_VER_MAJ)
 	sudo ln -f -s /lib/$(SO_FILE).$(SO_VER_MAJ) /lib/$(SO_FILE)
