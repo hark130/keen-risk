@@ -1,6 +1,10 @@
 /*
  * USAGE:
- *      
+ *  size_t buffLen = 256;  // How many bytes do you need?
+ *  void *hmem = give_me_memory(buffLen);  // Get some memory
+ *  strncpy(hmem, "Hello, world!", buffLen - 1);  // Do something to it
+ *  printf("%s is stored at %p\n", (char*)hmem, hmem);  // Use it
+ *  take_my_memory(&hmem, buffLen);  // Zeroize, free, and NULLify hmem
  */
 
 #ifndef _HARKLEMEM_
