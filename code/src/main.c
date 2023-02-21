@@ -1,4 +1,5 @@
 #include "harklemem.h"	// give_me_memory(), take_my_memory()
+#include <stdio.h>		// printf()
 #include <string.h>		// strncpy()
 
 
@@ -10,13 +11,13 @@ int main(void)
 	void *hmem = NULL;     // Harklemem pointer
 
 	// DO SOMETHING
-	hmem = give_me_memory(256);
+	hmem = give_me_memory(buffLen);
 	if (hmem != NULL)
 	{
 		strncpy(hmem, "Hello, world!", buffLen - 1);
-		printf("%s is stored at 0x%p\n", hmem, hmem);
-		take_my_memory(&hmem);
-		printf("Now my pointer is 0x%p\n", hmem);
+		printf("%s is stored at %p\n", (char*)hmem, hmem);
+		take_my_memory(&hmem, buffLen);
+		printf("Now my pointer is %p\n", hmem);
 	}
 	else
 	{
