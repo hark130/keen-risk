@@ -5,6 +5,7 @@ CALL_MAKE = @$(MAKE) $(MAKE_ARGS)
 ### COMPILER VARIABLES ###
 CC = gcc
 CFLAGS = -fpic
+AFLAGS = -fsanitize=address -g $(CFLAGS)
 
 ### PROJECT VARIABLES ###
 SRC = src
@@ -24,21 +25,22 @@ SO_VER_MAJ = 1
 SO_VER_MIN = 0
 SO_VER_MIC = 0
 
-.PHONY: all 6-15-3
+.PHONY: all 6-15-3 clean
 
 all:
-	@echo "all"
+	$(CALL_MAKE) clean
 	$(CALL_MAKE) 6-15-3
 
 6-15-3: $(SO_NAME)$(SO_EXT)
-	@echo "6-15-3"
-# 	$(CALL_MAKE) $(SO_NAME)$(SO_EXT)
-
-# %$(SO_EXT):
-# 	@echo "HERE"
+	$(CC) $(CFLAGS) $(SRC)/main.c -o $(DST)/6-15-3.bin -lharklemem -I $(INC) -L $(DST)
+	$(CC) $(AFLAGS) $(SRC)/main.c -o $(DST)/6-15-3_asan.bin -lharklemem -I $(INC) -L $(DST)
 
 %$(SO_EXT): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(DST)/$@ $(DST)/$^ $(SO_FLAGS)
+	cp $(DST)/$@ $(DST)/$(SO_FILE).$(SO_VER_MAJ).$(SO_VER_MIN).$(SO_VER_MIC)
+	sudo cp $(DST)/$(SO_FILE).$(SO_VER_MAJ).$(SO_VER_MIN).$(SO_VER_MIC) /lib
+	sudo ln -f -s /lib/$(SO_FILE).$(SO_VER_MAJ).$(SO_VER_MIN).$(SO_VER_MIC) /lib/$(SO_FILE).$(SO_VER_MAJ)
+	sudo ln -f -s /lib/$(SO_FILE).$(SO_VER_MAJ) /lib/$(SO_FILE)
 
 %$(OBJ_EXT): %$(SRC_EXT)
 	$(CC) $(CFLAGS) -c $(SRC)/$^ -o $(DST)/$@ -I $(INC)
@@ -46,3 +48,8 @@ all:
 %$(SRC_EXT):
 	@echo "Verifying $(SRC)/$@"
 	@if ! [ -f $(SRC)/$@ ] ; then echo "Unable to locate the $(SRC)/$@ file" >&2 && exit 2 ; fi
+
+clean:
+	@$(RM) $(DST)/*$(OBJ_EXT)
+	@$(RM) $(DST)/*$(SO_EXT)
+	@$(RM) $(DST)/*.bin
