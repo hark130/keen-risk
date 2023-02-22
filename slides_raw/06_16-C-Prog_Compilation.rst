@@ -123,17 +123,20 @@ Linux
 	# Preprocesses a Linux header and print the value of a macro
 	printf INT_MAX | gcc -include limits.h -E - | tail -n 1
 
-Windows
+Windows*
 
 .. code:: batch
 
-	# As one example...
+	# Preprocesses foo.c into foo.i
+	cl /P foo.c
+
+\* Must be done from the Visual Studio "Developer Command Prompt"
 
 .. note::
 
 	"How can I do it?"
 
-	<PRESENTER_NOTE>
+	Microsoft Visual Studio compiler options can be found here: https://learn.microsoft.com/en-us/cpp/build/reference/compiling-a-c-cpp-program?view=msvc-170
 
 ----
 
@@ -149,15 +152,18 @@ Linux
 	# gcc -S stops after compilation
 	gcc -S -o foo.s foo.c
 
-Windows
+Windows*
 
 .. code:: batch
 
-	# As one example...
+	# Compiles foo.c into foo.obj
+	cl /c foo.c
+
+\* Must be done from the Visual Studio "Developer Command Prompt"
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Microsoft Visual Studio compiler options can be found here: https://learn.microsoft.com/en-us/cpp/build/reference/compiling-a-c-cpp-program?view=msvc-170
 
 ----
 
@@ -177,11 +183,14 @@ Windows
 
 .. code:: batch
 
-	# As one example...
+	# Assembles foo.c into foo.asm, among other things...
+	cl /Fa foo.c
+
+\* Must be done from the Visual Studio "Developer Command Prompt"
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Microsoft Visual Studio compiler options can be found here: https://learn.microsoft.com/en-us/cpp/build/reference/compiling-a-c-cpp-program?view=msvc-170
 
 ----
 
@@ -200,15 +209,18 @@ Linux
 	# TO DO: DON'T DO NOW... gcc linking command example
 	# TO DO: DON'T DO NOW... ld command example
 
-Windows
+Windows*
 
 .. code:: batch
 
-	# As one example...
+	# Links object code into a binary
+	link foo.obj bar.obj /out:foo.exe
+
+\* Must be done from the Visual Studio "Developer Command Prompt"
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Microsoft Visual Studio linker details can be found here: https://learn.microsoft.com/en-us/cpp/build/reference/linking?view=msvc-170
 
 ----
 
