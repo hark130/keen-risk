@@ -28,7 +28,6 @@ Overview
 * Debugging
 * Position Independent Code (PIC)
 * Cross-Compilation
-* Cross Compiling PIC
 * Resources
 * Student Labs
 
@@ -467,16 +466,252 @@ Now harangue your instructor to do it!
 
 ----
 
-<SECTION_3_3>
+PIC
 ========================================
 
-* <STUDENTS_SEE_THIS>
+* What?
+* Why?
+* How?
 
 .. note::
 
-	<PRESENTER_NOTE>
+	What is PIC, why would code need to be position independent, and how do I make PIC?
 
 ----
+
+PIC
+========================================
+
+What is PIC?
+
+* Code that can execute from memory regardless of its address
+* This code uses relative addresses instead of absolute addresses
+* Absolute address: The actual memory location (e.g., 0x55cbf8f882a0)
+* Relative address: A memory location measured by its distance from another address (e.g., rbp-0x8)
+
+.. note::
+
+	Another way to define relative address using common synonyms for these terms:
+
+	Relative address: A memory location measured by its offset from a base address
+
+	Relative addressing is commonly used in Assembly programming to access the stack but PIC uses the "beginning" of a procedure call/stub/function/etc as the "base address"
+
+----
+
+PIC
+========================================
+
+Why would I ever do that?
+
+* Shared objects
+* Shellcode
+
+.. note::
+
+	Reference the "shared object" defintion from 6-15
+
+	Shellcode is defined by Wikipedia as "a small piece of code used as the payload in the exploitation of a software vulnerability".  Maybe shellcode doesn't *always* have to be PIC, but more often than not it must be.
+
+	In case anyone asks, https://community.broadcom.com/symantecenterprise/viewdocument/dynamic-linking-in-linux-and-window-1?CommunityKey=1ecf5f55-9545-44d6-b0f4-4e4a7f5f5e68&tab=librarydocuments says:
+
+	"Win32 DLLs are not position independent."  DLLs have a "preferred base address".
+
+----
+
+PIC
+========================================
+
+Sounds great, but how do I do it?
+
+* Let the compiler handle it
+* Write position independent assembly
+
+.. note::
+
+	Since this is C Programming and not "How to write position independent assembly code", we're going to skip the second one.
+
+----
+
+PIC
+========================================
+
+GCC, take the wheel...
+
+* -fpic - generates PIC (if supported)*
+* -fPIC - avoids any architecture-specific size limits
+
+NOTES:
+    * Try -fpic first.
+    * Position-independent code requires special support, and therefore works only on certain architectures.
+
+\* If you get an error message from the linker indicating that -fpic does not work, recompile with -fPIC instead.
+
+.. code:: bash
+
+	gcc -fpic -o my_first.so my_first_so.c -shared -Wl,-soname,libmyfirst.so.1
+
+.. note::
+
+	Why would -fpic not work?  The full quote from the gcc man page:
+
+	If the GOT size for the linked executable exceeds a machine-specific maximum size, you get an error message from the linker indicating that -fpic does not work; in that case, recompile with -fPIC instead.  (These maximums are 8k on the SPARC, 28k on AArch64 and 32k on the m68k and RS/6000.  The x86 has no such limit.)
+
+	It was truncated for the slide because an explanation of the Global Offset Table (GOT) is required to understand the full answer and that's outside the scope of these objectives.
+
+----
+
+PIC
+========================================
+
+Let's make a shared object!
+
+1. Write a library (source code with a header file)
+2. Compile a shared object
+3. Copy the header to the "include" directory
+4. Copy the shared object to the "shared library" directory
+5. Create the necessary symbolic links
+
+.. code:: bash
+
+	gcc -fpic -o dist/libharklemem.so.3.1.8 src/harklemem.c -shared -Wl,-soname,libharklemem.so.3 -I include
+	cp include/harklemem.h /usr/include/
+	cp dist/libharklemem.so.3.1.8 /lib
+	ln -f -s /lib/libharklemem.so.3.1.8 /lib/libharklemem.so.3
+	ln -f -s /lib/libharklemem.so.3 /lib/libharklemem.so
+
+Now you're linking with portals!
+
+.. code:: bash
+
+	gcc -o portals.bin portals.c -lharklemem
+
+.. note::
+
+	The header file should, at a minimum, have function prototypes that your "users" can include, much like every libc header you've ever "#include".
+	Copy the header file to the system's include directory
+
+	Standard naming convention for Linux shared objects is lib<soname>.so.<MAJOR_VERSION>.<MINOR_VERSION>.<MICRO_VERSION>
+	In the example here, "harklemem" is the <soname>, the major version is 3, the minor version is 1, and the micro version is 8 (IAW semantic versioning).
+	-fpic generates position independent code
+	-shared produces a shared object which can then be linked with other objects to form an executable.
+	-Wl passes options to the linker
+	-soname,libharklemem.so.3 (an ld argument, see: man ld) sets the internal DT_SONAME field to the specified name, which will help the dynamic linker
+	-I specifies an include directory
+
+	Traditionally, Linux shared objects are "installed" by creating a series of symbolic links as a form of indirection for the dynamic linker:
+	1. Copying the shared object to a library directory (in this case, /lib)
+	2. Creating a "major version" symbolic link to the new shared object
+	3. Then, creating a "general" symbolic link to the "major version" symbolic link
+
+	The final -lharklemem is a gcc option to link with the specified library.  In this case, we're linking with harklemem.  In this example, portals.c has a #include <harklemem.h>.
+
+----
+
+PIC
+========================================
+
+* What is PIC?
+* Why would anyone ever generate PIC?
+* How does one generate PIC?
+* What are the steps to create and install a shared object?
+
+.. note::
+
+	Time to summarize this section.  Here are the answers:
+
+	1. Code that executes using relative addressing so that it works regardless of where its loaded in memory.
+	2. Shared objects and shellcode
+	3. Let the compiler do it!
+	4. Write a library, compile a shared object, copy the header to the "include" directory, copy the shared object to the "shared library" directory, and create the necessary symbolic links
+
+----
+
+Cross-Compilation
+========================================
+
+* What?
+* Why?
+* How?
+
+.. note::
+
+	What is Cross-Compilation, why would code need to be cross-compiled, and how do I cross-compile code?
+
+----
+
+Cross-Compilation
+========================================
+
+Cross-compiwhat?
+
+* Native Compiler: A compiler that compiles for the host operating system
+* Cross Compiler: A compiler that compiles for an environment other than the one running the compiler
+* Cross-compile for different non-native environments:
+    * kernel: Linux 6.0.12, Linux 6.1.12, Solaris 5.11
+    * library ABIs: libc, glibc, uClibc, various Windows CRT
+    * endianness: arm vs armeb
+    * word size: running 32-bit x86 mode on a x86-64 processor
+
+See: http://www.landley.net/writing/embedded/cross.html
+
+.. note::
+
+	In short, cross-compilation is when you compile code for a different system.
+
+	C RunTime (CRT): Different versions of Windows OSs use different versions of the Windows CRT (AKA the C standard library to compile against)
+
+	Regarding endianness... Apparently some architectures have configurable endianness.  Who would have thought?!
+
+----
+
+Cross-Compilation
+========================================
+
+But why tho?
+
+* Speed: Many non-standard native environments are slow
+* Capability: Target platforms aren't always well resourced
+* Availability: The hardware may not be capable or running a build environment
+* Flexibility: No need polluting a target environment with software only needed for compilation
+* Convenience: Scale your build environments
+
+See: http://www.landley.net/writing/embedded/cross.html
+
+.. note::
+
+	EXAMPLES:
+
+	Speed: Most special-purpose embedded hardware is designed for low cost and low power consumption, not high performance.
+
+	Capability: The target platform usually doesn't have gigabytes of memory and hundreds of gigabytes of disk space the way a desktop does
+
+	Availability: Ever try to install Ubuntu 22.04 on a Siemens ACUSON ultrasound system?
+
+	Flexibility: Cross compiling focuses on building the target packages to be deployed, not spending time getting build-only prerequisites working on the target system.
+
+	Convenience: Sometimes, you only have one test environment.  If you can cross-compile in your development environment, the limited test environment is less of an issue.
+
+----
+
+
+Cross-Compilation
+========================================
+
+Ok, fine.  How do I do it?
+
+Again, make the compiler do it!
+
+* GCC
+* CMake
+* GNU Make
+
+.. note::
+
+	What is Cross-Compilation, why would code need to be cross-compiled, and how do I cross-compile code?
+
+----
+
 
 RESOURCES
 ========================================
@@ -484,13 +719,17 @@ RESOURCES
 * GNU Debugger (GDB)
     * Cheat sheet (essentials): https://darkdust.net/files/GDB%20Cheat%20Sheet.pdf
     * Cheat sheet (long): https://gist.github.com/rkubik/b96c23bd8ed58333de37f2b8cd052c30
+    * METALLIC SHADOWS (MESH): https://gitlab.com/JasonCoke/metallic_shadows/-/blob/master/gdb_tutor/gdb-tutor.txt
 * GNU Compiler Collection (GCC) Online Manuals: https://gcc.gnu.org/onlinedocs/
 * GCC Man Page: https://man7.org/linux/man-pages/man1/gcc.1.html
 * 39 IOS IDF Course Material: https://39ios-idf.90cos.cdl.af.mil/4_c_module/08_c_compiler/index.html
+* Semantic Versioning: https://semver.org/
 
 .. note::
 
 	It seems like every other safe-for-work webpage describes the C Programming compilation stages: https://lmgtfy.app/?q=c+programming+compilation+stages
+
+	MESH is a GDB tutor
 
 ----
 
@@ -499,8 +738,7 @@ STUDENT LABS
 
 * 6-16-1: Manually walk your source code through the compilation stages and view the results of each stage.
 * 6-16-2: What's wrong with the instructor's code?
-* 6-16-3: Create a Linux library
-* <SECTION_3>
+* 6-16-3: Create and install a Linux library
 
 ----
 
@@ -514,8 +752,6 @@ STUDENT LABS
 * Compile it and view the results
 * Assemble it and view the results
 * Link it and run it
-
-* 6-16-2: What's wrong with the instructor's code?
 
 ----
 
@@ -534,18 +770,39 @@ STUDENT LABS
 
 ----
 
+STUDENT LABS
+========================================
+
+6-16-3: Create and install a Linux shared library
+
+1. Write a useful library (source code with a header file)
+2. Compile a shared object
+3. Copy the header to the "include" directory
+4. Copy the shared object to the "shared library" directory
+5. Create the necessary symbolic links
+6. Create a binary that utilizes that shared library
+
+.. note::
+
+	What is "useful"?  Write some code you'd like to reuse in the future.
+
+----
+
 Summary
 ========================================
 
-* <SECTION_1>
-* <SECTION_2>
-* <SECTION_3>
+* C Compilation Stages
+* Debugging
+* Position Independent Code (PIC)
+* Cross-Compilation
+* Resources
+* Student Labs
 
 ----
 
 Objectives
 ========================================
 
-* <OBJECTIVE_1>
-* <OBJECTIVE_2>
-* <OBJECTIVE_3>
+* Execute a program in a debugger to perform general debugging actions
+* Create a program using the compilation and linking process
+* Compile position-independent code using a cross-compiler
