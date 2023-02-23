@@ -178,7 +178,7 @@ Linux
 	# gcc -c stops after assembly
 	gcc -c -o foo.o foo.c
 
-Windows
+Windows*
 
 .. code:: batch
 
@@ -227,13 +227,16 @@ DEBUGGING
 ========================================
 
 Crashing C code with a SEG FAULT is like stubbing your toe in the dark...
+
 It's going to happen if you're not careful.
 
 So you've written bad code.  What do you do now?
 
 1. Debugging Statements
-1. (Memory) Debugger
-1. (Interactive) Debugger
+
+2. (Memory) Debugger
+
+3. (Interactive) Debugger
 
 .. note::
 
