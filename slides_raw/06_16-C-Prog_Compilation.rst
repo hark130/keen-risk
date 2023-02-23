@@ -706,7 +706,6 @@ See: http://www.landley.net/writing/embedded/cross.html
 
 ----
 
-
 Cross-Compilation
 ========================================
 
@@ -723,7 +722,6 @@ Again, make the compiler do it!
 	What is Cross-Compilation, why would code need to be cross-compiled, and how do I cross-compile code?
 
 ----
-
 
 RESOURCES
 ========================================
