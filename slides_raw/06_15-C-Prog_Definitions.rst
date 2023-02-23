@@ -772,7 +772,7 @@ CHECKLIST
 ----
 
 RESOURCES
-=========================
+========================================
 
 * GNU Compiler Collection (GCC) Online Manuals: https://gcc.gnu.org/onlinedocs/
 * GCC Man Page: https://man7.org/linux/man-pages/man1/gcc.1.html
