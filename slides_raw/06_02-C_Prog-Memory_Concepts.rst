@@ -255,6 +255,8 @@ Memory Map of a Linux Process
 
 	However, this layout may be favorable for assembly programmers.  It's likely easier to think about the stack from this orientation.
 
+	It's not important for C programmers, but mention the fact that the "stack grows down" and the "heap grows up" (as they say).
+
 	Image lifted from: https://courses.engr.illinois.edu/cs225/fa2022/resources/stack-heap/
 
 ----
