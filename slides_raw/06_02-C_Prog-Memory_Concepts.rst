@@ -378,6 +378,7 @@ RESOURCES
 * Understanding the Memory Layout of Linux Executables: https://gist.github.com/CMCDragonkai/10ab53654b2aa6ce55c11cfc5b2432a4
 * Stack vs Heap: https://courses.engr.illinois.edu/cs225/fa2022/resources/stack-heap/
 * Dynamic, automatic, and static memory: https://fractallambda.com/2014/10/30/Dynamic-Static-and-Automatic-memory.html
+* 39 IOS Training: https://39ios-idf.90cos.cdl.af.mil/4_c_module/12_memory_management/index.html
 
 .. note::
 
