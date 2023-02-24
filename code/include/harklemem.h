@@ -13,10 +13,10 @@
 #include <stddef.h>     // size_t
 
 /*
- *  Purpose - Allocate a buffer of size length
+ *  Purpose - Allocate a buffer of size length.
  *  Input
- *      length - The length of what you want to store
- *  Ouput - Heap-allocated, zeroized, buffer of size length
+ *      length - The length of what you want to store.
+ *  Ouput - Heap-allocated, zeroized, buffer of size length.
  *  Notes:
  *      It is the caller's responsibility to free the void* returned by this function.
  *      Prints errors to stderr.
@@ -27,9 +27,9 @@ void *give_me_memory(size_t length);
  *  Purpose - This function represents an attempt at wrapping memset in such a way that it will
  *      not get optimized out when memset is used on a pointer about to be free()d.
  *  Input
- *       s - Memory area to memset
- *       c - Constant byte to set the memory area "s" to
- *       n - Number of bytes to set
+ *       s - Memory area to memset.
+ *       c - Constant byte to set the memory area "s" to.
+ *       n - Number of bytes to set.
  *  Output - A pointer to the memory area "s" on success.
  *  Notes:
  *      Prints errors to stderr.
@@ -40,6 +40,7 @@ void *harkleset(void *s, int c, size_t n);
  *  Purpose - Zeroize, free, and NULLify a heap-allocated buffer of size length found at oldMem.
  *  Input
  *      oldMem - A pointer to a heap-allocated pointer.
+ *      length - The size of the original heap-allocated buffer.
  *  Output - None.
  *  Notes:
  *      Prints errors to stderr.
