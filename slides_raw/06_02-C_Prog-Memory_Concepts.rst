@@ -45,6 +45,7 @@ Memory Concepts
 * Binary Sections
 * Memory Regions
 * Pros/Cons
+* Which region should I use?
 * Storage Classes
 
 .. note::
@@ -117,21 +118,81 @@ Memory Concepts - Memory Regions
 Memory Concepts - Pros/Cons
 ========================================
 
-Each memory storage class has advantages and disadvantages
+Each memory region has advantages and disadvantages
 
 +---------------+-------------------------------------+----------------------------------------------------+
 | REGION        | PROS                                | CONS                                               |
 +---------------+-------------------------------------+----------------------------------------------------+
 | .data         | global/static variables useful      | global variables are dangerous                     |
 +---------------+-------------------------------------+----------------------------------------------------+
-| heap          | Accessed globally; can be resized   | Slower; requires bookkeeping; requests fail; leaky |
+| heap          | Accessible globally; can be resized | Slower; requires bookkeeping; requests fail; leaky |
 +---------------+-------------------------------------+----------------------------------------------------+
 | stack         | Fast; auto-managed                  | Limited; fixed size; stored in contiguous memory   |
 +---------------+-------------------------------------+----------------------------------------------------+
 
 .. note::
 
-	<PRESENTER_NOTE>
+	.data
+
+	If anyone asks why global and/or static variables are useful...
+
+	global variables
+
+	PROS: good for program/library-wide constants; easy inter-process communication (IPC)
+
+	CONS: more difficult to debug; concurrency is an issue
+
+	static variables
+
+	PROS: preserve their value across function calls
+
+
+	heap
+
+	Passing around pointers to heap memory is appropriate but mismanagement of heap memory can lead to BUGs.
+	Also, preferred for storing data of variable size or large amounts of data.
+
+
+	stack
+
+	As a C programmer, you need not concern yourself with the stack.  Your default memory region for storing data
+	should be "local varaibles", which are stored here.  No management required.  However, the fact that its
+	stored in continguous memory makes it vulnerable to buffer overflow attacks.
+
+----
+
+Memory Concepts - Which Should I Use?
+========================================
+
+When should I use the _____ memory region?
+
+* .data
+    * Don't!
+    * constants
+    * inter-process communication (IPC)
+* heap
+    * large data
+    * data size unknown at compile-time
+    * preserve data across function calls
+    * data that needs to be resized at run-time
+* stack
+    * default
+    * small data
+    * short-lived data
+
+.. note::
+
+	.data
+
+	The default stance should be "don't use global or static variables".  If you *need* one, you'll know it.
+
+	heap
+
+	Variable sized data or large data.
+
+	stack
+
+	Default to locally scoped variables.
 
 ----
 
@@ -161,21 +222,23 @@ Memory Concepts
 
 Put it all together...
 
-+---------------+---------------+----------------------------+-------------------------------------+-------------------------------------+
-| REGION        | STORAGE CLASS | HOW?                       | PROS                                | CONS                                |
-+---------------+---------------+----------------------------+-------------------------------------+-------------------------------------+
-| .data         | static        | global && static variables | TD: DDN... get from 39 IOS training | TD: DDN... get from 39 IOS training |
-+---------------+---------------+----------------------------+-------------------------------------+-------------------------------------+
-| heap          | dynamic       | ask the OS nicely          | TD: DDN... get from 39 IOS training | TD: DDN... get from 39 IOS training |
-+---------------+---------------+----------------------------+-------------------------------------+-------------------------------------+
-| stack         | automatic     | local variables*           | TD: DDN... get from 39 IOS training | TD: DDN... get from 39 IOS training |
-+---------------+---------------+----------------------------+-------------------------------------+-------------------------------------+
++---------------+---------------+----------------------------+-------------------------------------+----------------------------------------------------+
+| REGION        | STORAGE CLASS | HOW?                       | PROS                                | CONS                                               |
++---------------+---------------+----------------------------+-------------------------------------+----------------------------------------------------+
+| .data         | static        | global && static variables | global/static variables useful      | globals are dangerous                              |
++---------------+---------------+----------------------------+-------------------------------------+----------------------------------------------------+
+| heap          | dynamic       | ask the OS nicely          | Accessible globally; can be resized | Slower; requires bookkeeping; requests fail; leaky |
++---------------+---------------+----------------------------+-------------------------------------+----------------------------------------------------+
+| stack         | automatic     | local variables*           | Fast; auto-managed                  | Limited; fixed size; stored in contiguous memory   |
++---------------+---------------+----------------------------+-------------------------------------+----------------------------------------------------+
 
 \* Some calling conventions pass parameters on the stack.  Also, lower level languages have direct access to the stack.
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Time to explicitly associate the storage classes with the memory regions.
+
+	Now's the time to discuss "In the context of automatic vs dynamic allocation, explain how those concepts are related to the implementation of a stack and heap in a C program"
 
 ----
 
@@ -276,6 +339,18 @@ During execution...
 
 	For more on /proc/<PID>/maps see: https://www.baeldung.com/linux/proc-id-maps
 
+	address start – address end is the start and end address of that mapping. Note that the whole output is sorted based on those addresses, from low to high.
+
+    mode (permissions) specifies which actions are available on this mapping and if it’s private or shared.
+
+    offset is the start offset in bytes within the file that is mapped. This only makes sense for file mappings. For instance, stack or heap mappings are examples of mappings that aren’t files, and in those cases, the offset is 0.
+
+    major:minor ids represent the device that the mapped file lives in the form of a major and minor id. For non-file mappings, this column shows 00:00.
+
+    inode id of the mapped file (again, that’s only valid for file mappings). Inodes are data structures that contain the core filesystem-related metadata. When it comes to non-file mappings, this field is set to 0.
+
+    The file path of the file for that mapping. In the event that this is not a file mapping, that field is empty.
+
 ----
 
 :class: flex-image center-image
@@ -297,7 +372,7 @@ Let's find the variables in the ELF binary
 
 .. image:: images/06-02_001_04-text_section-cropped.png
 
-This isn't Assembly Programming!  What does this mean?
+This isn't C code!  What is this the meaning of this?
 
 .. code:: nasm
 
@@ -392,9 +467,9 @@ Summary
 * Memory Concepts
 	* Binary Sections
 	* Memory Regions
-	* Storage Classes
-	* What goes where?
 	* Pros/Cons
+	* Which region should I use?
+	* Storage Classes
 * Memory Map of a Linux Process
 * Demonstration
 * Resources
@@ -415,7 +490,7 @@ Summary
 
 	Q: "What is an advantage of storing advantage on the stack?"  A: speed
 
-	Q: "When should you consider storing data on the heap instead of the stack?"  A: Large amounts of data	
+	Q: "When should you consider storing data on the heap instead of the stack?"  A: Large amounts of data, size unknown at compile-time
 
 	Here's a question at a higher knowledge level they should be able to answer:
 
