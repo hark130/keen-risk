@@ -208,6 +208,8 @@ During execution...
 
 	cat /proc/`pidof owe_mem.bin`/maps
 
+<address start>-<address end>    <mode>    <offset>    <major id:minor id>    <inode id>    <file path>
+
 .. image:: images/06-02_001_02-proc_maps-cropped.png
 
 .. note::
@@ -275,14 +277,32 @@ This isn't Assembly Programming!  What does this mean?
 
 ----
 
-<SECTION_2_2>
+:class: flex-image center-image
+
+Memory Concepts - Demonstration
 ========================================
 
-* <STUDENTS_SEE_THIS>
+.. code:: bash
+
+	cat /proc/self/maps               # Upper Left
+	xxd `which cat` | grep "^000060"  # Left
+	readelf -S `which cat`            # Right
+
+.. image:: images/06-02_002-big_cat-cropped.png
 
 .. note::
 
-	<PRESENTER_NOTE>
+	THINGS TO POINT OUT TO THE STUDENTS:
+
+	Compare the offset of the mapping to the offset of the section headers
+
+	Compare the offset of the section headers to the xxd of the binary
+
+	The readelf output shows us the offset of the .DATA section is 0x8000.  The proc maps shows us a rw section of memory at offset 0x8000.  We've seen previous examples (owe_mem.bin) showing that was the .DATA mapping.
+
+	The readelf output shows us the offset of the .RODATA section is 0x6000.  The proc maps has a read-only section mapped at offset 0x6000.  The xxd output, starting at the binary's offset of 0x6000, shows us some obvious string literals.
+
+	The readelf output shows us the offset of the .TEXT section is 0x2690.  According to proc maps, that places it within the only memory segment allowed to "execute".
 
 ----
 
