@@ -44,9 +44,8 @@ Memory Concepts
 
 * Binary Sections
 * Memory Regions
-* Storage Classes
-* What goes where?
 * Pros/Cons
+* Storage Classes
 
 .. note::
 
@@ -91,8 +90,44 @@ Memory Concepts - Memory Regions
 ========================================
 
 * .data
+	* stores initialized global && static variables
+	* stored in the binary
+	* loaded into a "writeable" memory segment
 * heap
+	* stores whatever you want
+	* managed by the programmer
+	* ask the OS nicely to borrow some
+	* reclaimed when freed
 * stack
+	* stores local variables
+	* managed by the OS
+	* behavior dependent on OS
+	* reclaimed when process exits
+
+.. note::
+
+	heap "ask nicely for some" is the crux of 6-21
+
+	stack "behavior dependent on OS" (see: ABI from 6-15)
+
+----
+
+:class: split-table
+
+Memory Concepts - Pros/Cons
+========================================
+
+Each memory storage class has advantages and disadvantages
+
++---------------+-------------------------------------+----------------------------------------------------+
+| REGION        | PROS                                | CONS                                               |
++---------------+-------------------------------------+----------------------------------------------------+
+| .data         | global/static variables useful      | global variables are dangerous                     |
++---------------+-------------------------------------+----------------------------------------------------+
+| heap          | Accessed globally; can be resized   | Slower; requires bookkeeping; requests fail; leaky |
++---------------+-------------------------------------+----------------------------------------------------+
+| stack         | Fast; auto-managed                  | Limited; fixed size; stored in contiguous memory   |
++---------------+-------------------------------------+----------------------------------------------------+
 
 .. note::
 
@@ -103,13 +138,19 @@ Memory Concepts - Memory Regions
 Memory Concepts - Storage Classes
 ========================================
 
-* automatic
-* dynamic
-* static
+* automatic - managed by the OS at runtime
+* dynamic - allocated, managed, and freed by programmers at runtime
+* static - allocated at compile time
 
 .. note::
 
-	<PRESENTER_NOTE>
+	C programmers need not worry themselves about "automatic" memory.  Assembly programmers on the other hand...
+
+	Dynamic memory is the bread-and-butter of C Programming.
+
+	static memory exists in memory for the lifetime of the program
+
+	see: https://fractallambda.com/2014/10/30/Dynamic-Static-and-Automatic-memory.html
 
 ----
 
@@ -120,15 +161,15 @@ Memory Concepts
 
 Put it all together...
 
-+---------------+---------------+---------------------------+-------------------------------------+-------------------------------------+
-| REGION        | STORAGE CLASS | HOW?                      | PROS                                | CONS                                |
-+---------------+---------------+---------------------------+-------------------------------------+-------------------------------------+
-| .data         | static        | global & static variables | TD: DDN... get from 39 IOS training | TD: DDN... get from 39 IOS training |
-+---------------+---------------+---------------------------+-------------------------------------+-------------------------------------+
-| heap          | dynamic       | ask the OS nicely         | TD: DDN... get from 39 IOS training | TD: DDN... get from 39 IOS training |
-+---------------+---------------+---------------------------+-------------------------------------+-------------------------------------+
-| stack         | automatic     | local variables*          | TD: DDN... get from 39 IOS training | TD: DDN... get from 39 IOS training |
-+---------------+---------------+---------------------------+-------------------------------------+-------------------------------------+
++---------------+---------------+----------------------------+-------------------------------------+-------------------------------------+
+| REGION        | STORAGE CLASS | HOW?                       | PROS                                | CONS                                |
++---------------+---------------+----------------------------+-------------------------------------+-------------------------------------+
+| .data         | static        | global && static variables | TD: DDN... get from 39 IOS training | TD: DDN... get from 39 IOS training |
++---------------+---------------+----------------------------+-------------------------------------+-------------------------------------+
+| heap          | dynamic       | ask the OS nicely          | TD: DDN... get from 39 IOS training | TD: DDN... get from 39 IOS training |
++---------------+---------------+----------------------------+-------------------------------------+-------------------------------------+
+| stack         | automatic     | local variables*           | TD: DDN... get from 39 IOS training | TD: DDN... get from 39 IOS training |
++---------------+---------------+----------------------------+-------------------------------------+-------------------------------------+
 
 \* Some calling conventions pass parameters on the stack.  Also, lower level languages have direct access to the stack.
 
