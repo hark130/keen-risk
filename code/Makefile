@@ -30,7 +30,12 @@ SO_VER_MIC = 0
 
 all:
 	$(CALL_MAKE) clean
+	$(CALL_MAKE) 6-02-1
 	$(CALL_MAKE) 6-15-3
+
+6-02-1: $(SO_NAME)$(SO_EXT) owe_mem.c
+	@echo "One With Everything memory"
+	$(CC) $(SRC)/owe_mem.c -o $(DST)/owe_mem.bin -lharklemem
 
 6-15-3: $(SO_NAME)$(SO_EXT)
 	$(CC) $(CFLAGS) $(SRC)/main.c -o $(DST)/6-15-3.bin -lharklemem -I $(INC) -L $(DST)
