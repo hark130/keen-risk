@@ -34,6 +34,7 @@ Overview
 
 * Memory Concepts
 * Memory Map of a Linux Process
+* Demonstration
 * Resources
 
 ----
@@ -46,11 +47,10 @@ Memory Concepts
 * Storage Classes
 * What goes where?
 * Pros/Cons
-* Demonstration
 
 .. note::
 
-	SPOILER ALERT: This section will fill in a table as the section progresses
+	SPOILER ALERT: This section will be summarized by a table that "puts it all together"
 
 ----
 
@@ -138,7 +138,24 @@ Put it all together...
 
 ----
 
-Memory Concepts - Demonstration
+:class: center-image
+
+Memory Map of a Linux Process
+========================================
+
+.. image:: images/06-02_003_01-memory_layout-cropped.png
+
+.. note::
+
+	This orientation (high addresses --> low addresses) is commonly used to describe the memory layout.  It may not be good for this lesson though because readelf, objdump, proc maps, and xxd all display output from low address --> high address.  Be sure to highlight the difference in orientation for the students.
+
+	However, this layout may be favorable for assembly programmers.  It's likely easier to think about the stack from this orientation.
+
+	Image lifted from: https://courses.engr.illinois.edu/cs225/fa2022/resources/stack-heap/
+
+----
+
+Demonstration
 ========================================
 
 Consider this source code...
@@ -182,6 +199,8 @@ Consider this source code...
 
 .. note::
 
+	Knowledge-based discussion of a topic is fine, but visual presentation can aid in understanding.
+
 	Discuss the region and storage class for the following variables: dataGlobal, retVal, someNum.
 
 	BONUS POINTS to whomever remembers the section where string literals are stored.
@@ -192,7 +211,7 @@ Consider this source code...
 
 :class: flex-image center-image
 
-Memory Concepts - Demonstration
+Demonstration
 ========================================
 
 During execution...
@@ -214,13 +233,13 @@ During execution...
 
 .. note::
 
-	<PRESENTER_NOTE>
+	For more on /proc/<PID>/maps see: https://www.baeldung.com/linux/proc-id-maps
 
 ----
 
 :class: flex-image center-image
 
-Memory Concepts - Demonstration
+Demonstration
 ========================================
 
 Let's find the variables in the ELF binary
@@ -279,7 +298,7 @@ This isn't Assembly Programming!  What does this mean?
 
 :class: flex-image center-image
 
-Memory Concepts - Demonstration
+Demonstration
 ========================================
 
 .. code:: bash
@@ -288,7 +307,7 @@ Memory Concepts - Demonstration
 	xxd `which cat` | grep "^000060"  # Left
 	readelf -S `which cat`            # Right
 
-.. image:: images/06-02_002-big_cat-cropped.png
+.. image:: images/06-02_002_01-big_cat-cropped.png
 
 .. note::
 
@@ -304,43 +323,7 @@ Memory Concepts - Demonstration
 
 	The readelf output shows us the offset of the .TEXT section is 0x2690.  According to proc maps, that places it within the only memory segment allowed to "execute".
 
-----
-
-<SECTION_2_3>
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
-
-----
-
-<SECTION_3>
-========================================
-
-----
-
-<SECTION_3_1>
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
-
-----
-
-<SECTION_3_2>
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
+	For more on /proc/<PID>/maps see: https://www.baeldung.com/linux/proc-id-maps
 
 ----
 
@@ -350,25 +333,59 @@ RESOURCES
 * Binary Sections
     * ELF: https://lwn.net/Articles/531148/
     * PE: https://0xrick.github.io/win-internals/pe5/
+* Understanding /proc/<PID>/maps: https://www.baeldung.com/linux/proc-id-maps
+* Understanding the Memory Layout of Linux Executables: https://gist.github.com/CMCDragonkai/10ab53654b2aa6ce55c11cfc5b2432a4
+* Stack vs Heap: https://courses.engr.illinois.edu/cs225/fa2022/resources/stack-heap/
+* Dynamic, automatic, and static memory: https://fractallambda.com/2014/10/30/Dynamic-Static-and-Automatic-memory.html
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Good resources for additional learning opportunities
 
 ----
 
 Summary
 ========================================
 
-* <SECTION_1>
-* <SECTION_2>
-* <SECTION_3>
+* Memory Concepts
+	* Binary Sections
+	* Memory Regions
+	* Storage Classes
+	* What goes where?
+	* Pros/Cons
+* Memory Map of a Linux Process
+* Demonstration
+* Resources
+
+.. note::
+
+	Be sure to discuss, "In the context of automatic vs dynamic allocation, explain how those concepts are related to the implementation of a stack and heap in a C program" if you haven't already...
+
+	Take this opportunity to recap with questions like:
+
+	Q: "Which binary section holds executable code?"  A: ".text"
+
+	Q: "Which memory region stores local variables?"  A: "stack"
+
+	Q: "Which storage class is managed by programmers?"  A: "dynamic"
+
+	Q: "Which binary section holds string literals?"  A: ".rodata"
+
+	Q: "What is an advantage of storing advantage on the stack?"  A: speed
+
+	Q: "When should you consider storing data on the heap instead of the stack?"  A: Large amounts of data	
+
+	Here's a question at a higher knowledge level they should be able to answer:
+
+	Q: "Which binary section is also a memory region?"  A: ".data"	
 
 ----
 
 Objectives
 ========================================
 
-* <OBJECTIVE_1>
-* <OBJECTIVE_2>
-* <OBJECTIVE_3>
+* [Describe] Dynamically allocated memory
+* [Describe] Statically allocated memory
+* In the context of automatic vs dynamic allocation, explain how those concepts are related to the implementation of a stack and heap in a C program
+* [Describe the] Memory map of a Linux process
+* [Describe] Automatically allocated memory
