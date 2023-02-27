@@ -49,6 +49,10 @@ Dynamic Memory
 * Error Checking
 * Reduce Memory Leaks
 
+.. note::
+
+	Error Checking == Alwatys Be Checking (ABC)
+
 ----
 
 Dynamic Memory - C Library Allocation
@@ -64,7 +68,23 @@ see: https://linux.die.net/man/3/calloc
 
 .. note::
 
-	TO DO: DON'T DO NOW... Copy 39 IOS function comment blocks here
+	void \*malloc(size_t size);
+	// malloc() allocates size bytes and returns a pointer
+	// to the allocated memory. The memory is not initialized.
+
+	void free(void \*ptr);
+	// free() frees the memory space pointed to by ptr, which must
+	// have been returned by a previous call to malloc(), calloc() 
+	// or realloc().
+
+	void \*calloc(size_t nmemb, size_t size);
+	// calloc() allocates memory for an array of nmemb elements of
+	// size bytes each and returns a pointer to the allocated memory.
+	// The memory is set to zero.
+
+	void \*realloc(void \*ptr, size_t size);
+	// realloc() changes the size of the memory block pointed to by
+	// ptr to size bytes.
 
 ----
 
@@ -165,10 +185,10 @@ Valgrind
 
 ----
 
-<SECTION_2_1>
+Valgrind
 ========================================
 
-* <STUDENTS_SEE_THIS>
+* TO DO: DON'T DO NOW
 
 .. note::
 
@@ -176,52 +196,14 @@ Valgrind
 
 ----
 
-<SECTION_2_2>
+Demonstration
 ========================================
 
-* <STUDENTS_SEE_THIS>
+Time to brainstorm something for the instructor to code, utilize, and check with Valgrind.
 
 .. note::
 
-	<PRESENTER_NOTE>
-
-----
-
-<SECTION_2_3>
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
-
-----
-
-<SECTION_3>
-========================================
-
-----
-
-<SECTION_3_1>
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
-
-----
-
-<SECTION_3_2>
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
+	Maybe just focus on something simple.
 
 ----
 
@@ -229,19 +211,103 @@ Resources
 ========================================
 
 * Memory leaks in C: https://www.scaler.com/topics/memory-leak-in-c/
+* Valgrind: https://valgrind.org/
+
+----
+
+STUDENT LABS
+========================================
+
+* 6-21-1: Implement each of the standard memory allocation functions in a library
+* 6-21-2: Create a binary that utilizes each of the functions
+* 6-21-3: Check that binary with Valgrind
+
+----
+
+STUDENT LABS
+========================================
+
+6-21-1 Instructions
+
+If you're looking for implementation ideas:
+
+.. code:: c
+
+	/*
+	 *	Dynamically allocates a zeroized buffer to hold a C string of length str_len,
+	 *  	regardless of the actual string length of str_lit.
+	 *  Copies str_lit into the new array.
+	 *  Actual array is str_len + 1, make room for the nul terminator.
+	 *  Returns the pointer to the dynamic memory on success.  Prints error message and
+	 *  	returns NULL on bad input or error.
+	 */
+	char *make_a_string(constr char *str_lit, size_t str_len);
+
+	/*
+	 *	Reallocate more space for a dynamically allocated buffer, old_str, that is of
+	 *		size old_len.
+	 *  The old_str buffer needs to be of size new_len.
+	 *  Ensure that the new memory is zeroized.
+	 *	Returns the pointer to the dynamic memory, of size new_len + 1, on success.
+	 *		Prints error message, free()s old_str, and returns NULL on bad input or error.
+	 */
+	char *more_string_please(char *old_str, size_t old_len, size_t new_len);
+
+Be sure to Always Be Checking your input and respond to errors.
 
 .. note::
 
-	<PRESENTER_NOTE>
+	This isn't a great lab but at least it will get the students thinking about what they want to implement.
+
+----
+
+STUDENT LABS
+========================================
+
+6-21-2 Instructions
+
+Write a main() which utilizes all features defined in Student Lab 6-21-1.
+
+Compile and run that binary.
+
+.. note::
+
+	Manual testing with "normal" test cases is fine, but ensure the students test their code with
+	"error" input as well.  How else could they know they're properly responding to errors?
+
+----
+
+STUDENT LABS
+========================================
+
+6-21-3 Instructions
+
+Use Valgrind to check the binary from Student Lab 6-21-2 for BUGs.
+
+If Valgrind approves, verify Valgrind is working by temporarily adding a BUG for Valgrind to find.
+
+Valgrind *should* be able to find any of the following:
+
+* Unitialized memory use
+* Heap buffer overflow
+* Memory leak
+* Invalid memory access
+* Double free()
+
+.. note::
+
+	Ensure the Valgrind BUG is temporary.
 
 ----
 
 Summary
 ========================================
 
-* <SECTION_1>
-* <SECTION_2>
-* <SECTION_3>
+* Dynamic Memory
+* Valgrind
+* Demonstration
+* Resources
+* Student Labs
 
 ----
 
