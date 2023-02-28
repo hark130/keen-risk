@@ -205,8 +205,10 @@ Linux
 	# Just keep doing what you've been doing
 	gcc -o hello_world.bin hello_world.c
 	# -or-
-	# TO DO: DON'T DO NOW... gcc linking command example
-	# TO DO: DON'T DO NOW... ld command example
+	gcc -o portals.bin portals.o -lharklemem  # Use -l to pass commands to the linker
+	# -or-
+	# Manually invoke the GNU Linker: ld
+	# EXAMPLE: ld -o <output> /lib/crt0.o hello.o -lc
 
 Windows*
 
@@ -220,6 +222,10 @@ Windows*
 .. note::
 
 	Microsoft Visual Studio linker details can be found here: https://learn.microsoft.com/en-us/cpp/build/reference/linking?view=msvc-170
+
+	The GNU Linker is "finicky" (at best).  The example above is from the man page but even *that* example is missing something.
+	GCC uses the GNU Linker, under the hood, so it's generally better to invoke gcc instead of ld.  Use gcc's -l command line argument
+	to invoke linker arguments.
 
 ----
 
