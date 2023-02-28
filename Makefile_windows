@@ -29,7 +29,7 @@ endif
 NULL :=
 ifeq ($(OS),Windows_NT)
 	# It is nul in cmd.exe but we're using Powershell now so it's $null
-	NULL = \$null
+	NULL = $$null
 else
 $(error Wrong operating system.  This is $(OS).)
 endif
@@ -90,7 +90,7 @@ _validate:
 _validate_bourbon:
 	@echo "    Validating bourbon"
 	@# This check will short-circuit the rule before printing anything
-	@bourbon --version > $(NULL)
+	@$(shell bourbon --version > $(NULL))
 	@echo "        $(CHECK) $(shell bourbon --version)"
 
 _validate_hovercraft:
