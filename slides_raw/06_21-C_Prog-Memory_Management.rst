@@ -183,23 +183,66 @@ Dynamic Memory
 Valgrind
 ========================================
 
+* What?
+* How?
+* Why?
+
 ----
 
-Valgrind
+Valgrind What?
 ========================================
 
-* TO DO: DON'T DO NOW
+Valgrind is a flexible program for debugging and profiling Linux executables.
+
+.. code:: bash
+
+	man valgrind
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Highlight the fact that Valgrind is not "instrumented".  It operates on binaries, not source code (like ASAN or memwatch)
+
+----
+
+:class: flex-image center-image
+
+Valgrind How?
+========================================
+
+valgrind [valgrind-options] [your-program] [your-program-options]
+
+.. code:: bash
+
+	valgrind main.bin                    # Basic usage
+	valgrind --leak-check=full main.bin  # Verbatim from the objective
+
+.. image:: images/06-21_001_01-Valgrind-cropped.png
+
+.. note::
+
+	Highlight the fact that Valgrind is not "instrumented".  It operates on binaries, not source code (like ASAN or memwatch)
+
+----
+
+Why Valgrind?
+========================================
+
+* FOSS
+* Useful for evaluating binaries
+* 69% effective
+
+Effectiveness research documented at: https://github.com/hark130/Mind_Monitor
+
+.. note::
+
+	Someimes you won't have access to source code, symbols, etc.  Valgrind can help.
 
 ----
 
 Demonstration
 ========================================
 
-Time to brainstorm something for the instructor to code, utilize, and check with Valgrind.
+Time to brainstorm some memory management task for the instructor to code, utilize, and check with Valgrind.
 
 .. note::
 
@@ -314,6 +357,8 @@ Summary
 Objectives
 ========================================
 
-* <OBJECTIVE_1>
-* <OBJECTIVE_2>
-* <OBJECTIVE_3>
+* With attention given to implementation defined behavior, compare and contrast standard memory allocation functions (e.g ., malloc () calloc(), realloc ( ), and free ())
+* Demonstrate appropriate error checking when managing memory allocations
+* Describe programming techniques that reduce the occurrence of memory leaks (e.g ., behaviors that reinforce a clear ownership model)
+* Demonstrate effective use of Valgrind with --leak-check=full to identify memory leaks
+* Given code samples, identify and remove memory leaks
