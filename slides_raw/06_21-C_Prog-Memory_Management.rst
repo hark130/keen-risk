@@ -362,3 +362,9 @@ Objectives
 * Describe programming techniques that reduce the occurrence of memory leaks (e.g ., behaviors that reinforce a clear ownership model)
 * Demonstrate effective use of Valgrind with --leak-check=full to identify memory leaks
 * Given code samples, identify and remove memory leaks
+
+.. note::
+
+	Harkjective: Describe programming techniques that reduce the occurrence of common dynamic memory programming flaws.
+
+	Harkjective: Given code samples, identify and remove common dynamic memory programming flaws.
