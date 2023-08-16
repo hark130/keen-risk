@@ -277,22 +277,22 @@ If you're looking for implementation ideas:
 .. code:: c
 
 	/*
-	 *	Dynamically allocates a zeroized buffer to hold a C string of length str_len,
-	 *  	regardless of the actual string length of str_lit.
+	 *  Dynamically allocates a zeroized buffer to hold a C string of length str_len,
+	 *      regardless of the actual string length of str_lit.
 	 *  Copies str_lit into the new array.
 	 *  Actual array is str_len + 1, make room for the nul terminator.
 	 *  Returns the pointer to the dynamic memory on success.  Prints error message and
-	 *  	returns NULL on bad input or error.
+	 *      returns NULL on bad input or error.
 	 */
-	char *make_a_string(constr char *str_lit, size_t str_len);
+	char *make_a_string(const char *str_lit, size_t str_len);
 
 	/*
-	 *	Reallocate more space for a dynamically allocated buffer, old_str, that is of
-	 *		size old_len.
+	 *  Reallocate more space for a dynamically allocated buffer, old_str, that is of
+	 *	    size old_len.
 	 *  The old_str buffer needs to be of size new_len.
 	 *  Ensure that the new memory is zeroized.
-	 *	Returns the pointer to the dynamic memory, of size new_len + 1, on success.
-	 *		Prints error message, free()s old_str, and returns NULL on bad input or error.
+	 *  Returns the pointer to the dynamic memory, of size new_len + 1, on success.
+	 *      Prints error message, free()s old_str, and returns NULL on bad input or error.
 	 */
 	char *more_string_please(char *old_str, size_t old_len, size_t new_len);
 

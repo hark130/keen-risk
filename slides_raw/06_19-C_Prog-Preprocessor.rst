@@ -218,7 +218,7 @@ Evaluate constant integer expression
 	#elif SYSTEM == MSDOS
 		#define HDR "msdos.h"
 	#else
-		#define HDDR "default.h"
+		#define HDR "default.h"
 	#endif
 	#include HDR
 
