@@ -1,22 +1,22 @@
 # C Programming: Array Manipulate
 
 ## Tasks
-Write the function `arrayManipulate` that updates an array based on the [update rules](#update-rules) below. The 
-function must iterate over the array using an integer pointer and pointer arithmetic (required) to access each array 
+Write the function `arrayManipulate` that updates an array based on the [update rules](#update-rules) below. The
+function must iterate over the array using an integer pointer and pointer arithmetic (required) to access each array
 element.
 
 **PARAMETERS:**
 1. `arr`: a pointer to an array of integers
 2. `size`: an unsigned int indicating the size of the array
 
-**RETURN:** the middle element's content if `size` is odd, the sum of the two middle elements if `size` is even, or `-1` 
+**RETURN:** the middle element's content if `size` is odd, the sum of the two middle elements if `size` is even, or `-1`
 if `arr` is NULL or `size` is less than 2
 
 - Assume all values in the array are greater than or equal to zero.
 
 ### Update Rules
-Iterate through each element in the array. Check if the element's value applies to rule 1. If rule 1 does not apply 
-then check rule 2. If neither rule applies then do nothing. After each element has been updated in place, sort the 
+Iterate through each element in the array. Check if the element's value applies to rule 1. If rule 1 does not apply
+then check rule 2. If neither rule applies then do nothing. After each element has been updated in place, sort the
 array in ascending order using any sorting algorithm.
 
 - Rule 1: If the value in the element is an even number and greater than six (6), then square the contents of the
@@ -36,7 +36,7 @@ array in ascending order using any sorting algorithm.
 # C Programming: Binary/Hex String to Integer
 
 ## Tasks
-Implement a function `bin_hex_StrToInt32` that converts a string, containing either a hexadecimal or binary number, 
+Implement a function `bin_hex_StrToInt32` that converts a string, containing either a hexadecimal or binary number,
 into the string's integer value (base 10) and returns the converted value.
 
 **PARAMETERS:**
@@ -44,7 +44,7 @@ into the string's integer value (base 10) and returns the converted value.
 2. `out_num`: an int pointer that will contain the base 10 value of the hex or binary string;
 2. `mode`: an int representing the conversion mode: 1 is for binary and 2 is for hexadecimal.
 
-**RETURN:** `SUCCESS` if the function successfully converts `s` or `ERROR_INVALID` if the input 
+**RETURN:** `SUCCESS` if the function successfully converts `s` or `ERROR_INVALID` if the input
 parameter is null, empty, or an invalid mode
 
 - Assume a mode value other than 1 or 2 is invalid.
@@ -58,14 +58,14 @@ parameter is null, empty, or an invalid mode
 # C Programming: Buy Groceries
 
 ## Tasks
-Implement a function `buyGroceries` that calculates the cost of a grocery shopping list and returns the rounded total 
+Implement a function `buyGroceries` that calculates the cost of a grocery shopping list and returns the rounded total
 cost.
 
 **PARAMETERS:**
 1. `stuff`: an array of int containing paired values representing an item number and quantity respectively
 2. `size`: an int representing the number of elements in the `stuff` array
 
-**RETURN:** an int containing the cost of the groceries rounded to the nearest dollar; or ERROR_INVALID_PARAMETER for one of the 
+**RETURN:** an int containing the cost of the groceries rounded to the nearest dollar; or ERROR_INVALID_PARAMETER for one of the
 conditions below
 
 - Assume there will be no duplicate entries for an item number.
@@ -88,13 +88,13 @@ Consider the following array declaration.
 
 `int cart[] = {1, 5, 2, 3, 4, 4};`
 
-The `cart` array item/quantity pairs are as follows: 1/5, 2/3, and 4/4. So, item 1 (eggs) with a quantity of 5, item 2 
-(milk) with a quantity of 3, and item 4 (sugar) with a quantity of 4. This would total to 40.85 with a rounded 
-total of 41. The cost of each item is seen in the table above by referencing the item number. 
+The `cart` array item/quantity pairs are as follows: 1/5, 2/3, and 4/4. So, item 1 (eggs) with a quantity of 5, item 2
+(milk) with a quantity of 3, and item 4 (sugar) with a quantity of 4. This would total to 40.85 with a rounded
+total of 41. The cost of each item is seen in the table above by referencing the item number.
 
-The `buyGroceries` function will iterate the array and determine the total cost of groceries as a floating point 
-number based on the item number, quantity of each item, and cost of each item. If there is a quantity of 5 or more for 
-an item, a 5% discount is applied on those items; so, the above example would have a 5% discount applied to the eggs, 
+The `buyGroceries` function will iterate the array and determine the total cost of groceries as a floating point
+number based on the item number, quantity of each item, and cost of each item. If there is a quantity of 5 or more for
+an item, a 5% discount is applied on those items; so, the above example would have a 5% discount applied to the eggs,
 changing the total to 39.975 rounded to 40.
 
 Once the total is computed, use a math library function to round the value to an integer and return it.
@@ -114,8 +114,8 @@ Implement a function `palindrome` that determines whether a string is a palindro
 **RETURN:** an int containing `1` if `phrase` is a palindrome, `0` if it's not a palindrome, or `-1` if it's null
 
 ## Palindrome
-A palindrome is a text phrase (excluding punctuation, spaces, and capitalization/case) that reads the same backwards 
-or forwards. For example each of the following are palindromes: 
+A palindrome is a text phrase (excluding punctuation, spaces, and capitalization/case) that reads the same backwards
+or forwards. For example each of the following are palindromes:
 
 ```text
 Able was I ere I saw Elba.
@@ -132,7 +132,7 @@ Ed, I saw Harpo Marx ram Oprah W. aside.
 # C Programming: Check Hand
 
 ## Tasks
-Implement the function `checkHand` that determines the best type of hand in a set of poker cards and returns the best 
+Implement the function `checkHand` that determines the best type of hand in a set of poker cards and returns the best
 hand.
 
 **PARAMETERS:**
@@ -149,7 +149,7 @@ hand.
   2. four of a kind
   3. three of a kind
   4. nothing (worst)
-- Return one of the following strings based on analysis: `straight`, `four`, `three`, `nothing`, or `invalid`. 
+- Return one of the following strings based on analysis: `straight`, `four`, `three`, `nothing`, or `invalid`.
 - Return `invalid` if any of the values are < 1 or > 13 or if the input array is NULL.
 
 `char *checkHand(int hand[]);`
@@ -159,7 +159,7 @@ hand.
 # C Programming: Delete Word
 
 ## Tasks
-Implement a function `deleteWord` that deletes (in place) the first occurrence of `word` in the sentence and returns a 
+Implement a function `deleteWord` that deletes (in place) the first occurrence of `word` in the sentence and returns a
 status code when finished.
 
 **PARAMETERS:**
@@ -181,7 +181,7 @@ status code when finished.
 # C Programming: Make Sentence
 
 ## Tasks
-Implement the function `makeSentence` that splits up a long string of letters into words and returns a new string with the 
+Implement the function `makeSentence` that splits up a long string of letters into words and returns a new string with the
 words separated.
 
 **PARAMETERS:**
@@ -190,9 +190,9 @@ words separated.
 **RETURN:** A new char pointer with spaces in between each word with only the first word capitalized
 
 - Capital letters in the string of characters represents a start of a word.
-- The string returned should be a newly allocated array. 
+- The string returned should be a newly allocated array.
 - The string will represent a sentence and therefore needs to end with a period.
-- If the first word of the sentence begins with the words Who, What, Where, When, Why, or How the sentence should end 
+- If the first word of the sentence begins with the words Who, What, Where, When, Why, or How the sentence should end
   with a question mark.
 - Assume that the provided string contains no spaces.
 
@@ -209,7 +209,7 @@ WhereAreYou   should result in:  Where are you?
 # C Programming: Lo Shu Magic Square
 
 ## Tasks
-Implement the function `isMagicSquare` that determines whether an array contains a Lo Shu Magic Square and returns a 
+Implement the function `isMagicSquare` that determines whether an array contains a Lo Shu Magic Square and returns a
 status code.
 
 **PARAMETERS:**
@@ -239,22 +239,22 @@ The Lo Shu Magic Square has the following properties:
 # C Programming: Vigenere Cipher
 
 ## Tasks
-Implement the function `encryptVigenere` that encrypts a string of plain text with a key and returns the resulting 
+Implement the function `encryptVigenere` that encrypts a string of plain text with a key and returns the resulting
 encrypted string.
 
 **PARAMETERS:**
 1. `input`: A character pointer to the plaintext string to encrypt
 2. `key`: A character pointer to a string that will be used as the cipher's key
 
-**RETURN:** A character pointer to the allocated string containing the encrypted message, or `NULL` if `input` or `key` 
+**RETURN:** A character pointer to the allocated string containing the encrypted message, or `NULL` if `input` or `key`
 are `NULL` or zero length arrays
 
 - You must convert all uppercase letters to lowercase letters.
 - Use a Vigenere cipher, detailed below, to encrypt `input`.
 
 ### The Vigenere cipher
-The Vigenere cipher is a method of encrypting alphabetic text. To encrypt a message, a key is needed that is as long 
-as the message. Usually, the key is a ***repeating*** keyword. The encryption is done by adding a letter from the 
+The Vigenere cipher is a method of encrypting alphabetic text. To encrypt a message, a key is needed that is as long
+as the message. Usually, the key is a ***repeating*** keyword. The encryption is done by adding a letter from the
 plain text to a letter of the key. Each letter in the alphabet is given an index:
 
 - a = 0, b = 1, c = 2, d = 3, e = 4,........, w = 22, x = 23, y = 24, and z = 25
@@ -267,7 +267,7 @@ key:          de cep tivedecept ived eceptive
 ciphertext:   zi cvt wqngrzgvtw avzh cqyglmgj
 ```
 
-The cipher letter `z` is the result of `w` + `d`, which is 22 + 3 = 25. ***Note:*** that `y` + `e` = `c` because 
+The cipher letter `z` is the result of `w` + `d`, which is 22 + 3 = 25. ***Note:*** that `y` + `e` = `c` because
 (24 + 4) mod 26 = 2, which is c. In general, the encryption is done as follows:
 
 ```text
@@ -288,7 +288,7 @@ ENCRYPTION FORMULA: `ci = [pi + k(i mod m)] mod 26`
 Create two comparison functions, `ascending` and `descending` and a use them as arguments in a `sort` function.
 
 ### Task 1
-Create a function that compares two items to see which is larger and returns whether they are in ascending order. Then 
+Create a function that compares two items to see which is larger and returns whether they are in ascending order. Then
 create a function pointer `ascending` that points to this function.
 
 **PARAMETERS:**
@@ -300,7 +300,7 @@ create a function pointer `ascending` that points to this function.
 - You must declare your function pointer in the header file.
 
 ### Task 2
-Create a function that compares two items to see which is larger and returns whether they are in descending order. Then 
+Create a function that compares two items to see which is larger and returns whether they are in descending order. Then
 create a function pointer `descending` that points to this function.
 
 **PARAMETERS:**
@@ -313,7 +313,7 @@ create a function pointer `descending` that points to this function.
 - You must declare your function pointer in the header file.
 
 ### Task 3
-Create a function, called `sort()`, that will sort an array of integers according to a function pointer that is passed 
+Create a function, called `sort()`, that will sort an array of integers according to a function pointer that is passed
 into it as an input parameter.
 
 **PARAMETERS:**
@@ -323,13 +323,13 @@ into it as an input parameter.
 
 **RETURN:** void
 
-- The `sort` function should not have any return values and must modify the input array. 
-- The `sort` function will run the comparison function to determine the sorting order when comparing during the sort. 
-- You may use any sorting algorithm to sort the array, so long as it uses the aforementioned function pointers when 
+- The `sort` function should not have any return values and must modify the input array.
+- The `sort` function will run the comparison function to determine the sorting order when comparing during the sort.
+- You may use any sorting algorithm to sort the array, so long as it uses the aforementioned function pointers when
   comparing elements.
 - The function needs to be compatible with the passed in `ascending` and `descending` function pointers.
 - These function pointers must each point to their corresponding comparison function that sort can use.
-- When sort is passed ascending, the function will modify the data set to be in ascending order e.g. 1, 2, 3, 4, 5. 
+- When sort is passed ascending, the function will modify the data set to be in ascending order e.g. 1, 2, 3, 4, 5.
 - When passed descending, the data set will be modified in descending order e.g. 5, 4, 3, 2, 1.
 
 
