@@ -91,7 +91,6 @@ li {
 
 body {
 	@include background(radial-gradient(#eaeaea, #eaeaef));
-	font-size: modular-scale(2);
+	font-size: 2vmax;
 	color: #110c3a;
 }
-
