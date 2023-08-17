@@ -93,14 +93,15 @@ Data Structure Types
 ========================================
 
 * Linked List
-* Binary Tree
-* Stack
 * Queue
+* Tree
+* Stack
+* Hash Table
 * Graph
 
 ----
 
-Data Structure Types - Linked Lists
+Data Structure Types - Linked List
 ========================================
 
 What is it?
@@ -118,7 +119,7 @@ What is it?
 
 ----
 
-Data Structure Types - Linked Lists
+Data Structure Types - Linked List
 ========================================
 
 Common Operations
@@ -140,7 +141,7 @@ Real Examples
 
 ----
 
-Data Structure Types - Linked Lists
+Data Structure Types - Linked List
 ========================================
 
 Types
@@ -153,7 +154,7 @@ Types
 
 :class: flex-image center-image
 
-Data Structure Types - Linked Lists
+Data Structure Types - Linked List
 ========================================
 
 .. code:: c
@@ -182,7 +183,7 @@ Data Structure Types - Linked Lists
 
 :class: flex-image center-image
 
-Data Structure Types - Linked Lists
+Data Structure Types - Linked List
 ========================================
 
 .. code:: c
@@ -204,7 +205,7 @@ Data Structure Types - Linked Lists
 
 :class: flex-image center-image
 
-Data Structure Types - Linked Lists
+Data Structure Types - Linked List
 ========================================
 
 .. image:: images/08-01_001_03-circular_singly_linked_list-cropped.png
@@ -221,7 +222,7 @@ Data Structure Types - Linked Lists
 
 :class: flex-image center-image
 
-Data Structure Types - Linked Lists
+Data Structure Types - Linked List
 ========================================
 
 .. image:: images/08-01_001_04-circular_doubly_linked_list-cropped.png
@@ -232,11 +233,101 @@ Data Structure Types - Linked Lists
 	In a circular list, head nodes and tail nodes don't implicitly exist.  You can choose to maintain a head node though.
 	It's not required though.  If you have one node, you have access to all the nodes.
 
+	FUN FACT: The Linux kernel's default linked list implementation is fundamentally a circular doubly linked list.  "Using this type of linked list provides the greatest flexibility."
+
 	Source: Linux Kernel Development, Third Edition; Ch 6 Kernel Data Structures
 
 ----
 
-Data Structure Types - Binary Tree
+Data Structure Types - Queue
+========================================
+
+What is it?
+    * PLACEHOLDER
+
+.. note::
+
+	PLACEHOLDER
+
+----
+
+Data Structure Types - Queue
+========================================
+
+Common Operations
+    * Create
+    * Enqueue
+    * Dequeue
+    * Size
+    * Reset
+    * Destroy
+
+Real Examples
+    * PLACEHOLDER
+
+.. note::
+
+	Create - AKA Allocate
+	Enqueue - AKA Write
+	Dequeue - AKA Read
+	Size - How big is that buffer?
+	Reset - Jettisons all the contents of the queue
+	Destroy - AKA Free
+
+----
+
+Data Structure Types - Tree
+========================================
+
+What is it?
+    * A hierarchical tree-like structure of data
+    * Each vertex (AKA node) has 0 or 1 incoming edges
+    * Each vertex has >= 0 outgoing edges
+
+So what's a Binary Tree?
+	* Same as a tree except each vertex has at most two outgoing edges
+	* Each node has zero, one, or two children
+
+.. note::
+
+	A Binary Tree is a Tree but with more steps.  Those "more steps" provide some logical advantages.
+
+----
+
+Data Structure Types - Tree
+========================================
+
+Common Operations
+    * PLACEHOLDER
+
+Real Examples
+    * PLACEHOLDER
+
+\(1) Linux Kernel Development, Third Edition; Ch 6 Kernel Data Structures P. 86
+
+.. note::
+
+	<PRESENTER_NOTE>
+
+----
+
+Data Structure Types - Tree
+========================================
+
+Types
+	* Tree
+	* Binary Tree
+	* Binary Search Trees
+	* Self-Balancing Binary Search Trees
+	* Red-Black Trees
+
+.. note::
+
+	The objective stops at Binary Search Tree (BST) but it seems amiss to avoid at least mentioning self-balancing BSTs and Red-Black Trees.
+
+----
+
+Data Structure Types - Tree
 ========================================
 
 * <STUDENTS_SEE_THIS>
@@ -289,7 +380,7 @@ Considerations
 
 ----
 
-Considerations - Common Pitfalls
+Considerations - FIFO vs. LIFO
 ========================================
 
 * <STUDENTS_SEE_THIS>
@@ -300,7 +391,36 @@ Considerations - Common Pitfalls
 
 ----
 
-Considerations - FIFO vs. LIFO
+Considerations - Which one?
+========================================
+
+Use linked lists if...
+    * ...you iterate over *all* of your data
+    * ...performance is not important
+    * ...you're storing a small number of items
+
+Use queues if...
+	* ...your code follows a producer/consumer pattern
+	* ...you want to use a fixed-size buffer
+	* ...you value simple/efficient add/remove functionality
+
+Use a hash table if...
+    * ...you think to yourself, "I wish I had a Python dictionary here"
+
+Use a binary search tree if...
+    1. You need to store a large amount of data
+    2. You need to traverse that data efficiently
+    3. Your instructor didn't teach you how to use a red-black tree
+
+.. note::
+
+	Queues work well for inter-process communication (IPC).  Doubly so if the communication is only one-way.
+
+	All things being equal, the simplest solution is the best.  As such, use a linked-list if you're not performing time-critical searches.
+
+----
+
+Considerations - Common Pitfalls
 ========================================
 
 * <STUDENTS_SEE_THIS>
@@ -316,6 +436,10 @@ Resources
 
 * Linux Kernel Development, Third Edition
 
+.. note::
+
+	This is a good chance to ask the students if they have any questions.
+
 ----
 
 Summary
@@ -323,11 +447,21 @@ Summary
 
 * Definitions
 * Data Structure Types
+	* Linked List
+	* Queue
+	* Tree
+	* Stack
+	* Hash Table
+	* Graph
 * Considerations
 	* FIFO vs. LIFO
 	* I have data.  Which structure type should I use?
 	* Common Pitfalls
 * Resources
+
+.. note::
+
+	Last chance to cover student questions.
 
 ----
 
