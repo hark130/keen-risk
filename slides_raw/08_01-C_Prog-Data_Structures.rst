@@ -40,6 +40,7 @@ Overview
 * Definitions
 * Data Structure Types
 * Considerations
+* Resources
 
 ----
 
@@ -103,7 +104,7 @@ Data Structure Types - Linked Lists
 ========================================
 
 What is it?
-    * Comprised of one or more nodes
+    * Comprised of one or more connected nodes
     * Can store a variable number of nodes
     * Nodes contains data and a reference to the next node
     * Memory efficient
@@ -112,7 +113,8 @@ What is it?
 
 .. note::
 
-	<PRESENTER_NOTE>
+	SPOILERS: There are four types of Linked Lists and some of those type contain *more* than just data and the next node.
+	This definition is more of a "at least" description.
 
 ----
 
@@ -138,19 +140,99 @@ Real Examples
 
 ----
 
-
 Data Structure Types - Linked Lists
 ========================================
 
 Types
-    * Linked List
-    * Doubly Linked List
-    * Circular (Singly) Linked List
-    * Circular Doubly Linked List
+	* Linked List
+	* Doubly Linked List
+	* Circular (Singly) Linked List
+	* Circular Doubly Linked List
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Linked Lists
+========================================
+
+.. code:: c
+
+	/* An element in a linked list */
+	struct list_element {
+		void *data;                 // Payload
+		struct list_element *next;  // Next node
+	};
+
+.. image:: images/08-01_001_01-linked_list-cropped.png
 
 .. note::
 
-	<PRESENTER_NOTE>
+	The first node in a linked list is called the "Head" node.
+	The last node in a linked list is called the "Tail" node.
+
+	Example questions to ask the students:
+	* In a well formed linked list, what is special about the tail node?  (next is NULL)
+	* In a well formed linked list, what is special about the head node?  (Nothing)
+	* Can a well formed linked list contain just one node?  (Arguably yes, unless you define design restrictions)
+
+	Source: Linux Kernel Development, Third Edition; Ch 6 Kernel Data Structures
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Linked Lists
+========================================
+
+.. code:: c
+
+	/* An element in a doubly linked list */
+	struct list_element {
+		void *data;                 // Payload
+		struct list_element *next;  // Next node
+		struct list_element *prev;  // Previous node
+	};
+
+.. image:: images/08-01_001_02-doubly_linked_list-cropped.png
+
+.. note::
+
+	Source: Linux Kernel Development, Third Edition; Ch 6 Kernel Data Structures
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Linked Lists
+========================================
+
+.. image:: images/08-01_001_03-circular_singly_linked_list-cropped.png
+
+.. note::
+
+	What's changed between this and a (singly) linked list?  The tail node points at the head node.
+	In a circular list, head nodes and tail nodes don't implicitly exist.  You can choose to maintain a head node though.
+	It's not required though.  If you have one node, you have access to all the nodes.
+
+	Source: Linux Kernel Development, Third Edition; Ch 6 Kernel Data Structures
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Linked Lists
+========================================
+
+.. image:: images/08-01_001_04-circular_doubly_linked_list-cropped.png
+
+.. note::
+
+	What's changed between this and a doubly linked list?  The tail node points at the head node.
+	In a circular list, head nodes and tail nodes don't implicitly exist.  You can choose to maintain a head node though.
+	It's not required though.  If you have one node, you have access to all the nodes.
+
+	Source: Linux Kernel Development, Third Edition; Ch 6 Kernel Data Structures
 
 ----
 
@@ -201,8 +283,9 @@ Data Structure Types - Graph
 Considerations
 ========================================
 
-* Common Pitfalls
 * FIFO vs. LIFO
+* I have data.  Which structure type should I use?
+* Common Pitfalls
 
 ----
 
@@ -228,12 +311,23 @@ Considerations - FIFO vs. LIFO
 
 ----
 
+Resources
+========================================
+
+* Linux Kernel Development, Third Edition
+
+----
+
 Summary
 ========================================
 
 * Definitions
 * Data Structure Types
 * Considerations
+	* FIFO vs. LIFO
+	* I have data.  Which structure type should I use?
+	* Common Pitfalls
+* Resources
 
 ----
 
