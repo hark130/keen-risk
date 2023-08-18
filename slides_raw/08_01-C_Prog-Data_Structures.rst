@@ -47,7 +47,10 @@ Overview
 Definitions
 ========================================
 
-* What is a data structure?
+* What is...
+    * ...a data structure?
+    * ...a producer and consumer?
+    * ...FIFO and LIFO?
 
 .. note::
 
@@ -55,7 +58,7 @@ Definitions
 
 ----
 
-Definitions
+Definitions - Data Structure
 ========================================
 
 What is a data structure?
@@ -86,6 +89,43 @@ Where can I get one?
 	Basically, OS implementations are mostly(?) just well(ish) defined data structures under the hood.
 
 	The real answer to "Where can I get one?" is "Make one."
+
+----
+
+Definitions - Producer/Consumer
+========================================
+
+Producer: Creates data
+
+Consumer: Reads, processes and/or consumes the data
+
+.. note::
+
+	Much like the terms server and client, these two terms define the relationship of communicating entities.
+
+	Examples include, but are not limited to, error messages to be read, networking packets to be processed.
+
+	In Linux Inter Process Communication (IPC), pipes are commonly used to facilitate producer/consumer communication.
+
+----
+
+Definitions - FIFO/LIFO
+========================================
+
+First In First Out (FIFO): The first data produced is the first data consumed
+
+Last In First Out (LIFO): The most recent data is in front
+
+.. note::
+
+	Sometimes, a rigid approach to managing items in storage must be defined.
+	Those items in storage could be chunks of memory, data, or stock.
+
+	It might help to liken these concepts to hoses and stacks (of things).
+	Setting aside any odd properties of fluid dynamics, the first liquid to enter a hose is the first liquid to leave the hose.
+	With a stack of crates, the crate on top is the first to be accessed.
+
+	If this analogy is working, ask the class for a few more examples.
 
 ----
 
@@ -243,11 +283,18 @@ Data Structure Types - Queue
 ========================================
 
 What is it?
-    * PLACEHOLDER
+    * A linear data channel
+    * Stores elements sequentially
+    * Typically unidirectional
+    * FIFO
+    * Producer enqueues data
+    * Consumer dequeues data
 
 .. note::
 
-	PLACEHOLDER
+	Real life analogies for queues: People on an escalator, Cashier line in a store, A car wash line, One way exits
+
+	The earlier FIFO-hose-analogy, or a student-provided analogy, could be used to describe a queue.  The faucet is the producer and the garden(?) is the consumer.
 
 ----
 
@@ -258,21 +305,107 @@ Common Operations
     * Create
     * Enqueue
     * Dequeue
+    * Peek
     * Size
+    * Check Capacity
     * Reset
     * Destroy
 
 Real Examples
-    * PLACEHOLDER
+    * Linux pipes
+    * Scheduling: CPU, disk I/O, etc
+    * Handling hardware interrupts
+    * Processing website traffic
 
 .. note::
 
-	Create - AKA Allocate
+	Create - AKA Allocate/Initialize
 	Enqueue - AKA Write
 	Dequeue - AKA Read
+	Peek - Look at the next element without removing it
 	Size - How big is that buffer?
+	Check Capacity - Is the queue full?  Is the queue empty?
 	Reset - Jettisons all the contents of the queue
 	Destroy - AKA Free
+
+	Some people who read "Linux pipes" may first think about the "pipe character" (|), which is fine.  The command on the left is producing data which is in turn being consumed by the command on the right.  From a Linux programming perspective, it's a reference to the `pipe()` system call (which likely underpins, in some form or fashion, the command line interface operator).  `pipe()` "creates a pipe, a unidirectional data channel that can be used for interprocess communication."  (see: `man pipe`)
+
+----
+
+Data Structure Types - Queue
+========================================
+
+Types
+	* Simple Queue
+	* Circular Queue
+	* Priority Queue
+	* Double Ended Queue (Dequeue)
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Queue
+========================================
+
+.. image:: images/08-01_002_01-queue-cropped.png
+
+.. note::
+
+	Source: Linux Kernel Development, Third Edition; Ch 6 Kernel Data Structures
+
+----
+
+Data Structure Types - Queue
+========================================
+
+Circular Queue
+	* Last element is linked to the first
+	* Insert in the front
+	* Delete in the back
+
+.. note::
+
+	AKA Ring Buffer
+
+	Ask the students if "Last element is linked to the first" sounds familiar
+	Q - "If it's circular, how do you know where the front is?"
+	A - "Associated operations may store it.  Otherwise, you must."
+
+----
+
+Data Structure Types - Queue
+========================================
+
+Priority Queue
+	* Each element has a priority
+	* Elements with higher priority are removed first
+	* Elements with the same priority obey FIFO
+
+.. note::
+
+	You could think of this as a queue of queues, one queue per priority.
+	That being said, this type of queue is not necessarily FIFO.
+
+----
+
+Data Structure Types - Queue
+========================================
+
+Double Ended Queue (Dequeue)
+	* Insertion can take place at the front and rear
+	* Deletion can take place at the front and rear
+
+----
+
+Data Structure Types - Queue
+========================================
+
+Types
+	* Simple Queue
+	* Circular Queue
+	* Priority Queue
+	* Double Ended Queue (Dequeue)
 
 ----
 
@@ -327,14 +460,101 @@ Types
 
 ----
 
+:class: flex-image center-image
+
 Data Structure Types - Tree
 ========================================
 
-* <STUDENTS_SEE_THIS>
+.. image:: images/08-01_003_00-tree-raw.png
+
+* A hierarchical tree-like structure of data
+* Each vertex (AKA node) has 0 or 1 incoming edges
+* Each vertex has >= 0 outgoing edges
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Compare this graphic to the "What is [a tree]?" bullets from a few slides back.
+	Is this diagram a tree-like structure of data?  Yes.  It branches out.  It contains data.  There's an implicit relationship between the data.
+	Does each vertex have 0 or 1 incoming edges?  Yes.
+	Does each vertex have >= 0 outgoing edges?  Yes.
+
+----
+
+:class: center-image
+
+Data Structure Types - Tree
+========================================
+
+.. image:: images/08-01_003_01-binary_tree-cropped.png
+
+* Each vertex has at most two outgoing edges
+* Each node has zero, one, or two children
+
+.. note::
+
+	Implicit transition statement: "A binary tree is just a tree with extra steps..."
+	Really, a binary tree is just a stepping stone to a binary search tree because binary trees don't have any implicit ordering.
+
+----
+
+:class: center-image
+
+Data Structure Types - Tree
+========================================
+
+.. image:: images/08-01_003_02-binary_search_tree-cropped.png
+
+* A node's left subtree only contains values less than the node
+* A node's right subtree only contains values greater than the node
+
+.. note::
+
+	Implicit transition statement: "A binary search tree is just a binary tree with extra steps..."
+
+----
+
+:class: center-image
+
+Data Structure Types - Tree
+========================================
+
+.. image:: images/08-01_003_03-balanced_binary_search_tree-cropped.png
+
+* Self-balancing BSTs attempt, as part of normal operations, to remain (semi)balanced
+
+.. note::
+
+	Implicit transition statement: "A self-balancing BST is just a BST with extra steps..."
+
+	The depth of a node is measured by how many parent nodes it is from the first (AKA root) node.
+	Nodes with no children are called leaves.
+	The height of a tree is the depth of the deepest node in the tree.
+
+	If anyone asks about the importance of self-balancing BSTs, ask them about worst-case-scenario BST insertion...
+	"What would a BST look like if the first value was 100 and each subsequent insertion was one less?"
+	A - That BST would look like a linked list, which isn't nearly as efficient as a balanced BST.
+
+----
+
+:class: center-image
+
+Data Structure Types - Tree
+========================================
+
+.. image:: images/08-01_003_04-red_black_tree-raw.png
+
+Red-black trees remain semi-balanced BSTs by enforcing the following:
+
+* All nodes are either red or black
+* Leaf nodes are black
+* Leaf nodes do not contain data
+* All non-leaf nodes have two children
+* If a node is red, both of its children are black
+* The path from a node to one of its leaves contains the same number of black nodes as the shortest path to any of its other leaves
+
+.. note::
+
+	Implicit transition statement: "A red-black tree is just a self-balancing BST with extra steps..."
 
 ----
 
@@ -435,6 +655,7 @@ Resources
 ========================================
 
 * Linux Kernel Development, Third Edition
+* Queues - https://www.shiksha.com/online-courses/articles/queue-data-structure-types-implementation-applications/
 
 .. note::
 
