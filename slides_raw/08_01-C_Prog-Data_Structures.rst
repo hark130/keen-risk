@@ -133,11 +133,11 @@ Data Structure Types
 ========================================
 
 * Linked List
+* Stack
 * Queue
 * Tree
-* Stack
-* Hash Table
 * Graph
+* Hash Table
 
 ----
 
@@ -279,6 +279,155 @@ Data Structure Types - Linked List
 
 ----
 
+Data Structure Types - Linked List
+========================================
+
+Types
+	* Linked List
+	* Doubly Linked List
+	* Circular (Singly) Linked List
+	* Circular Doubly Linked List
+
+.. note::
+
+	Recap slide.  Take this opportunity to have the students name some basic facts about these types of linked lists.
+
+----
+
+Data Structure Types - Stack
+========================================
+
+What is it?
+    * An ordered list
+    * Operates on "the top"
+    * Inserts at the top
+    * Deletes from the top
+    * LIFO
+
+.. note::
+
+	A good analogy here is a stack of plates.
+
+----
+
+Data Structure Types - Stack
+========================================
+
+Common Operations
+    * push - insert data onto the stack
+    * pop - remove and return data from the stack
+
+Real Examples
+    * Web browser back buttons
+    * The "Undo" feature
+    * Implementing function calls
+    * Memory usage
+
+.. note::
+
+	Auxiliary Operations
+	* Get the top without removing it
+	* Determine the size of the stack
+	* Determine whether the stack is empty or not
+	* Determine whether the stack is full or not
+
+----
+
+:class: center-image
+
+Data Structure Types - Stack
+========================================
+
+.. image:: images/08-01_004_01-stack-cropped.png
+
+Implementations
+	* Simple array
+	* Dynamic array
+	* Linked list
+
+.. note::
+
+	What about types?  There don't appear to be common stack variants.
+	The variation comes with how the stack is implemented.
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Stack
+========================================
+
+.. image:: images/08-01_004_02-simple_stack-cropped.png
+
+* Simple Array
+	* Add elements from left to right
+	* Bookkeeping stores "the top"
+	* Fixed size
+
+.. note::
+
+	PLACEHOLDER
+
+----
+
+Data Structure Types - Stack
+========================================
+
+* Dynamic Array
+	* Similar concept to a Simple Array but...
+	* If the stack is full, increase the size
+	* Strategies
+		* Go big or go home
+		* Double it
+		* Right size
+
+.. note::
+
+	Implicit transition statement: "A dynamic array stack is just a static array statck with extra steps..."
+
+	Discuss the strategies with the students:
+	"Go big or go home" - Still may need to be increased, but how?  When is "go big" too much?
+	"Double it" - Efficient approach but it exponentially increases the size.  Should there be an upper-end limit?
+	"Right size" - Stack is full, increases the stack size by one to accomodate one more insertion.  Depends on the method of "right sizing".  Normally, increasing an array infers a "copy" operation and this can get costly.
+
+	Ultimately, the right approach depends on the situation.  I might default to a combination of "start big" and "double it".
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Stack
+========================================
+
+.. image:: images/08-01_004_04-linked_list_stack-cropped.png
+
+* Linked List
+	* Push operations insert a node at the head
+	* Pop operations remove the head node
+	* Grows and shrinks gracefully
+
+.. note::
+
+	Generally speaking, linked list stacks are preferrable to array implementations.
+	That is, until you consider how the linked-list nodes are being allocated.
+	For a large (expected) stack, it may be more efficient to implement a dynamic array stack instead.
+
+----
+
+Data Structure Types - Stack
+========================================
+
+Implementations
+	* Simple array
+	* Dynamic array
+	* Linked list
+
+.. note::
+
+	Recap slide.  Take this opportunity to have the students name some basic facts about these stack implementations.
+
+----
+
 Data Structure Types - Queue
 ========================================
 
@@ -302,31 +451,31 @@ Data Structure Types - Queue
 ========================================
 
 Common Operations
-    * Create
     * Enqueue
     * Dequeue
-    * Peek
-    * Size
-    * Check Capacity
-    * Reset
-    * Destroy
 
 Real Examples
-    * Linux pipes
+    * Ansynchronous data transfer
     * Scheduling: CPU, disk I/O, etc
     * Handling hardware interrupts
     * Processing website traffic
 
 .. note::
 
-	Create - AKA Allocate/Initialize
+	Auxiliary Operations
+	* Peek
+	* Size
+	* Check Capacity
+	* Reset
+
 	Enqueue - AKA Write
 	Dequeue - AKA Read
 	Peek - Look at the next element without removing it
 	Size - How big is that buffer?
 	Check Capacity - Is the queue full?  Is the queue empty?
 	Reset - Jettisons all the contents of the queue
-	Destroy - AKA Free
+
+	Examples of Asynchronous data transfer: file IO, pipes, sockets.
 
 	Some people who read "Linux pipes" may first think about the "pipe character" (|), which is fine.  The command on the left is producing data which is in turn being consumed by the command on the right.  From a Linux programming perspective, it's a reference to the `pipe()` system call (which likely underpins, in some form or fashion, the command line interface operator).  `pipe()` "creates a pipe, a unidirectional data channel that can be used for interprocess communication."  (see: `man pipe`)
 
@@ -407,6 +556,10 @@ Types
 	* Priority Queue
 	* Double Ended Queue (Dequeue)
 
+.. note::
+
+	Recap slide.  Take this opportunity to have the students name some basic facts about these types of queues.
+
 ----
 
 Data Structure Types - Tree
@@ -431,16 +584,43 @@ Data Structure Types - Tree
 ========================================
 
 Common Operations
-    * PLACEHOLDER
+    * Inserting an element
+    * Deleting an element
+    * Searching for an element
+    * Traversing the tree
 
 Real Examples
-    * PLACEHOLDER
-
-\(1) Linux Kernel Development, Third Edition; Ch 6 Kernel Data Structures P. 86
+    * Compilers
+    * Data compression algorithms
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Auxiliary Operations
+	* Finding the size of the tree
+	* Finding the height of the tree
+	* Finding the least common ancestor for a pair of nodes
+
+----
+
+Data Structure Types - Tree
+========================================
+
+Tree-Specific Definitions
+    * root - a node with no parents
+    * edge - the link between a parent and child node
+    * leaf - a node with no children
+    * siblings - children of the same parent
+    * ancestor - p is an ancester of q if p appears on a path from root to q
+    * descendant - any node that appears on a path between root and a given node
+    * depth - the length of the path from root to a node
+    * height - the length of the path from a node to the deepest node
+
+.. note::
+
+	The definitions for ancestor and descendant are a bit robotic, but factual.
+	It may be easier to avoid reading that definition (which should be the case anyway) and, instead, liken the definitions to the implicitly understood human-based defintions.  They are, after all, similes(?).
+
+	Talking through these definitions without the benefit of a graphic may be a stretch.  Be ready to draw something to aid student understanding.
 
 ----
 
@@ -464,7 +644,7 @@ Types
 Data Structure Types - Tree
 ========================================
 
-.. image:: images/08-01_003_00-tree-raw.png
+.. image:: images/08-01_003_00-tree-cropped.png
 
 * A hierarchical tree-like structure of data
 * Each vertex (AKA node) has 0 or 1 incoming edges
@@ -476,6 +656,14 @@ Data Structure Types - Tree
 	Is this diagram a tree-like structure of data?  Yes.  It branches out.  It contains data.  There's an implicit relationship between the data.
 	Does each vertex have 0 or 1 incoming edges?  Yes.
 	Does each vertex have >= 0 outgoing edges?  Yes.
+
+	Use this graphic to reference the Tree-Specific Definitions
+	Q: Which nodes are fit the "leaf" definition?  A: E, J, H, K, I
+	Q: Which node is a sibling to node "E"?  A: F
+	Q: Is node "C" an ancestor to node "H"?  A: No
+	Q: Is node "H" a descendant of node "C"?  A: No
+	Q: What is the depth of node "G"?  A: 2
+	Q: What is the heigh of node "B"?  A: 2
 
 ----
 
@@ -535,29 +723,151 @@ Data Structure Types - Tree
 
 ----
 
-Data Structure Types - Stack
+Data Structure Types - Tree
 ========================================
 
-* <STUDENTS_SEE_THIS>
+Types
+	* Tree
+	* Binary Tree
+	* Binary Search Trees
+	* Self-Balancing Binary Search Trees
 
 .. note::
 
-	<PRESENTER_NOTE>
-
-----
-
-Data Structure Types - Queue
-========================================
-
-* <STUDENTS_SEE_THIS>
-
-.. note::
-
-	<PRESENTER_NOTE>
+	Recap slide.  Take this opportunity to have the students name some basic facts about these types of trees.
 
 ----
 
 Data Structure Types - Graph
+========================================
+
+What is it?
+    * Encodes pairwise relationships
+    * Consists of:
+    	* nodes (AKA vertices)
+    	* edges
+
+So what's a Weighted Graph?
+	* Same as a graph except each edge has a value
+	* That value is known as a weight
+
+.. note::
+
+	Nodes - The elements of the data structure
+	Edges - Connections between the nodes
+	Weights - The values could represent distances, cost, etc.
+
+----
+
+Data Structure Types - Graph
+========================================
+
+Common Operations
+    * Add a node
+    * Add an edge
+    * Graph traversal
+
+Real Examples: Represent...
+    * Electronic circuits
+    * Computer networks
+    * Databases
+    * Ticket dependencies
+    * Spanning Tree Protocol (STP)
+
+.. note::
+
+	Auxiliary Operations
+	* Weighted graphs allow for "shortest path" algorithmic computations
+
+----
+
+Data Structure Types - Graph
+========================================
+
+Graph-Specific Definitions
+    * Directed edge: includes direction
+    * Undirected edge: directionless
+    * Directed graph: all edges are directed
+    * Undirected graph: all edges are undirected
+
+.. note::
+
+	Directed edge - includes direction
+	Undirected edge - directionless
+	Directed graph - all edges are directed
+	Undirected graph - all edges are undirected
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Graph
+========================================
+
+.. image:: images/08-01_005_01-directed_edge-cropped.png
+
+.. note::
+
+	Directed edge: includes direction
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Graph
+========================================
+
+.. image:: images/08-01_005_02-undirected_edge-cropped.png
+
+.. note::
+
+	Undirected edge: directionless
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Graph
+========================================
+
+.. image:: images/08-01_005_03-directed_graph-cropped.png
+
+.. note::
+
+	Directed graph: all edges are directed
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Graph
+========================================
+
+.. image:: images/08-01_005_04-undirected_graph-cropped.png
+
+.. note::
+
+	Undirected graph: all edges are undirected
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Graph
+========================================
+
+.. image:: images/08-01_005_05-weighted_graph-cropped.png
+
+* Weighted Graph
+	* All edges have weights
+
+.. note::
+
+	PLACEHOLDER
+
+----
+
+Data Structure Types - Table
 ========================================
 
 * <STUDENTS_SEE_THIS>
@@ -607,9 +917,11 @@ Use a hash table if...
 Use a binary search tree if...
     1. You need to store a large amount of data
     2. You need to traverse that data efficiently
-    3. Your instructor didn't teach you how to use a red-black tree
+    3. Your data doesn't need to be ordered
 
 .. note::
+
+	If you need ordered information, use a linear data structure: linked list, stack, queue, etc.
 
 	Queues work well for inter-process communication (IPC).  Doubly so if the communication is only one-way.
 
