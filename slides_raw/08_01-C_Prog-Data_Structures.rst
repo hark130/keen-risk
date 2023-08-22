@@ -452,7 +452,6 @@ Types
 	* Binary Tree
 	* Binary Search Trees
 	* Self-Balancing Binary Search Trees
-	* Red-Black Trees
 
 .. note::
 
@@ -533,28 +532,6 @@ Data Structure Types - Tree
 	If anyone asks about the importance of self-balancing BSTs, ask them about worst-case-scenario BST insertion...
 	"What would a BST look like if the first value was 100 and each subsequent insertion was one less?"
 	A - That BST would look like a linked list, which isn't nearly as efficient as a balanced BST.
-
-----
-
-:class: center-image
-
-Data Structure Types - Tree
-========================================
-
-.. image:: images/08-01_003_04-red_black_tree-raw.png
-
-Red-black trees remain semi-balanced BSTs by enforcing the following:
-
-* All nodes are either red or black
-* Leaf nodes are black
-* Leaf nodes do not contain data
-* All non-leaf nodes have two children
-* If a node is red, both of its children are black
-* The path from a node to one of its leaves contains the same number of black nodes as the shortest path to any of its other leaves
-
-.. note::
-
-	Implicit transition statement: "A red-black tree is just a self-balancing BST with extra steps..."
 
 ----
 
