@@ -137,7 +137,7 @@ Data Structure Types
 * Queue
 * Tree
 * Graph
-* Hash Table
+* Table
 
 ----
 
@@ -173,7 +173,7 @@ Real Examples
     * "The linked list is the simplest and most common data structure in the Linux kernel." (1)
     * Windows internals use a linked list data structure to maintain thread scheduler queues
 
-\(1) Linux Kernel Development, Third Edition; Ch 6 Kernel Data Structures P. 86
+\(1) Linux Kernel Development, Third Edition; Ch 6 Kernel Data Structures
 
 .. note::
 
@@ -870,11 +870,189 @@ Data Structure Types - Graph
 Data Structure Types - Table
 ========================================
 
-* <STUDENTS_SEE_THIS>
+What is it?
+    * Associate a value to a unique key
+    * Use the key to find the value
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Good analogies are: table of contents, glossaries, dictionaries, etc.
+
+	At some point, the students should realize this is all just fance talk for a Python dictionary.
+
+----
+
+Data Structure Types - Table
+========================================
+
+Common Operations
+    * Add (key, value)
+    * Remove (key)
+    * Lookup (key)
+
+Real Examples:
+    * DNS lookup table
+    * UID table
+
+.. note::
+
+	The Linux kernel implements a map data structure that is purpose-built to map Unique Identification Numbers (UID) to pointers.
+
+	Auxiliary Operations: Not necessarily applicable here, though Hash Tables require a bit more than Symbol Tables.
+
+----
+
+Data Structure Types - Table
+========================================
+
+Types(?)
+	* Symbol Table (1)
+	* Hash Table (2)
+	* Map (3)
+
+\(1) Data Structures and Algorithms Made Easy Ch 13
+
+\(2) Data Structures and Algorithms Made Easy Ch 14
+
+\(3) Linux Kernel Development, Third Edition; Ch 6 Kernel Data Structures
+
+.. note::
+
+	Why is there a question mark after Types?  Because these aren't different *types*, per se.
+	Instead, they're different "names".  All of them have key/value pairs.  Some academic sources separate them but they are all very *very* similar.
+	For instance...
+	"Although a hash table is a type of map, not all maps are implemented via hashes." (3)
+	That being said, all three are still very similar.
+
+----
+
+Data Structure Types - Table
+========================================
+
+Table-Specific Considerations
+    * Is the table ordered by key or not?
+    * How is the table implemented?
+
+.. note::
+
+	Since this is the last data structure covered, the students should be able to brainstorm some valid ways to implement a table.
+	Q: What are some data structures we could use to implement a table?  A: array, linked list, BST.
+	Let the record show that, all things being equal, a hash table is the preferred "type" of table and a BST is the preferred implementation.
+
+----
+
+Data Structure Types - Table
+========================================
+
+* Symbol Table:
+	* A mapping of keys to values
+
+.. code:: python
+
+	input = 'Sometimes when I have problems I Google ' \
+	        'solutions to those problems so I can ' \
+	        'easily solve them'
+
+	symbol_table = {}
+	for word in input.upper().split():
+	    if word in symbol_table:
+	        symbol_table[word] += 1
+	    else:
+	        symbol_table[word] = 1
+
+.. note::
+
+	Python is used here almost as psuedocode to help drive this point home.
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Table
+========================================
+
+Hash Table Components
+	* Hash Table
+	* Hash Function
+	* Collision Resolution
+
+.. note::
+
+	Implicit transition statement: "A hash table is just a symbol table(ish) with extra steps..."
+
+	SPOILERS: Hashing is a technique used for storing and retrieving information as quickly as possible.
+
+----
+
+:class: flex-image center-image
+
+Data Structure Types - Table
+========================================
+
+.. image:: images/08-01_006_02-hash_table_hashing-cropped.png
+
+Hash Table
+	* Each hash table position holds an item and is named by an integer starting at 0
+	* Keys are hashed into the reference integer
+
+.. note::
+
+	A Hast Table is a collection of items which are stored in a way to make it easy to find them later
+
+	The term "position" is also called a "slot" or "bucket"
+
+	A data structure that maps keys to values using a hash function for efficient retrieval and storage.
+
+	Explicit transition statement: "How do keys become that reference integer number?  The hash function."
+
+----
+
+Data Structure Types - Table
+========================================
+
+Hash Function - Transforms a key into a slot index.
+
+Good hash functions...:
+    * Minimize collisions
+    * Easy/quick to compute
+    * Distribute key values evenly
+    * Use every part of the key
+
+.. code:: mathematica
+
+	hash(key) = key % table_size
+
+.. note::
+
+	Explicit transition statement: "How do keys become that reference integer number?  The hash function."
+
+	A "hash collision" is when a hash function computes the same result for two different inputs.
+
+	Good hash functions also have a high load factor but I decided to skip that in the interest of complexity.  This JQS line item appears to be an entire undergraduate course condensed into 1 day.
+	What is a load factor?
+	Load factor = (Number of hash table elements) / (Hash table size)
+
+	The % is a reference to mod
+
+----
+
+Data Structure Types - Table
+========================================
+
+Collision Resolution
+	* Chain Results
+		* Slots hold a linked list
+		* Each linked list node holds the original hash and value
+	* Open Addressing
+	    * Keys are stored in the table
+	    * The table is probed for collisions
+	* Reduce Collision Probability - use two different hash functions
+
+.. note::
+
+	PLOT TWIST: Using two hash functions to reduce collision probability still doesn't help avoid array-implemented collisions.  You still have to choose a hash(key) to mod by table_size.
+
+	If hash1(key) != hash2(key), which is very likely, you still have to mod one of those hash values to store the key's value in the hash table (unless you store the 2nd hash with the value).
 
 ----
 
@@ -890,11 +1068,20 @@ Considerations
 Considerations - FIFO vs. LIFO
 ========================================
 
-* <STUDENTS_SEE_THIS>
+* Order - Is order important?
+* Freshness - Is the relevancy of data important?
+* Memory Management - Is memory consumption a concern?
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Order - Is the original order of data important?  Maybe not.  Maybe the data contains internal sequencing.  If order is important, choose FIFO.
+
+	Freshness - Is the "freshness" of data more important than completeness or order?
+	Consider of graph of points.  What if points were being added to the graph faster than you could read them?  At a 2/1 ratio, you'd be falling ever behind.
+	If you always read the most recent data you may miss some detail/fidelity but at least you'd be seeing current information at the maximum rate.
+
+	Memory Management - FIFO features "fixed memory consumption".  That is to say memory utilization stays constant regardless of the number of operations.
+	Conversely, LIFO memory consumption changes with each operation and does not maintain a fixed size.  Efficient resource allocation for LIFO can be challenging.
 
 ----
 
@@ -904,7 +1091,7 @@ Considerations - Which one?
 Use linked lists if...
     * ...you iterate over *all* of your data
     * ...performance is not important
-    * ...you're storing a small number of items
+    * ...you're adding/removing a small number of items
 
 Use queues if...
 	* ...your code follows a producer/consumer pattern
@@ -913,6 +1100,12 @@ Use queues if...
 
 Use a hash table if...
     * ...you think to yourself, "I wish I had a Python dictionary here"
+
+Don't use a hash table if...
+    * ...the order of data is important
+    * ...you have multi-dimensional data
+    * ...you have dynamic data
+    * ...you know that keys will not be unique
 
 Use a binary search tree if...
     1. You need to store a large amount of data
@@ -932,11 +1125,32 @@ Use a binary search tree if...
 Considerations - Common Pitfalls
 ========================================
 
-* <STUDENTS_SEE_THIS>
+* Linked Lists
+	* Traversal
+	* Inefficient (for certain operations)
+* Trees
+	* Becoming unbalanced
+	* Complex
+	* Inefficient (for certain operations)
+* Graphs
+	* Limited representation
+	* Scalability
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Traversal - Probably the most time-consuming to traverse of all the data structures.
+	Reverse-traversing a singly-linked list is also not possible.
+
+	Unabalanced - Uneven search times create problems in speed-critical applications.
+	The most unbalanced tree is arguably worse than a linked list.
+
+	Complex - BSTs become even more complex to implement when advancing the data structures (e.g., red-black trees).
+
+	Inefficient - Linked lists are not good at searching.  Trees are not good at sorting or grouping operations.
+
+	Limited representation - Graphs may need to be supplemented because graphs don't inherently include properties or attributes of nodes.	
+
+	Scalability - Graphs don't scale well.  Large graphs become difficult to interpret and analyze.
 
 ----
 
@@ -944,7 +1158,13 @@ Resources
 ========================================
 
 * Linux Kernel Development, Third Edition
+* Data Structures and Algorithms Made Easy
+* FIFO vs. LIFO - https://www.spiceworks.com/tech/devops/articles/fifo-vs-lifo/
 * Queues - https://www.shiksha.com/online-courses/articles/queue-data-structure-types-implementation-applications/
+* Hash Table
+    * https://en.wikipedia.org/wiki/Hash_table
+    * https://www.hackerearth.com/practice/data-structures/hash-tables/basics-of-hash-tables/tutorial/
+* String Hashing - https://cp-algorithms.com/string/string-hashing.html
 
 .. note::
 
@@ -958,11 +1178,11 @@ Summary
 * Definitions
 * Data Structure Types
 	* Linked List
+	* Stack
 	* Queue
 	* Tree
-	* Stack
-	* Hash Table
 	* Graph
+	* Table
 * Considerations
 	* FIFO vs. LIFO
 	* I have data.  Which structure type should I use?
