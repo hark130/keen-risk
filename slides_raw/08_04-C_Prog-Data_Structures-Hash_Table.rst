@@ -46,15 +46,15 @@ STUDENT LABS
 ========================================
 
 All labs will utilize the 8-04-hash_table-lab "library".
-8-04-hash_table-test.c is available to validate your work.
+8-04-hash_table-main.c is available to validate your work.
 
-* 6-21-1: Implement basic functionality: create, find, insert, remove, destroy
-* 6-21-2: Mitigate hash collisions
-* 6-21-3: Extend data type support
+* 8-04-1: Implement basic functionality: create, find, insert, remove, remove all, destroy
+* 8-04-2: Mitigate hash collisions
+* 8-04-3: Extend hash table capacity
 
 .. note::
 
-	PLACEHOLDER
+	How should the students handle duplicate entries?  Error, replace, etc?
 
 ----
 
