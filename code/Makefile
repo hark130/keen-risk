@@ -41,6 +41,10 @@ all:
 	$(CC) $(CFLAGS) $(SRC)/main.c -o $(DST)/6-15-3.bin -lharklemem -I $(INC) -L $(DST)
 	$(CC) $(AFLAGS) $(SRC)/main.c -o $(DST)/6-15-3_asan.bin -lharklemem -I $(INC) -L $(DST)
 
+8-04-solution: 8-04-hash_table-solution.o
+	$(CC) $(CFLAGS) $(SRC)/8-04-hash_table-main.c $(DST)/$^ -o $(DST)/8-04.bin -I $(INC) -L $(DST)
+	$(CC) $(AFLAGS) $(SRC)/8-04-hash_table-main.c $(DST)/$^ -o $(DST)/8-04_asan.bin -I $(INC) -L $(DST)
+
 %$(SO_EXT): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(DST)/$@ $(DST)/$^ $(SO_FLAGS)
 	cp $(DST)/$@ $(DST)/$(SO_FILE).$(SO_VER_MAJ).$(SO_VER_MIN).$(SO_VER_MIC)
