@@ -41,9 +41,9 @@ all:
 	$(CC) $(CFLAGS) $(SRC)/main.c -o $(DST)/6-15-3.bin -lharklemem -I $(INC) -L $(DST)
 	$(CC) $(AFLAGS) $(SRC)/main.c -o $(DST)/6-15-3_asan.bin -lharklemem -I $(INC) -L $(DST)
 
-8-04-solution: 8-04-hash_table-solution.o
-	$(CC) $(CFLAGS) $(SRC)/8-04-hash_table-main.c $(DST)/$^ -o $(DST)/8-04.bin -I $(INC) -L $(DST)
-	$(CC) $(AFLAGS) $(SRC)/8-04-hash_table-main.c $(DST)/$^ -o $(DST)/8-04_asan.bin -I $(INC) -L $(DST)
+8-04-solution: $(DST)/8-04-hash_table-solution.o $(DST)/8-04-hash_functions.o
+	$(CC) $(CFLAGS) $(SRC)/8-04-hash_table-main.c $^ -o $(DST)/8-04.bin -I $(INC) -L $(DST)
+	$(CC) $(AFLAGS) $(SRC)/8-04-hash_table-main.c $^ -o $(DST)/8-04_asan.bin -I $(INC) -L $(DST)
 
 %$(SO_EXT): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(DST)/$@ $(DST)/$^ $(SO_FLAGS)
@@ -52,6 +52,9 @@ all:
 	sudo cp $(DST)/$(SO_FILE).$(SO_VER_MAJ).$(SO_VER_MIN).$(SO_VER_MIC) /lib
 	sudo ln -f -s /lib/$(SO_FILE).$(SO_VER_MAJ).$(SO_VER_MIN).$(SO_VER_MIC) /lib/$(SO_FILE).$(SO_VER_MAJ)
 	sudo ln -f -s /lib/$(SO_FILE).$(SO_VER_MAJ) /lib/$(SO_FILE)
+
+$(DST)/%.o : $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $^ -o $@ -I $(INC)
 
 %$(OBJ_EXT): %$(SRC_EXT)
 	$(CC) $(CFLAGS) -c $(SRC)/$^ -o $(DST)/$@ -I $(INC)
