@@ -26,9 +26,9 @@ typedef struct _any_data
 
 typedef struct _hash_table
 {
-    void *table_ptr;  // Pointer to the array of entries
-    int entries;      // Number of entries in table_ptr
-    int capacity;     // Number of indices in the table_ptr array
+    void *table_ptr;        // Pointer to the array of entries
+    unsigned int entries;   // Number of entries in table_ptr
+    unsigned int capacity;  // Number of indices in the table_ptr array
 } hash_table, *hash_table_ptr;
 
 
@@ -37,29 +37,43 @@ typedef struct _hash_table
  */
 
 /*
+ *  Allocates and initializes heap memory for a hash table.
  *
+ *  NOTE: The caller is responsible for (eventually) calling destroy_table() to free the table.
  */
 hash_table_ptr create_hash_table(int capacity, return_value_ptr result);
 
 
 /*
+ *  Attempts to locate the value associated with key in the hash table.
+ *  1. Hashes key
+ *  2. Calculates the index
+ *  3. Validates the found entry against key
+ *  4. Returns the value
  *
+ *  NOTE: The heap memory for the value returned is owned by the hash table.  Do not free!
  */
-any_data_ptr find_value(hash_table_ptr table, void *raw_data, data_type raw_data_type,
-                        unsigned int raw_data_size, return_value_ptr result);
+any_data_ptr find_value(hash_table_ptr table, any_data_ptr key, return_value_ptr result);
 
 
 /*
+ *  Allocates heap memory to copy the key and value.  Adds the copied pair to the hash table.
  *
+ *  NOTE: The caller is responsible for any memory storing the table, key, and value.
  */
-return_value add_key(hash_table_ptr table, void *raw_data, data_type raw_data_type,
-                     unsigned int raw_data_size);
+return_value add_key(hash_table_ptr table, any_data_ptr key, any_data_ptr value);
 
 
 /*
  *
  */
 return_value delete_key(hash_table_ptr table, any_data_ptr key);
+
+
+/*
+ *
+ */
+return_value delete_all_keys(hash_table_ptr table);
 
 
 /*
