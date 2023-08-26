@@ -32,16 +32,18 @@ typedef struct _hash_table
 } hash_table, *hash_table_ptr;
 
 
-/*
- *  Library functions listed in suggested call order.
- */
+/**************************************************************************************************/
+/*************************************** LIBRARY FUNCTIONS ****************************************/
+/**************************************************************************************************/
+// Library functions listed in suggested call order.
+
 
 /*
  *  Allocates and initializes heap memory for a hash table.
  *
  *  NOTE: The caller is responsible for (eventually) calling destroy_table() to free the table.
  */
-hash_table_ptr create_hash_table(int capacity, return_value_ptr result);
+hash_table_ptr create_hash_table(unsigned int capacity, return_value_ptr result);
 
 
 /*
@@ -65,13 +67,13 @@ return_value add_key(hash_table_ptr table, any_data_ptr key, any_data_ptr value)
 
 
 /*
- *
+ *  Delete the hash table entry for the data in key.
  */
 return_value delete_key(hash_table_ptr table, any_data_ptr key);
 
 
 /*
- *
+ *  Delete all the hash table entries and reset the entries count.
  */
 return_value delete_all_keys(hash_table_ptr table);
 
