@@ -135,7 +135,7 @@ return_value _validate_table(hash_table_ptr table);
 /**************************************************************************************************/
 
 
-hash_table_ptr create_hash_table(int capacity, return_value_ptr result)
+hash_table_ptr create_hash_table(unsigned int capacity, return_value_ptr result)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
@@ -310,6 +310,10 @@ return_value _add_entry(hash_table_ptr table, entry_pair_ptr new_entry)
             fprintf(stderr, "This value already exists: %p!\n", new_entry);
             retval = RET_ERROR;
         }
+        else if (RET_NOT_FOUND == retval)
+        {
+            retval = RET_SUCCESS;
+        }
     }
     // Hash collision?
     if (RET_SUCCESS == retval)
@@ -326,6 +330,10 @@ return_value _add_entry(hash_table_ptr table, entry_pair_ptr new_entry)
         {
             fprintf(stderr, "Hash collision detected for new entry: %p!\n", new_entry);
             retval = RET_ERROR;
+        }
+        else if (RET_NOT_FOUND == retval)
+        {
+            retval = RET_SUCCESS;
         }
     }
     // Calculate the index
@@ -801,7 +809,7 @@ return_value _destroy_table(hash_table_ptr old_table)
         for (int i = 0; i < old_table->capacity; i++)
         {
             temp_entry = (*(table_arr + i));
-            fprintf(stderr, "Index: %d\tEntry: %p\n", i, temp_entry);
+            // fprintf(stderr, "Index: %d\tEntry: %p\n", i, temp_entry);  // DEBUGGING
             if (temp_entry)
             {
                 fprintf(stderr, "Destroying %p\n", temp_entry);
@@ -945,8 +953,11 @@ entry_pair_ptr _get_index(hash_table_ptr table, unsigned int index, return_value
     // GET IT
     if (RET_SUCCESS == retval)
     {
-        // entry = (*((entry_pair_ptr*)table->table_ptr + (index * sizeof(entry_pair_ptr))));
         entry = (*((entry_pair_ptr*)table->table_ptr + index));
+        if (!entry)
+        {
+            retval = RET_NOT_FOUND;
+        }
     }
 
     // DONE
