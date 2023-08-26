@@ -87,6 +87,19 @@ int main()
             printf("The table now has %d entries.\n", table->entries);
         }
     }
+    // DELETE ALL ENTRIES
+    if (RET_SUCCESS == result)
+    {
+        result = delete_all_keys(table);
+        if (RET_SUCCESS != result)
+        {
+            fprintf(stderr, "The call to delete_all_keys() failed with: %d\n", result);
+        }
+        else
+        {
+            printf("The table now has %d entries.\n", table->entries);
+        }
+    }
 
     // DONE
     if (table)
