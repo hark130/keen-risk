@@ -331,8 +331,8 @@ return_value _add_entry(hash_table_ptr table, entry_pair_ptr new_entry)
     // Calculate the index
     if (RET_SUCCESS == retval)
     {
-        index = _calc_index(new_entry->value->d_ptr, new_entry->value->d_size, table->capacity);
-        fprintf(stderr, "Calculated index is %d\n", index);  // DEBUGGING
+        index = _calc_index(new_entry->key->d_ptr, new_entry->key->d_size, table->capacity);
+        // fprintf(stderr, "Calculated index is %d\n", index);  // DEBUGGING
         if (ERROR_HASH == index)
         {
             HARKLE_ERROR(_calc_index, Returned a bad hash value);
@@ -443,7 +443,7 @@ unsigned long _calc_hash(void *d_ptr, unsigned int d_size)
 
     // GET IT
     hash = get_fnv_hash(d_ptr, d_size);
-    fprintf(stderr, "Calculated hash for %p is %lu\n", d_ptr, hash);  // DEBUGGING
+    // fprintf(stderr, "Calculated hash for %p is %lu\n", d_ptr, hash);  // DEBUGGING
 
     // DONE
     return hash;
@@ -461,10 +461,13 @@ unsigned int _calc_index(void *d_ptr, unsigned int d_size, unsigned int capacity
     {
         // GET IT
         hash = _calc_hash(d_ptr, d_size);
+        // fprintf(stderr, "Calculated hash for %p at capacity %d is %lu\n", d_ptr, capacity, hash);  // DEBUGGING
+        // fprintf(stderr, "The capacity is %d\n", capacity);  // DEBUGGING
         if (ERROR_HASH != hash)
         {
             index = hash % capacity;
         }
+        // fprintf(stderr, "Calculated hash for %p, size %d, at capacity %d is %lu and the index is %d\n", d_ptr, d_size, capacity, hash, index);  // DEBUGGING
     }
 
     // DONE
@@ -895,6 +898,7 @@ any_data_ptr _find_value(hash_table_ptr table, void *raw_data, data_type raw_dat
     // FIND IT
     // 1. Get the data's index
     index = _calc_index(raw_data, raw_data_size, table->capacity);
+    // fprintf(stderr, "Calculated index is %d\n", index);  // DEBUGGING
     // 2. Find the data
     if (index < table->capacity)
     {
