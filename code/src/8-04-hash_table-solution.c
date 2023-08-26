@@ -694,6 +694,10 @@ return_value _delete_all_keys(hash_table_ptr table)
                 {
                     retval = temp_ret;
                 }
+                else
+                {
+                    (*(table_arr + i)) = NULL;
+                }
             }
         }
         table->entries = 0;  // Reset
