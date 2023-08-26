@@ -1,7 +1,7 @@
 #ifndef _8_04_HASH_FUNCTIONS_
 #define _8_04_HASH_FUNCTIONS_
 
-#define ERROR_HASH (unsigned long)-1
+#define ERROR_HASH (unsigned long)0-1
 
 
 /*
