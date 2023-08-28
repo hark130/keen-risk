@@ -26,12 +26,13 @@ SO_VER_MAJ = 1
 SO_VER_MIN = 0
 SO_VER_MIC = 0
 
-.PHONY: all 6-15-3 clean
+.PHONY: all 6-02-1 6-15-3 8-04-solution clean
 
 all:
 	$(CALL_MAKE) clean
 	$(CALL_MAKE) 6-02-1
 	$(CALL_MAKE) 6-15-3
+	$(CALL_MAKE) 8-04-solution
 
 6-02-1: $(SO_NAME)$(SO_EXT) owe_mem.c
 	@echo "One With Everything memory"
@@ -41,9 +42,12 @@ all:
 	$(CC) $(CFLAGS) $(SRC)/main.c -o $(DST)/6-15-3.bin -lharklemem -I $(INC) -L $(DST)
 	$(CC) $(AFLAGS) $(SRC)/main.c -o $(DST)/6-15-3_asan.bin -lharklemem -I $(INC) -L $(DST)
 
-8-04-solution: $(DST)/8-04-hash_table-solution.o $(DST)/8-04-hash_functions.o
-	$(CC) $(CFLAGS) $(SRC)/8-04-hash_table-main.c $^ -o $(DST)/8-04.bin -I $(INC) -L $(DST)
-	$(CC) $(AFLAGS) $(SRC)/8-04-hash_table-main.c $^ -o $(DST)/8-04_asan.bin -I $(INC) -L $(DST)
+8-04-solution:
+	$(CALL_MAKE) 8-04-1-solution
+
+8-04-1-solution: $(DST)/8-04-hash_table-solution.o $(DST)/8-04-hash_functions.o
+	$(CC) $(CFLAGS) $(SRC)/8-04-1-hash_table-main.c $^ -o $(DST)/8-04.bin -I $(INC) -L $(DST)
+	$(CC) $(AFLAGS) $(SRC)/8-04-1-hash_table-main.c $^ -o $(DST)/8-04_asan.bin -I $(INC) -L $(DST)
 
 %$(SO_EXT): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(DST)/$@ $(DST)/$^ $(SO_FLAGS)
