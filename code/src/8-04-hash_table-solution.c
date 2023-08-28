@@ -41,6 +41,11 @@ return_value _add_key(hash_table_ptr table, any_data_ptr key, any_data_ptr value
 unsigned int _calc_index(void *d_ptr, unsigned int d_size, unsigned int capacity);
 
 /*
+ *  Remove the given index from the table.  Free any entry found.
+ */
+return_value _clear_index(hash_table_ptr table, unsigned int old_index);
+
+/*
  *  Compares all aspects of s1 data against s2, starting with the bookkeeping.  Immediately
  *  returns false on the first difference detected.
  */
@@ -65,6 +70,11 @@ hash_table_ptr _create_hash_table(int capacity, return_value_ptr result);
  *  Deletes all entries found in the hash table.
  */
 return_value _delete_all_keys(hash_table_ptr table);
+
+/*
+ *  Remove one key from table and free that memory.
+ */
+return_value _delete_key(hash_table_ptr table, any_data_ptr key);
 
 /*
  *  Zeroize the data and free the data pointer.  Then zeroize the pointer, type and size.  Then
@@ -233,7 +243,24 @@ return_value add_key(hash_table_ptr table, any_data_ptr key, any_data_ptr value)
 
 return_value delete_key(hash_table_ptr table, any_data_ptr key)
 {
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
 
+    // INPUT VALIDATION
+    retval = _validate_table(table);
+    if (RET_SUCCESS == retval)
+    {
+        retval = _validate_any_data(key);
+    }
+
+    // DESTROY IT
+    if (RET_SUCCESS == retval)
+    {
+        retval = _delete_key(table, key);
+    }
+
+    // DONE
+    return retval;
 }
 
 
@@ -324,7 +351,6 @@ return_value _add_entry(hash_table_ptr table, entry_pair_ptr new_entry)
         if (BAD_INDEX != index)
         {
             temp_entry = _get_index(table, index, &retval);
-            // fprintf(stderr, "Temp entry: %p\n", temp_entry);  // DEBUGGING
         }
         if (temp_entry)
         {
@@ -340,7 +366,6 @@ return_value _add_entry(hash_table_ptr table, entry_pair_ptr new_entry)
     if (RET_SUCCESS == retval)
     {
         index = _calc_index(new_entry->key->d_ptr, new_entry->key->d_size, table->capacity);
-        // fprintf(stderr, "Calculated index is %d\n", index);  // DEBUGGING
         if (ERROR_HASH == index)
         {
             HARKLE_ERROR(_calc_index, Returned a bad hash value);
@@ -451,7 +476,6 @@ unsigned long _calc_hash(void *d_ptr, unsigned int d_size)
 
     // GET IT
     hash = get_fnv_hash(d_ptr, d_size);
-    // fprintf(stderr, "Calculated hash for %p is %lu\n", d_ptr, hash);  // DEBUGGING
 
     // DONE
     return hash;
@@ -469,17 +493,52 @@ unsigned int _calc_index(void *d_ptr, unsigned int d_size, unsigned int capacity
     {
         // GET IT
         hash = _calc_hash(d_ptr, d_size);
-        // fprintf(stderr, "Calculated hash for %p at capacity %d is %lu\n", d_ptr, capacity, hash);  // DEBUGGING
-        // fprintf(stderr, "The capacity is %d\n", capacity);  // DEBUGGING
         if (ERROR_HASH != hash)
         {
             index = hash % capacity;
         }
-        // fprintf(stderr, "Calculated hash for %p, size %d, at capacity %d is %lu and the index is %d\n", d_ptr, d_size, capacity, hash, index);  // DEBUGGING
     }
 
     // DONE
     return index;
+}
+
+
+return_value _clear_index(hash_table_ptr table, unsigned int old_index)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;     // Function call results
+    entry_pair_ptr old_entry = NULL;       // Entry to clear
+    entry_pair_ptr *table_entries = NULL;  // Pointer to the hash table array of entry pointers
+
+    // INPUT VALIDATION
+    retval = _validate_table(table);
+    if (RET_SUCCESS == retval && old_index >= table->capacity)
+    {
+        retval = RET_INV_PARAM;
+    }
+
+    // CLEAR IT
+    if (RET_SUCCESS == retval)
+    {
+        table_entries = (entry_pair_ptr*)table->table_ptr;
+        old_entry = (*(table_entries + old_index));
+        if (!old_entry)
+        {
+            retval = RET_NOT_FOUND;
+        }
+        else
+        {
+            retval = _destroy_entry_pair(old_entry);
+            if (RET_SUCCESS == retval)
+            {
+                (*(table_entries + old_index)) = NULL;
+            }
+        }
+    }
+
+    // DONE
+    return retval;
 }
 
 
@@ -676,6 +735,44 @@ hash_table_ptr _create_hash_table(int capacity, return_value_ptr result)
 }
 
 
+return_value _delete_key(hash_table_ptr table, any_data_ptr key)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+    unsigned int index = 0;             // Calculated index
+    entry_pair_ptr old_entry = NULL;    // Entry to delete(?)
+
+    // DELETE IT
+    // Calc index
+    index = _calc_index(key->d_ptr, key->d_size, table->capacity);
+    if (BAD_INDEX != index)
+    {
+        old_entry = _get_index(table, index, &retval);
+    }
+    // Validate finding
+    if (RET_SUCCESS == retval)
+    {
+        retval = _validate_entry_pair(old_entry);
+    }
+    // Verify a match
+    if (RET_SUCCESS == retval)
+    {
+        if (false == _compare_any_data(key, old_entry->key, &retval))
+        {
+            retval = RET_NOT_FOUND;  // Wrong key
+        }
+    }
+    // Clear index
+    if (RET_SUCCESS == retval)
+    {
+        retval = _clear_index(table, index);
+    }
+
+    // DONE
+    return retval;
+}
+
+
 return_value _delete_all_keys(hash_table_ptr table)
 {
     // LOCAL VARIABLES
@@ -809,7 +906,6 @@ return_value _destroy_table(hash_table_ptr old_table)
         for (int i = 0; i < old_table->capacity; i++)
         {
             temp_entry = (*(table_arr + i));
-            // fprintf(stderr, "Index: %d\tEntry: %p\n", i, temp_entry);  // DEBUGGING
             if (temp_entry)
             {
                 fprintf(stderr, "Destroying %p\n", temp_entry);
@@ -910,7 +1006,6 @@ any_data_ptr _find_value(hash_table_ptr table, void *raw_data, data_type raw_dat
     // FIND IT
     // 1. Get the data's index
     index = _calc_index(raw_data, raw_data_size, table->capacity);
-    // fprintf(stderr, "Calculated index is %d\n", index);  // DEBUGGING
     // 2. Find the data
     if (index < table->capacity)
     {
