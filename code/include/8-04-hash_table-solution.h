@@ -1,3 +1,14 @@
+/*
+ *  This header file defines the interface used by the 8-04 student labs.
+ *  In general, the library is responsible for allocating memory to copy user input.
+ *  The hash_table struct serves as a layer of abstraction between the library and the user.
+ *  The user should never directly modify any data contained in the hash_table struct.
+ *  Instead, the user should call the library functions to add, delete, find, etc.
+ *  The any_data structs are used to format user input, but the library does not own the contents.
+ *  Data stored in the hash_table struct or the hash_table itself should be stored in the heap.
+ *  The data_type struct may seem unimportant but could help identify duplicates and DEBUGGING.
+ */
+
 #ifndef _8_04_HASH_TABLE_
 #define _8_04_HASH_TABLE_
 
