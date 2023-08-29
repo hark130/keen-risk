@@ -9,7 +9,7 @@
  *      BONUS: Stop copy pasting gcc commands and create a Makefile.  See: JQS 6-17.
  *
  *  TEST:
- *      ./8-04-1-lab.bin  # Should have all checkmarks.  Read the output.  Failures go to stderr.
+ *      ./8-04-1-lab.bin  # Read the output.  Failures go to stderr.  Read the test code.
  *      # Be sure to build and run the solution through ASAN.  See: JQS 6-16 and 6-21.
  *      # Also use Valgrind to identify issues with memory management.  See: JQS 6-21.
  */
