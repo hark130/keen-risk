@@ -26,6 +26,7 @@ int main()
     // LOCAL VARIABLES
     hash_table_ptr table = NULL;            // Hash table
     int start_cap = 10;                     // Hash table starting capacity
+    float start_thresh = 0.75;              // Hash table threshold
     return_value result = RET_SUCCESS;      // Out parameter for certain library calls
     any_data key;                           // Temp key struct
     any_data value;                         // Temp value struct
@@ -49,16 +50,16 @@ int main()
     _set_string(&busy_value, "This input value is being used to create and test hash collisions!");
 
     // CREATE
-    table = create_hash_table(start_cap, &result);
+    table = create_hash_table(start_cap, start_thresh, &result);
     if (!table)
     {
         fprintf(stderr, "The call to create_hash_table() returned NULL\n");
-        if (result)
+        if (RET_SUCCESS == result)
         {
-            fprintf(stderr, "create_hash_table(): %s\n", strerror(result));
+            result = RET_ERROR;  // Manually failing this test since the call didn't do it
         }
-        _print_results(result, "Creating a hash table");
     }
+    _print_results(result, "Creating a hash table");
 
     // ADD
     // Key 1
