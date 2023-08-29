@@ -10,6 +10,8 @@
  *            operations.  (E.g., Check for duplicate keys prior to memory allocation.)
  *          - My "hash collision" solution, chaining, might be faster to insert at the head
  *            instead of the tail.
+ *          - My "is it time to resize?" algorithm doesn't take into account that, sometimes,
+ *            doubling the capacity isn't enough.
  */
 
 #include "8-04-hash_functions.h"
@@ -79,10 +81,10 @@ bool _compare_data(void *s1_data, data_type s1_data_type, unsigned int s1_data_s
 any_data_ptr _copy_any_data(any_data_ptr source, return_value_ptr result);
 
 /*
- *  Allocate a hash table of a given capacity.  Hash table will contain an array of entry_pair
- *  objects.  This function does not validate input, only results.
+ *  Allocate a hash table of a given capacity and threshold.  Hash table will contain an array
+ *  of entry_pair objects.  This function does not validate input, only results.
  */
-hash_table_ptr _create_hash_table(int capacity, return_value_ptr result);
+hash_table_ptr _create_hash_table(int capacity, float threshold, return_value_ptr result);
 
 /*
  *  Deletes all entries found in the hash table.
@@ -117,6 +119,25 @@ return_value _destroy_table(hash_table_ptr old_table);
 return_value _destroy_table_struct(hash_table_ptr old_table);
 
 /*
+ *  This function:
+ *      1. Validates table
+ *      2. Checks the threshold against the load factor
+ *      3. Resizes the table if the load factor exceeds the threshold
+ *
+ *  NOTE: Call this function sparingly.  If you're just validating input, call _validate_table()
+ *  instead.  Why?  Because if you call this function when you should have just validated the
+ *  input then you could wind up in an endless loop (even though _resize_table() will attempt to
+ *  protect itself from such occurences).
+ */
+return_value _evaluate_table(hash_table_ptr table);
+
+/*
+ *  Fill in dst_table with values provided.  Also, allocate and store the internal array
+ *  based on the capacity.  Barely validates input.
+ */
+return_value _fill_hash_table_struct(hash_table_ptr dst_table, int capacity, float threshold);
+
+/*
  *  Finds a key, represented as an any_data struct pointer, in table.  See result for errors.
  */
 any_data_ptr _find_any_data_value(hash_table_ptr table, any_data_ptr data, return_value_ptr result);
@@ -131,10 +152,32 @@ any_data_ptr _find_value(hash_table_ptr table, void *raw_data, data_type raw_dat
                          unsigned int raw_data_size, return_value_ptr result);
 
 /*
+ *  Frees the table_ptr.  Nothing else.  Doesn't remove entries.  Doesn't zeroize memory.
+ *  Only frees old_table->table_ptr.  Barely even validates input.
+ */
+return_value _free_table_array(hash_table_ptr old_table);
+
+/*
  *  Fetches an index from table->table_ptr.  Returns NULL if index is empty or on error.
  *  See result value for error reporting.
  */
 entry_pair_ptr _get_index(hash_table_ptr table, unsigned int index, return_value_ptr result);
+
+/*
+ *  This function:
+ *      1. Validates table
+ *      2. Allocates a new array with double the capacity
+ *      3. Transfers all entries from table->table_ptr to the new array
+ *      4. Frees the old table->table_ptr
+ *
+ *  NOTES:
+ *      - Any errors encountered while transferring nodes from table to the new array will be
+ *        ignored but reported (in the return_value).
+ *      - This function defends itself against recursion
+ *
+ *  Returns the first error encountered.
+ */
+return_value _resize_table(hash_table_ptr table);
 
 /*
  *  Insert new_entry into table regardless of table's status.  Hash collision?  Handle it.
@@ -168,7 +211,7 @@ return_value _validate_table(hash_table_ptr table);
 /**************************************************************************************************/
 
 
-hash_table_ptr create_hash_table(unsigned int capacity, return_value_ptr result)
+hash_table_ptr create_hash_table(unsigned int capacity, float threshold, return_value_ptr result)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
@@ -188,7 +231,7 @@ hash_table_ptr create_hash_table(unsigned int capacity, return_value_ptr result)
     // CREATE IT
     if (RET_SUCCESS == retval)
     {
-        new_table = _create_hash_table(capacity, &retval);
+        new_table = _create_hash_table(capacity, threshold, &retval);
     }
 
     // DONE
@@ -243,16 +286,7 @@ return_value add_key(hash_table_ptr table, any_data_ptr key, any_data_ptr value)
     return_value retval = RET_SUCCESS;  // Function call results
 
     // INPUT VALIDATION
-    retval = _validate_table(table);
-    if (RET_SUCCESS == retval)
-    {
-        // Evaluate "Load Factor" here
-        if (table->capacity <= table->entries)
-        {
-            fprintf(stderr, "Table is full!  Resize!");  // PLACEHOLDER
-            retval = RET_ERROR;
-        }
-    }
+    retval = _evaluate_table(table);  // Validate table and check for resize
     if (RET_SUCCESS == retval)
     {
         retval = _validate_any_data(key);
@@ -387,6 +421,37 @@ return_value _add_entry(hash_table_ptr table, entry_pair_ptr new_entry)
 }
 
 
+/*
+ *  Add new_entry to the end of the entry_pair linked list which begins at head_entry.
+ */
+return_value _add_entry_node(entry_pair_ptr head_entry, entry_pair_ptr new_entry)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;     // Function call results
+    entry_pair_ptr tmp_node = head_entry;  // Temp node to walk the linked list
+
+    // INPUT VALIDATION
+    retval = _validate_entry_pair(head_entry);
+    if (RET_SUCCESS == retval)
+    {
+        retval = _validate_entry_pair(new_entry);
+    }
+
+    // ADD IT
+    if (RET_SUCCESS == retval)
+    {
+        while(tmp_node->next)
+        {
+            tmp_node = tmp_node->next;
+        }
+        tmp_node->next = new_entry;
+    }
+
+    // DONE
+    return retval;
+}
+
+
 return_value _add_key(hash_table_ptr table, any_data_ptr key, any_data_ptr value)
 {
     // LOCAL VARIABLES
@@ -493,6 +558,76 @@ unsigned int _calc_index(void *d_ptr, unsigned int d_size, unsigned int capacity
 
     // DONE
     return index;
+}
+
+
+/*
+ *  Calculate the load factor of table.  Verify success by checking result.
+ */
+double _calc_load_factor(hash_table_ptr table, return_value_ptr result)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+    double load_factor = -100;          // Calculated load factor
+
+    // INPUT VALIDATION
+    retval = _validate_table(table);
+    if (RET_SUCCESS == retval && !result)
+    {
+        retval = RET_INV_PARAM;
+    }
+
+    // CALC IT
+    if (RET_SUCCESS == retval)
+    {
+        load_factor = (double)table->entries / table->capacity;
+    }
+
+    // DONE
+    if (result)
+    {
+        *result = retval;
+    }
+    return load_factor;
+}
+
+
+/*
+ *  Check table's load factor against the table's threshold.  Returns true if the table has
+ *  exceeded the load factor threshold and needs to be resized.
+ */
+bool _check_for_resize(hash_table_ptr table, return_value_ptr result)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+    bool needs_resize = false;          // Calculated load factor
+    double load_factor = -100;          // Calculated load factor
+
+    // INPUT VALIDATION
+    retval = _validate_table(table);
+    if (RET_SUCCESS == retval && !result)
+    {
+        retval = RET_INV_PARAM;
+    }
+
+    // CHECK IT
+    // Get the load factor
+    if (RET_SUCCESS == retval)
+    {
+        load_factor = _calc_load_factor(table, &retval);
+    }
+    // Check the load factor against the threshold
+    if (RET_SUCCESS == retval && load_factor > table->threshold)
+    {
+        needs_resize = true;
+    }
+
+    // DONE
+    if (result)
+    {
+        *result = retval;
+    }
+    return needs_resize;
 }
 
 
@@ -726,10 +861,37 @@ any_data_ptr _copy_any_data(any_data_ptr source, return_value_ptr result)
 
 
 /*
+ *  Copies the member values of src_table into dst_table.  No validation, beyond checking for
+ *  NULL is performed.
+ */
+return_value _copy_struct_contents(hash_table_ptr src_table, hash_table_ptr dst_table)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+
+    // COPY CONTENTS
+    if (src_table && dst_table)
+    {
+        dst_table->table_ptr = src_table->table_ptr;
+        dst_table->entries = src_table->entries;
+        dst_table->capacity = src_table->capacity;
+        dst_table->threshold = src_table->threshold;
+    }
+    else
+    {
+        retval = RET_INV_PARAM;
+    }
+
+    // DONE
+    return retval;
+}
+
+
+/*
  *  Allocate a hash table of a given capacity.  Hash table will contain an array of entry_pair
  *  pointers.  This function does not validate input, only results.
  */
-hash_table_ptr _create_hash_table(int capacity, return_value_ptr result)
+hash_table_ptr _create_hash_table(int capacity, float threshold, return_value_ptr result)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
@@ -749,16 +911,7 @@ hash_table_ptr _create_hash_table(int capacity, return_value_ptr result)
     // Fill the struct
     if (retval == RET_SUCCESS)
     {
-        new_table->table_ptr = calloc(capacity, sizeof(entry_pair_ptr));
-        if (!(new_table->table_ptr))
-        {
-            errnum = errno;
-            HARKLE_ERRNO(calloc, errnum);
-            HARKLE_ERROR(_create_hash_table, Failed to allocate calloc memory);
-            retval = RET_ERROR;
-        }
-        new_table->entries = 0;  // Empty hash table
-        new_table->capacity = capacity;  // That's what the caller wants
+        retval = _fill_hash_table_struct(new_table, capacity, threshold);
     }
 
     // DONE
@@ -986,18 +1139,77 @@ return_value _destroy_table_struct(hash_table_ptr old_table)
     retval = _validate_table(old_table);
 
     // DESTROY IT
+    // Table array
     if (RET_SUCCESS == retval)
     {
         // void *table_ptr;  // Pointer to the array of entries
-        if (old_table->table_ptr)
-        {
-            free(old_table->table_ptr);
-            old_table->table_ptr = NULL;
-        }
+        retval = _free_table_array(old_table);
+    }
+    // Now, the rest
+    if (RET_SUCCESS == retval)
+    {
         // int entries;      // Number of entries in table_ptr
         old_table->entries = 0;
         // int capacity;     // Number of indices in the table_ptr array
         old_table->capacity = 0;
+        // float threshold;  // Load factor threshold to resize the hash table
+        old_table->threshold = 0;
+    }
+
+    // DONE
+    return retval;
+}
+
+
+return_value _evaluate_table(hash_table_ptr table)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+    bool needs_resizing = false;        // Return value from _check_for_resize()
+
+    // INPUT VALIDATION
+    retval = _validate_table(table);
+
+    // EVALUATE IT
+    if (RET_SUCCESS == retval)
+    {
+        needs_resizing = _check_for_resize(table, &retval);
+    }
+    // RESIZE IT
+    if (RET_SUCCESS == retval && true == needs_resizing)
+    {
+        retval = _resize_table(table);
+    }
+
+    // DONE
+    return retval;
+}
+
+
+return_value _fill_hash_table_struct(hash_table_ptr dst_table, int capacity, float threshold)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+    int errnum = 0;                     // Errno value
+
+    // FILL IT
+    if (dst_table)
+    {
+        dst_table->table_ptr = calloc(capacity, sizeof(entry_pair_ptr));
+        if (!(dst_table->table_ptr))
+        {
+            errnum = errno;
+            HARKLE_ERRNO(calloc, errnum);
+            HARKLE_ERROR(_create_hash_table, Failed to allocate calloc memory);
+            retval = RET_ERROR;
+        }
+        dst_table->entries = 0;  // Empty hash table
+        dst_table->capacity = capacity;  // That's what the caller wants
+        dst_table->threshold = threshold;  // That's what the caller wants
+    }
+    else
+    {
+        retval = RET_INV_PARAM;
     }
 
     // DONE
@@ -1091,6 +1303,28 @@ any_data_ptr _find_value(hash_table_ptr table, void *raw_data, data_type raw_dat
 }
 
 
+return_value _free_table_array(hash_table_ptr old_table)
+{
+    // LOCAL VARAIBLES
+    return_value retval = RET_SUCCESS;  // Function call results
+
+    // INPUT VALIDATION
+    if (old_table && old_table->table_ptr)
+    {
+        // void *table_ptr;  // Pointer to the array of entries
+        free(old_table->table_ptr);
+        old_table->table_ptr = NULL;
+    }
+    else
+    {
+        retval = RET_INV_PARAM;
+    }
+
+    // DONE
+    return retval;
+}
+
+
 entry_pair_ptr _get_index(hash_table_ptr table, unsigned int index, return_value_ptr result)
 {
     // LOCAL VARAIBLES
@@ -1120,6 +1354,146 @@ entry_pair_ptr _get_index(hash_table_ptr table, unsigned int index, return_value
         *result = retval;
     }
     return entry;
+}
+
+
+/*
+ *  Iterates over all indices in table->table_ptr.  Removes all entry_pair_ptr found and strings
+ *  them together in one long linked list.  Also, sets all table->table_ptr indices to NULL and
+ *  updates table->entries.
+ *
+ *  Returns the head node to that linked list.  If this function encounters an error, mid-removal,
+ *  it will: stop the process, update result with the error value, and return the head node it has.
+ *  Know that the table is in an undefined state if this occurs (e.g., table->entries may be
+ *  inaccurate).
+ */
+entry_pair_ptr _remove_entries(hash_table_ptr table, return_value_ptr result)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+    entry_pair_ptr head_entry = NULL;   // Head node for a linked list of old table entries
+    entry_pair_ptr tmp_entry = NULL;   // Head node for a linked list of old table entries
+    entry_pair_ptr *table_arr = NULL;   // table->table_ptr
+
+    // INPUT VALIDATION
+    retval = _validate_table(table);
+    if (RET_SUCCESS == retval && !result)
+    {
+        retval = RET_INV_PARAM;
+    }
+
+    // REMOVE THEM
+    if (RET_SUCCESS == retval)
+    {
+        table_arr = (entry_pair_ptr*)table->table_ptr;
+        for (unsigned int i = 0; i < table->capacity; i++)
+        {
+            // Get entry
+            tmp_entry = (*(table_arr + i));
+            // Chain entry
+            if (head_entry && tmp_entry)
+            {
+                retval = _add_entry_node(head_entry, tmp_entry);
+            }
+            else if (tmp_entry)
+            {
+                head_entry = tmp_entry;
+            }
+            // Validate results
+            if (RET_SUCCESS != retval)
+            {
+                fprintf(stderr, "_remove_entries() encountered %d mid-removal.  Aborting.", retval);
+                break;
+            }
+            else
+            {
+                (*(table_arr + i)) = NULL;  // Clear old entry
+            }
+        }
+    }
+
+    // DONE
+    if (result)
+    {
+        *result = retval;
+    }
+    if (RET_SUCCESS == result)
+    {
+        table->entries = 0;  // Doesn't matter what the count *was*... It's empty now.
+    }
+    return head_entry;
+}
+
+
+return_value _resize_table(hash_table_ptr table)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;   // Function call results
+    return_value tmp_ret = RET_SUCCESS;  // Temp function call results var
+    hash_table tmp_storage;              // Store old table values here
+    entry_pair_ptr head_entry = NULL;    // Head node for a linked list of old table entries
+    entry_pair_ptr tmp_entry = NULL;     // Temp node to iterate over the linked list
+    static int num_calls = 0;            // Defend against recursion
+
+    // INPUT VALIDATION
+    retval = _validate_table(table);
+    num_calls++;  // Increment the call count
+    if (RET_SUCCESS == retval && num_calls > 1)
+    {
+        retval = RET_ERROR;  // Recursion detected
+        fprintf(stderr, "Recursion detected in _resize_table()!\n");
+    }
+
+    // RESIZE IT
+    // Copy old table
+    if (RET_SUCCESS == retval)
+    {
+        retval = _copy_struct_contents(table, &tmp_storage);
+    }
+    // Reset the table struct
+    if (RET_SUCCESS == retval)
+    {
+        table->table_ptr = NULL;  // I don't think _f_h_t_s() checks but let's be safe
+        retval = _fill_hash_table_struct(table, tmp_storage.capacity * 2, tmp_storage.threshold);
+    }
+    // Pull out all the old entries
+    if (RET_SUCCESS == retval)
+    {
+        head_entry = _remove_entries(&tmp_storage, &retval);
+    }
+    // Shove the old entries into the new table
+    if (RET_SUCCESS == retval)
+    {
+        while(head_entry)
+        {
+            tmp_entry = head_entry;         // Process the head node
+            head_entry = head_entry->next;  // Advance the head node to the next node
+            tmp_entry->next = NULL;         // Disconnect tmp_entry from the linked list
+            tmp_ret = _shove_entry_in(table, tmp_entry);
+            if (RET_SUCCESS != tmp_ret)
+            {
+                fprintf(stderr, "_resize_table() encountered a %d error while inserting old "
+                        "entries into the new array.  Soldiering on.", retval);
+                if (RET_SUCCESS == retval)
+                {
+                    retval = tmp_ret;  // Store only the first error encountered but continue
+                }
+            }
+        }
+    }
+    // Free the old array
+    if (tmp_storage.table_ptr && 1 == num_calls)
+    {
+        tmp_ret = _free_table_array(&tmp_storage);  // We're in too deep
+        if (RET_SUCCESS == retval)
+        {
+            retval = tmp_ret;  // Store only the first error encountered
+        }
+    }
+
+    // DONE
+    num_calls--;  // Decrement the call count
+    return retval;
 }
 
 
@@ -1271,6 +1645,10 @@ return_value _validate_table(hash_table_ptr table)
     else if (table->capacity < 1)
     {
         retval = RET_INV_PARAM;
+    }
+    else if (table->threshold < 0.01 || table->threshold > 0.99)
+    {
+        retval = RET_INV_PARAM;  // The threshold member represents a percentage
     }
 
     // DONE
