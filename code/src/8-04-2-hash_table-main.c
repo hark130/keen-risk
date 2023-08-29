@@ -1,4 +1,4 @@
-#include "8-04-hash_table-solution.h"
+#include "8-04-hash_table.h"
 #include <stdio.h>   // fprintf()
 #include <string.h>  // strerror()
 
