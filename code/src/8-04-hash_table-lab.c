@@ -8,6 +8,7 @@
 
 #include "8-04-hash_functions.h"
 #include "8-04-hash_table.h"
+#include <stddef.h>  // NULL
 
 
 /* PRO TIP: Consider defining a data structure for storing key/value pairs in the hash table. */
