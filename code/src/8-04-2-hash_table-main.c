@@ -44,7 +44,6 @@ int main()
     // Busy key:value pair
     busy_int = COLLISION_VALUE;  // Use this value, in memory, to create a hash collision
     memcpy(busy_str, &busy_int, sizeof(int));  // Copy the raw memory into the char buffer
-    // puts(busy_str);  // DEBUGGING
     _set_string(&busy_key, busy_str);  // String memory should now match int memory
     busy_key.d_size -= 1;  // Accounting for _set_string()'s nul-char inclusion
     _set_string(&busy_value, "This input value is being used to create and test hash collisions!");
@@ -157,8 +156,6 @@ int main()
                  || found_value->d_size != busy_value.d_size
                  || 0 != strncmp(found_value->d_ptr, busy_value.d_ptr, busy_value.d_size))
         {
-            // _print_data(found_value->d_ptr, found_value->d_size);  // DEBUGGING
-            // _print_data(busy_value.d_ptr, busy_value.d_size);  // DEBUGGING
             fprintf(stderr, "The value found doesn't match the orignal key's value\n");
         }
         _print_results(result, "Retrieving the first hash collision");

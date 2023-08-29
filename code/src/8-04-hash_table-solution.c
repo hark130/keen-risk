@@ -412,13 +412,11 @@ return_value _add_key(hash_table_ptr table, any_data_ptr key, any_data_ptr value
     if (RET_SUCCESS == retval)
     {
         new_entry->key = _copy_any_data(key, &retval);
-        // fprintf(stderr, "COPIED %p to %p\n", key, new_entry->key);  // DEBUGGING
     }
     // Value
     if (RET_SUCCESS == retval)
     {
         new_entry->value = _copy_any_data(value, &retval);
-        // fprintf(stderr, "COPIED %p to %p\n", value, new_entry->value);  // DEBUGGING
     }
 
     // ADD TO HASH TABLE
@@ -470,7 +468,6 @@ unsigned long _calc_hash(void *d_ptr, unsigned int d_size)
 
     // GET IT
     hash = get_fnv_hash(d_ptr, d_size);
-    // fprintf(stderr, "HASH OF %p is %lu\n", d_ptr, hash);  // DEBUGGING
 
     // DONE
     return hash;
@@ -955,7 +952,6 @@ return_value _destroy_table(hash_table_ptr old_table)
             temp_entry = (*(table_arr + i));
             if (temp_entry)
             {
-                // fprintf(stderr, "Destroying %p\n", temp_entry);  // DEBUGGING
                 temp_ret = _destroy_entry_pair(temp_entry);
                 if (temp_ret != RET_SUCCESS)
                 {
@@ -1067,8 +1063,6 @@ any_data_ptr _find_value(hash_table_ptr table, void *raw_data, data_type raw_dat
             {
                 if (RET_SUCCESS == retval)
                 {
-                    // _print_data(raw_data, raw_data_size);  // DEBUGGING
-                    // _print_data(entry->key->d_ptr, entry->key->d_size);  // DEBUGGING
                     value = entry->value;
                     break;  // Found it
                 }
@@ -1156,7 +1150,6 @@ return_value _shove_entry_in(hash_table_ptr table, entry_pair_ptr new_entry)
         // Hash collision detected
         if (RET_SUCCESS == retval && temp_entry)
         {
-            // fprintf(stderr, "Hash collision detected for: %p!\n", new_entry);  // DEBUGGING
             while (NULL != temp_entry->next)
             {
                 temp_entry = temp_entry->next;  // Find the end of the linked list
@@ -1170,8 +1163,6 @@ return_value _shove_entry_in(hash_table_ptr table, entry_pair_ptr new_entry)
             retval = RET_SUCCESS;
             if (index < table->capacity)
             {
-                // fprintf(stderr, "STORING %p(%p:%p) at index %d\n", new_entry, new_entry->key,
-                //         new_entry->value, index);  // DEBUGGING
                 (*((entry_pair_ptr*)(table->table_ptr) + index)) = new_entry;
                 table->entries += 1;
             }
