@@ -31,6 +31,7 @@ typedef struct _hash_table
     void *table_ptr;        // Pointer to the array of entries
     unsigned int entries;   // Number of entries in table_ptr
     unsigned int capacity;  // Number of indices in the table_ptr array
+    float threshold;        // Load factor threshold to resize the hash table
 } hash_table, *hash_table_ptr;
 
 
@@ -41,14 +42,18 @@ typedef struct _hash_table
 
 
 /*
- *  Allocates and initializes heap memory for a hash table.
+ *  Allocates and initializes heap memory for a hash table.  Capacity is the initial size of the
+ *  hash table and threshold is the load factor which will trigger the hash table to double in
+ *  size (at least).
  *
- *  NOTE: The caller is responsible for (eventually) calling destroy_table() to free the table.
+ *  NOTES:
+ *      - The caller is responsible for (eventually) calling destroy_table() to free the table.
+ *      - Consider 0.75 as the threshold.
  *
  *  Updates result with RET_SUCCESS on success, RET_INV_PARAM for bad input, RET_ERROR if an OS
  *  system call fails (and print errno), or RET_NOT_FOUND if key can't be found in the hash table.
  */
-hash_table_ptr create_hash_table(unsigned int capacity, return_value_ptr result);
+hash_table_ptr create_hash_table(unsigned int capacity, float threshold, return_value_ptr result);
 
 
 /*
