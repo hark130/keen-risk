@@ -45,6 +45,7 @@ all:
 8-04-solution:
 	$(CALL_MAKE) 8-04-1-solution
 	$(CALL_MAKE) 8-04-2-solution
+	$(CALL_MAKE) 8-04-3-solution
 
 8-04-1-solution: $(DST)/8-04-hash_table-solution.o $(DST)/8-04-hash_functions.o
 	$(CC) $(CFLAGS) $(SRC)/8-04-1-hash_table-main.c $^ -o $(DST)/8-04-1.bin -I $(INC) -L $(DST)
@@ -53,6 +54,10 @@ all:
 8-04-2-solution: $(DST)/8-04-hash_table-solution.o $(DST)/8-04-hash_functions.o
 	$(CC) $(CFLAGS) $(SRC)/8-04-2-hash_table-main.c $^ -o $(DST)/8-04-2.bin -I $(INC) -L $(DST)
 	$(CC) $(AFLAGS) $(SRC)/8-04-2-hash_table-main.c $^ -o $(DST)/8-04-2_asan.bin -I $(INC) -L $(DST)
+
+8-04-3-solution: $(DST)/8-04-hash_table-solution.o $(DST)/8-04-hash_functions.o
+	$(CC) $(CFLAGS) $(SRC)/8-04-3-hash_table-main.c $^ -o $(DST)/8-04-3.bin -I $(INC) -L $(DST)
+	$(CC) $(AFLAGS) $(SRC)/8-04-3-hash_table-main.c $^ -o $(DST)/8-04-3_asan.bin -I $(INC) -L $(DST)
 
 %$(SO_EXT): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(DST)/$@ $(DST)/$^ $(SO_FLAGS)
