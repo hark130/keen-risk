@@ -1,4 +1,20 @@
-#include "8-04-hash_table-solution.h"
+/*
+ *  DESCRIPTION:
+ *      This source file contains unit tests for student lab 8-04-1.
+ *
+ *  BUILD:
+ *      The easiest way to build these unit tests is to copy all the files into a dir and:
+ *      gcc -o 8-04-1-lab.bin 8-04-1-hash_table-main.c 8-04-hash_functions.c 8-04-hash_table-lab.c
+ *
+ *      BONUS: Stop copy pasting gcc commands and create a Makefile.  See: JQS 6-17.
+ *
+ *  TEST:
+ *      ./8-04-1-lab.bin  # Should have all checkmarks.  Read the output.  Failures go to stderr.
+ *      # Be sure to build and run the solution through ASAN.  See: JQS 6-16 and 6-21.
+ *      # Also use Valgrind to identify issues with memory management.  See: JQS 6-21.
+ */
+
+#include "8-04-hash_table.h"
 #include <stdio.h>   // fprintf()
 #include <string.h>  // strerror()
 
