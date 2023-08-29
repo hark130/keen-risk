@@ -1,5 +1,6 @@
 /*
- *  This header file defines the interface used by the 8-04 student labs.
+ *  This header file declares the functions used by all of the 8-04 unit tests.
+ *  Consider these functions the entry point of your library.  Validate all input.
  *  In general, the library is responsible for allocating memory to copy user input.
  *  The hash_table struct serves as a layer of abstraction between the library and the user.
  *  The user should never directly modify any data contained in the hash_table struct.
