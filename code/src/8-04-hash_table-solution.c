@@ -1,4 +1,7 @@
 /*
+ *  This is an example implementation for the 8-04 student labs.
+ *  This solution should work, as-is, when copy pasted into 8-04-hash_table-lab.c.
+ *
  *  DISCLAIMER: This implementation is not perfect.
  *      The Good:
  *          - It works.
@@ -15,7 +18,7 @@
  */
 
 #include "8-04-hash_functions.h"
-#include "8-04-hash_table-solution.h"
+#include "8-04-hash_table.h"
 #include <errno.h>    // errno
 #include <stdbool.h>  // bool, true, false
 #include <stdio.h>    // fprintf(), printf()
