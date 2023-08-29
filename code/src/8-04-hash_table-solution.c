@@ -40,9 +40,6 @@ typedef struct _entry_pair
 } entry_pair, *entry_pair_ptr;
 
 
-void _print_data(void *data, unsigned int size);
-
-
 /**************************************************************************************************/
 /********************************* INTERNAL FUNCTION DECLARATIONS *********************************/
 /**************************************************************************************************/
@@ -381,54 +378,6 @@ return_value _add_entry(hash_table_ptr table, entry_pair_ptr new_entry)
     {
         retval = _shove_entry_in(table, new_entry);
     }
-    // // Hash collision?
-    // if (RET_SUCCESS == retval)
-    // {
-    //     // 1. Get the data's index
-    //     index = _calc_index(new_entry->key->d_ptr, new_entry->key->d_size, table->capacity);
-    //     // 2. Find the data
-    //     if (BAD_INDEX != index)
-    //     {
-    //         temp_entry = _get_index(table, index, &retval);
-    //     }
-    //     if (temp_entry)
-    //     {
-    //         fprintf(stderr, "Hash collision detected for new entry: %p!\n", new_entry);
-    //         // fprintf(stderr, "Hash collision detected for new entry(key:value): %p(%p:%p)!\n",
-    //         //         new_entry, new_entry->key, new_entry->value);  // DEBUGGING
-    //         retval = RET_ERROR;
-    //     }
-    //     else if (RET_NOT_FOUND == retval)
-    //     {
-    //         retval = RET_SUCCESS;
-    //     }
-    // }
-    // // Calculate the index
-    // if (RET_SUCCESS == retval)
-    // {
-    //     index = _calc_index(new_entry->key->d_ptr, new_entry->key->d_size, table->capacity);
-    //     if (ERROR_HASH == index)
-    //     {
-    //         HARKLE_ERROR(_calc_index, Returned a bad hash value);
-    //         retval = RET_ERROR;
-    //     }
-    // }
-    // // Insert new_entry into table->table_ptr
-    // if (RET_SUCCESS == retval)
-    // {
-    //     if (index < table->capacity)
-    //     {
-    //         fprintf(stderr, "STORING %p(%p:%p) at index %d\n", new_entry, new_entry->key,
-    //                 new_entry->value, index);  // DEBUGGING
-    //         (*((entry_pair_ptr*)(table->table_ptr) + index)) = new_entry;
-    //         table->entries += 1;
-    //     }
-    //     else
-    //     {
-    //         HARKLE_ERROR(_add_entry, Detected an out of bounds index);
-    //         retval = RET_ERROR;  // Invalid index
-    //     }
-    // }
 
     // RESIZE
     // If we're going to resize the hash table at a certain "load factor" threshold, we do it here
@@ -579,15 +528,6 @@ return_value _clear_index(hash_table_ptr table, unsigned int old_index, entry_pa
         {
             retval = RET_NOT_FOUND;
         }
-        // else
-        // {
-        //     tmp_node = tmp_head;
-        //     // retval = _destroy_entry_pair(old_entry);
-        //     // if (RET_SUCCESS == retval)
-        //     // {
-        //     //     (*(table_entries + old_index)) = NULL;
-        //     // }
-        // }
         else
         {
             retval = _validate_entry_pair(tmp_head);
