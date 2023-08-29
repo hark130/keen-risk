@@ -1,5 +1,5 @@
 /*
- *  NOTE TO STUDENTS: This implementation is not perfect.
+ *  DISCLAIMER: This implementation is not perfect.
  *      The Good:
  *          - It works.
  *          - ASAN and Valgrind both give this implementation a clean bill of health.
@@ -23,17 +23,15 @@
 #include <string.h>   // strerror()
 
 #define BAD_INDEX (unsigned int)0xFFFFFFFF
-#define THIS_FILE "08-04-hash_table-solution.c"
 #define HARKLE_ERROR(funcName, msg) do { fprintf(stderr, "<<<ERROR>>> - %s - %s() - %s!\n", \
-                                                 THIS_FILE, #funcName, #msg); } while (0);
+                                                 __FILE__, #funcName, #msg); } while (0);
 #define HARKLE_ERRNO(funcName, errorNum) if (errorNum) { fprintf(stderr, "<<<ERROR>>> - %s - \
                                                                  %s() returned errno:\t%s\n", \
-                                                                 THIS_FILE, #funcName, \
+                                                                 __FILE__, #funcName, \
                                                                  strerror(errorNum)); }
-#define HARKLE_WARNG(funcName, msg) do { fprintf(stderr, "¿¿¿WARNING??? - %s - %s() - %s!\n", \
-                                                 THIS_FILE, #funcName, #msg); } while (0);
 
 
+// Each hash table element is a entry_pair_ptr
 typedef struct _entry_pair
 {
     any_data_ptr key;          // The entry's key
@@ -412,9 +410,6 @@ return_value _add_entry(hash_table_ptr table, entry_pair_ptr new_entry)
     {
         retval = _shove_entry_in(table, new_entry);
     }
-
-    // RESIZE
-    // If we're going to resize the hash table at a certain "load factor" threshold, we do it here
 
     // DONE
     return retval;
