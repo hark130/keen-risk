@@ -182,8 +182,9 @@ Resources
 
 * Data Structures and Algorithms Made Easy Ch. 13 & 14
 * Hash Table
-    * https://en.wikipedia.org/wiki/Hash_table
-    * https://www.hackerearth.com/practice/data-structures/hash-tables/basics-of-hash-tables/tutorial/
+    * General - https://en.wikipedia.org/wiki/Hash_table
+    * Basics - https://www.hackerearth.com/practice/data-structures/hash-tables/basics-of-hash-tables/tutorial/
+    * Resizing - https://www.geeksforgeeks.org/load-factor-and-rehashing/#
 
 ----
 
