@@ -77,7 +77,7 @@ How can you store "any data type"?
 Data Structure Bookkeeping
 ========================================
 
-How can a data structure dream?
+How does a data structure dream?
 
 .. code:: c
 
