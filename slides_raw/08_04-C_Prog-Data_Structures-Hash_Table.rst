@@ -83,7 +83,7 @@ How can a data structure dream?
 
 	typedef struct _hash_table
 	{
-		// Array of entries
+	    // Array of entries
 	    void *table_ptr;
 	    // Number of entries
 	    unsigned int entries;
@@ -111,7 +111,7 @@ Your code will have to compute the slot index.
 
 .. code:: c
 
-	get_jank_hash()
+	get_jank_hash();
 
 	// Fowler-Noll-Vo (FNV)
 	get_fnv_hash();
