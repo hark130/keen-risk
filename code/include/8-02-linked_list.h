@@ -83,8 +83,8 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
 
 
 /*
- *  Allocates a list_node, copies node_data into the list_node, and inserts the list_node at
- *	position pos.  The head_node is position 1.  The result value is updated with the return_value.
+ *  Finds the node at position pos, removes that node from the list, and frees that node.
+ *  The head_node is position 1.  The result value is updated with the return_value.
  *
  *	Returns a pointer to the head_node on success.  Returns NULL on failure (consult result).
  */
