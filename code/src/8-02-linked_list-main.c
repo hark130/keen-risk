@@ -15,7 +15,6 @@
                                                                  strerror(errorNum)); }
 
 
-
 /*
  *  Compare input to test_data_result.  Does not validate input.
  */
@@ -77,6 +76,7 @@ return_value _validate_any_test_data(any_data_ptr data);
  */
 return_value _validate_raw_test_data(void *raw_data, data_type raw_data_type,
                                      unsigned int raw_data_size);
+
 
 int main()
 {
