@@ -20,6 +20,12 @@ typedef enum _return_value
 } return_value, *return_value_ptr;
 
 
+typedef enum _data_type
+{
+    NULL_DT = 0, CHAR_DT, DOUBLE_DT, FLOAT_DT, INT_DT, STRING_DT, VOID_DT
+} data_type, *data_type_ptr;
+
+
 typedef struct _any_data
 {
     void *d_ptr;          // Pointer to data
@@ -42,59 +48,60 @@ typedef struct _list_node
 
 
 /*
- *	Allocates a list_node, copies node_data into the list_node, and adds the list_node to the
- *	end of head_node.  If head_node is NULL, then the new list_node becomes the new head_node.
- *	The result value is updated with the return_value.
+ *  Allocates a list_node, copies node_data into the list_node, and adds the list_node to the
+ *  end of head_node.  If head_node is NULL, then the new list_node becomes the new head_node.
+ *  The result value is updated with the return_value.
  *
- *	Returns a pointer to the head_node on success.  Returns NULL on failure (consult result).
+ *  Returns a pointer to the head_node on success.  Returns NULL on failure (consult result).
  */
 list_node_ptr append_data(list_node_ptr head_node, any_data_ptr node_data, return_value_ptr result);
 
 
 /*
- *	Frees the data and list_node pointers for each node found in head_node's linked list.
+ *  Frees the data and list_node pointers for each node found in head_node's linked list.
  */
 return_value delete_list(list_node_ptr head_node);
 
 
 /*
- *	Count the nodes in the link list starting at head_node.  If head_node is NULL, returns 0.
+ *  Count the nodes in the link list starting at head_node.  If head_node is NULL, returns 0.
  */
 unsigned int count_nodes(list_node_ptr head_node);
 
 
 /*
- *	Finds and returns the list_node_ptr at position number pos.  The head_node is position 1.
+ *  Finds and returns the list_node_ptr at position number pos.  The head_node is position 1.
  *
- *	Returns a pointer to the desired node on success.  Returns NULL on failure (consult result).
+ *  Returns a pointer to the desired node on success.  Returns NULL on failure (consult result).
  */
 list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_value_ptr result);
 
 
 /*
  *  Allocates a list_node, copies node_data into the list_node, and inserts the list_node at
- *	position pos.  The head_node is position 1.  If head_node is NULL, then the new list_node
- *	becomes the new head_node.  The result value is updated with the return_value.
+ *  position pos, moving any existing nodes back.  The head_node is position 1.  If head_node is
+ *  NULL, then the new list_node becomes the new head_node.  The result value is updated with the
+ *  return_value.
  *
- *	Returns a pointer to the head_node on success.  Returns NULL on failure (consult result).
+ *  Returns a pointer to the head_node on success.  Returns NULL on failure (consult result).
  */
  list_node_ptr insert_data(list_node_ptr head_node, any_data_ptr node_data, unsigned int pos,
- 	                       return_value_ptr result);
+                           return_value_ptr result);
 
 
 /*
  *  Finds the node at position pos, removes that node from the list, and frees that node.
  *  The head_node is position 1.  The result value is updated with the return_value.
  *
- *	Returns a pointer to the head_node on success.  Returns NULL on failure (consult result).
+ *  Returns a pointer to the head_node on success.  Returns NULL on failure (consult result).
  */
  list_node_ptr remove_node_pos(list_node_ptr head_node, unsigned int pos, return_value_ptr result);
 
 
 /*
- *	Finds and returns the list_node_ptr that contains data matching needle.
+ *  Finds and returns the list_node_ptr that contains data matching needle.
  *
- *	Returns a pointer to the matching node on success.  Returns NULL on failure (consult result).
+ *  Returns a pointer to the matching node on success.  Returns NULL on failure (consult result).
  */
 list_node_ptr find_node_val(list_node_ptr head_node, any_data_ptr needle, return_value_ptr result);
 
