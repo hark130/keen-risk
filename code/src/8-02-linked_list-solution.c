@@ -108,7 +108,7 @@ list_node_ptr append_data(list_node_ptr head_node, any_data_ptr node_data, retur
     // Allocate
     if (RET_SUCCESS == retval)
     {
-        new_node = _copy_any_data(node_data, &retval);
+        new_node = _create_new_node(node_data, &retval);
         if (!new_node && RET_SUCCESS == retval)
         {
             retval = RET_ERROR;
@@ -132,12 +132,12 @@ list_node_ptr append_data(list_node_ptr head_node, any_data_ptr node_data, retur
     {
         *result = retval;
     }
-    if (RET_SUCCESS != result)
+    if (RET_SUCCESS != retval)
     {
         new_head = NULL;
         if (new_node)
         {
-            _destroy_any_data(new_node);
+            _destroy_node(new_node);
             new_node = NULL;
         }
     }
