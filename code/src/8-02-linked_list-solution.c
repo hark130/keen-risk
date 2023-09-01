@@ -160,7 +160,7 @@ return_value delete_list(list_node_ptr head_node)
     {
         while(new_head)
         {
-            tmp_node = remove_node_pos(new_head, 0, &retval);
+            tmp_node = remove_node_pos(new_head, 1, &retval);
             if (RET_SUCCESS != retval)
             {
                 break;
@@ -278,6 +278,10 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
             new_node->next_ptr = head_node;
             new_head = new_node;
         }
+        else if (pos > count_nodes(head_node))
+        {
+            retval = _append_node(new_head, new_node);
+        }
         else
         {
             tmp_node = find_node_pos(head_node, pos - 1, &retval);
@@ -345,7 +349,7 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
                 if (cur_pos == pos)
                 {
                     retval = RET_SUCCESS;
-                    old_node = tmp_node->next_ptr;        // Store the pointer to destroy
+                    old_node = tmp_node->next_ptr;  // Store the pointer to destroy
                     tmp_node->next_ptr = old_node->next_ptr;  // Remove it from the linked list
                     break;  // Stop looking
                 }
@@ -361,6 +365,10 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
     {
         retval = _destroy_node(old_node);
         old_node = NULL;
+    }
+    else
+    {
+        new_head = NULL;
     }
 
     // DONE
