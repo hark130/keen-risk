@@ -80,8 +80,8 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
 /*
  *  Allocates a list_node, copies node_data into the list_node, and inserts the list_node at
  *  position pos, moving any existing nodes back.  The head_node is position 1.  If head_node is
- *  NULL, then the new list_node becomes the new head_node.  The result value is updated with the
- *  return_value.
+ *  NULL, then the new list_node becomes the new head_node.  If pos is greater than the list length
+ *  then the node will be appended.  The result value is updated with the return_value.
  *
  *  Returns a pointer to the head_node on success.  Returns NULL on failure (consult result).
  */
