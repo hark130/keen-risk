@@ -3,6 +3,20 @@
  */
 
 #include "8-02-linked_list.h"
+#include <errno.h>    // errno
+#include <stdbool.h>  // true, false, bool
+#include <stdlib.h>   // calloc(), free()
+#include <stdio.h>    // fprintf()
+#include <string.h>   // memset()
+
+
+
+#define HARKLE_ERROR(funcName, msg) do { fprintf(stderr, "<<<ERROR>>> - %s - %s() - %s!\n", \
+                                                 __FILE__, #funcName, #msg); } while (0);
+#define HARKLE_ERRNO(funcName, errorNum) if (errorNum) { fprintf(stderr, "<<<ERROR>>> - %s - \
+                                                                 %s() returned errno:\t%s\n", \
+                                                                 __FILE__, #funcName, \
+                                                                 strerror(errorNum)); }
 
 
 /**************************************************************************************************/
@@ -15,12 +29,31 @@
 return_value _append_node(list_node_ptr head_node, list_node_ptr new_node);
 
 /*
+ *  Compares all contents of s1_data to s2_data.  Returns true on exact match.  Returns false
+ *  on mismatch or failure.  Result always updated.
+ */
+bool _compare_any_data(any_data_ptr s1_data, any_data_ptr s2_data, return_value_ptr result);
+
+/*
+ *  Compares all aspects of s1 data against s2, starting with the bookkeeping.  Immediately
+ *  returns false on the first difference detected.
+ */
+bool _compare_data(void *s1_data, data_type s1_data_type, unsigned int s1_data_size,
+                   any_data_ptr s2_data, return_value_ptr result);
+
+/*
  *  Allocates a new any_data struct on the heap, copies over the source bookkeeping values,
  *  allocates a heap-buffer for the new any_data.d_ptr, and memcpy()s source->d_ptr into the
  *  new buffer.  If any part of the process fails, this function will free() all allocated memory,
  *  updated result, and return NULL.
  */
 any_data_ptr _copy_any_data(any_data_ptr source, return_value_ptr result);
+
+/*
+ *  Allocate a new node and copy in heap-allocated data copied from source.  Returns NULL on
+ *  failure.  See result for details.
+ */
+list_node_ptr _create_new_node(any_data_ptr source, return_value_ptr result);
 
 /*
  *  Zeroize the data and free the data pointer.  Then zeroize the pointer, type and size.  Then
@@ -154,7 +187,7 @@ unsigned int count_nodes(list_node_ptr head_node)
     while (tmp_node)
     {
         count++;
-        tmp_node = tmp_node->next;
+        tmp_node = tmp_node->next_ptr;
     }
 
     // DONE
@@ -193,7 +226,7 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
             }
             else
             {
-                tmp_node = tmp_node->next;
+                tmp_node = tmp_node->next_ptr;
             }
         }
     }
@@ -208,7 +241,71 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
 
 
  list_node_ptr insert_data(list_node_ptr head_node, any_data_ptr node_data, unsigned int pos,
- 	                       return_value_ptr result);
+ 	                       return_value_ptr result)
+ {
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;   // Function call results
+    list_node_ptr new_head = head_node;  // Pointer to the new(?) head node
+    list_node_ptr new_node = NULL;       // Pointer to the newly allocated node
+    list_node_ptr tmp_node = NULL;       // Node at position pos - 1
+
+    // INPUT VALIDATION
+    retval = _validate_any_data(node_data);
+    if (RET_SUCCESS == retval)
+    {
+        if (!result || pos < 1)
+        {
+            retval = RET_INV_PARAM;
+        }
+    }
+
+    // INSERT IT
+    // Create node
+    if (RET_SUCCESS == retval)
+    {
+        new_node = _create_new_node(node_data, &retval);
+        if (!new_node && RET_SUCCESS == retval)
+        {
+            retval = RET_ERROR;
+        }
+    }
+    // Insert node
+    if (RET_SUCCESS == retval)
+    {
+        if (1 == pos)
+        {
+            // New node is the new head node
+            new_node->next_ptr = head_node;
+            new_head = new_node;
+        }
+        else
+        {
+            tmp_node = find_node_pos(head_node, pos - 1, &retval);
+            if (tmp_node && RET_SUCCESS == retval)
+            {
+                new_node->next_ptr = tmp_node->next_ptr;  // Add downstream linkage to new_node
+                tmp_node->next_ptr = new_node;  // Add new_node to upstream linkage
+            }
+        }
+    }
+
+    // DONE
+    if (result)
+    {
+        *result = retval;
+    }
+    if (RET_SUCCESS != retval)
+    {
+        if (new_node)
+        {
+            _destroy_node(new_node);
+            new_node = NULL;            
+        }
+        new_head = NULL;  // Return NULL on failure.
+    }
+
+    return new_head;
+ }
 
 
  list_node_ptr remove_node_pos(list_node_ptr head_node, unsigned int pos, return_value_ptr result)
@@ -237,24 +334,24 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
         if (1 == pos)
         {
             old_node = new_head;        // Store the pointer to destroy
-            new_head = new_head->next;  // Next node is the new head node
+            new_head = new_head->next_ptr;  // Next node is the new head node
         }
         else
         {
             retval = RET_NOT_FOUND;
-            while(tmp_node->next)
+            while(tmp_node->next_ptr)
             {
                 cur_pos++;
                 if (cur_pos == pos)
                 {
                     retval = RET_SUCCESS;
-                    old_node = tmp_node->next;        // Store the pointer to destroy
-                    tmp_node->next = old_node->next;  // Remove that pointer from the linked list
+                    old_node = tmp_node->next_ptr;        // Store the pointer to destroy
+                    tmp_node->next_ptr = old_node->next_ptr;  // Remove it from the linked list
                     break;  // Stop looking
                 }
                 else
                 {
-                    tmp_node = tmp_node->next;
+                    tmp_node = tmp_node->next_ptr;
                 }
             }
         }
@@ -275,7 +372,58 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
  }
 
 
-list_node_ptr find_node_val(list_node_ptr head_node, any_data_ptr needle, return_value_ptr result);
+list_node_ptr find_node_val(list_node_ptr head_node, any_data_ptr needle, return_value_ptr result)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;   // Function call results
+    list_node_ptr tmp_node = head_node;  // Temp node to iterate the list
+    list_node_ptr needle_node = NULL;    // Node pointer with data that matches needle
+
+    // INPUT VALIDATION
+    // Head node gets validated in the while loop below
+    if (RET_SUCCESS == retval)
+    {
+        retval = _validate_any_data(needle);
+    }
+    if (RET_SUCCESS == retval && !result)
+    {
+        retval = RET_INV_PARAM;
+    }
+
+    // FIND IT
+    if (RET_SUCCESS == retval)
+    {
+        while(tmp_node)
+        {
+            retval = _validate_node(tmp_node);
+            if (RET_SUCCESS != retval)
+            {
+                fprintf(stderr, "Found an invalid node with find_node_val(): %d\n", retval);
+                break;  // Error encountered
+            }
+            else if (true == _compare_any_data(needle, tmp_node->data_ptr, &retval))
+            {
+                needle_node = tmp_node;  // Found it
+                break;  // Stop looking
+            }
+            else
+            {
+                tmp_node = tmp_node->next_ptr;  // Check the next node
+            }
+        }
+        if (!needle_node)
+        {
+            retval = RET_NOT_FOUND;  // Didn't find a match
+        }
+    }
+
+    // DONE
+    if (result)
+    {
+        *result = retval;
+    }
+    return needle_node;
+}
 
 
 // return_value sort_list(list_node_ptr head_node, SORT FUNCTION POINTER PLACEHOLDER);
@@ -284,6 +432,30 @@ list_node_ptr find_node_val(list_node_ptr head_node, any_data_ptr needle, return
 /**************************************************************************************************/
 /*************************************** INTERNAL FUNCTIONS ***************************************/
 /**************************************************************************************************/
+
+
+any_data_ptr _allocate_any_data(return_value_ptr result)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;                    // Function call results
+    any_data_ptr new_data = calloc(1, sizeof(any_data));  // New any_data struct
+    int errnum = errno;                                   // Errno value
+
+    // VALIDATION
+    if (!new_data)
+    {
+        HARKLE_ERRNO(_allocate_any_data, errnum);  // Already captured errno
+        HARKLE_ERROR(_allocate_any_data, Calloc failed to allocate a new entry);
+        retval = RET_ERROR;
+    }
+
+    // DONE
+    if (result)
+    {
+        *result = retval;
+    }
+    return new_data;
+}
 
 
 return_value _append_node(list_node_ptr head_node, list_node_ptr new_node)
@@ -302,15 +474,101 @@ return_value _append_node(list_node_ptr head_node, list_node_ptr new_node)
     // APPEND IT
     if (RET_SUCCESS == retval)
     {
-        while (tmp_node->next)
+        while (tmp_node->next_ptr)
         {
-            tmp_node = tmp_node->next;
+            tmp_node = tmp_node->next_ptr;
         }
-        tmp_node->next = new_node;
+        tmp_node->next_ptr = new_node;
     }
 
     // DONE
-    return retval
+    return retval;
+}
+
+
+bool _compare_any_data(any_data_ptr s1_data, any_data_ptr s2_data, return_value_ptr result)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+    bool matches = false;               // s1 matches s2
+
+    // INPUT VALIDATION
+    // s1
+    retval = _validate_any_data(s1_data);
+    // s2
+    if (RET_SUCCESS == retval)
+    {
+        retval = _validate_any_data(s2_data);
+    }
+    // result
+    if (RET_SUCCESS == retval && !result)
+    {
+        retval = RET_INV_PARAM;
+    }
+
+    // COMPARE IT
+    if (RET_SUCCESS == retval)
+    {
+        matches = _compare_data(s1_data->d_ptr, s1_data->d_type, s1_data->d_size, s2_data, &retval);
+    }
+
+    // DONE
+    if (result)
+    {
+        *result = retval;
+    }
+    return matches;
+}
+
+
+bool _compare_data(void *s1_data, data_type s1_data_type, unsigned int s1_data_size,
+                   any_data_ptr s2_data, return_value_ptr result)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+    bool matches = true;                // s1 matches s2
+
+    // INPUT VALIDATION
+    // s1
+    retval = _validate_raw_data(s1_data, s1_data_type, s1_data_size);
+    // s2
+    if (RET_SUCCESS == retval)
+    {
+        retval = _validate_any_data(s2_data);
+    }
+    // result
+    if (RET_SUCCESS == retval && !result)
+    {
+        retval = RET_INV_PARAM;
+    }
+
+    // COMPARE IT
+    if (RET_SUCCESS == retval)
+    {
+        if (s1_data_size != s2_data->d_size)
+        {
+            matches = false;  // Different sizes
+        }
+        else if (s1_data_type != s2_data->d_type)
+        {
+            matches = false;  // Different data types
+        }
+        else if (memcmp(s1_data, s2_data->d_ptr, s1_data_size))
+        {
+            matches = false;  // Memory doesn't match
+        }
+    }
+
+    // DONE
+    if (result)
+    {
+        *result = retval;
+    }
+    if (RET_SUCCESS != retval)
+    {
+        matches = false;
+    }
+    return matches;
 }
 
 
@@ -342,7 +600,7 @@ any_data_ptr _copy_any_data(any_data_ptr source, return_value_ptr result)
         // unsigned int d_size;  // Total size of the data, in memory, as bytes
         new_data->d_size = source->d_size;
         // void *d_ptr;          // Pointer to data
-        new_data->d_ptr = calloc(new_data->d_size, 1);
+        new_data->d_ptr = calloc(1, new_data->d_size);
         if (!(new_data->d_ptr))
         {
             errnum = errno;
@@ -377,6 +635,66 @@ any_data_ptr _copy_any_data(any_data_ptr source, return_value_ptr result)
         new_data = NULL;
     }
     return new_data;
+}
+
+
+list_node_ptr _create_new_node(any_data_ptr source, return_value_ptr result)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+    any_data_ptr new_data = NULL;       // New heap-allocated any_data struct copied from source
+    list_node_ptr new_node = NULL;      // New heap-allocated list_node struct pointer
+    int errnum = 0;                     // Errno value
+
+    // INPUT VALIDATION
+    retval = _validate_any_data(source);
+    if (RET_SUCCESS == retval && !result)
+    {
+        retval = RET_INV_PARAM;
+    }
+
+    // CREATE IT
+    // Create new any_data_ptr
+    if (RET_SUCCESS == retval)
+    {
+        new_data = _copy_any_data(source, &retval);
+    }
+    // Create new node
+    if (RET_SUCCESS == retval)
+    {
+        new_node = calloc(1, sizeof(list_node));
+        if (!new_node)
+        {
+            errnum = errno;
+            HARKLE_ERRNO(calloc, errnum);
+            HARKLE_ERROR(_copy_any_data, Failed to allocate memory);
+            retval = RET_ERROR;
+        }
+        else
+        {
+            new_node->data_ptr = new_data;
+        }
+    }
+
+    // DONE
+    if (result)
+    {
+        *result = retval;
+    }
+    if (RET_SUCCESS != retval)
+    {
+        if (new_node)
+        {
+            _destroy_node(new_node);  // Will also destroy the node's data
+        }
+        else if (new_data)
+        {
+            _destroy_any_data(new_data);
+        }
+        new_node = NULL;
+        new_data = NULL;
+    }
+    return new_node;
 }
 
 
@@ -431,7 +749,7 @@ return_value _destroy_node(list_node_ptr old_node)
     if (RET_SUCCESS == retval)
     {
         old_node->data_ptr = NULL;
-        old_node->next = NULL;
+        old_node->next_ptr = NULL;
         free(old_node);
     }
 
