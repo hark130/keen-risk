@@ -714,7 +714,7 @@ bool _compare_any_data(any_data_ptr s1_data, any_data_ptr s2_data, return_value_
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
-    bool matches = true;                // s1 matches s2
+    bool matches = false;               // s1 matches s2
 
     // INPUT VALIDATION
     // s1
@@ -788,6 +788,10 @@ bool _compare_data(void *s1_data, data_type s1_data_type, unsigned int s1_data_s
     {
         *result = retval;
     }
+    if (RET_SUCCESS != retval)
+    {
+        matches = false;
+    }
     return matches;
 }
 
@@ -820,7 +824,7 @@ any_data_ptr _copy_any_data(any_data_ptr source, return_value_ptr result)
         // unsigned int d_size;  // Total size of the data, in memory, as bytes
         new_data->d_size = source->d_size;
         // void *d_ptr;          // Pointer to data
-        new_data->d_ptr = calloc(new_data->d_size, 1);
+        new_data->d_ptr = calloc(1, new_data->d_size);
         if (!(new_data->d_ptr))
         {
             errnum = errno;
