@@ -70,6 +70,7 @@ How can you store "any data type"?
 
 	Whomever wrote the "any data type" objective hates students or meant "discrete data type".
 	You store "any data type" by saving the raw data, the original data type, and the size of that data in memory.
+	Another solution would be to use a Union but you'd still have to store the original data type.
 	Walk them through a couple examples.
 
 ----
