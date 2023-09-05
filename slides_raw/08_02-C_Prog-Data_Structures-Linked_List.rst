@@ -35,6 +35,7 @@ Overview
 
 * "Any data type"
 * Data Structure Bookkeeping
+* Sorting
 * Resources
 * Student Labs
 
@@ -68,6 +69,7 @@ How can you store "any data type"?
 
 	Whomever wrote the "any data type" objective hates students or they meant "discrete data type".
 	You store "any data type" by saving the raw data, the original data type, and the size of that data in memory.
+	Another solution would be to use a Union but you'd still have to store the original data type.
 	Walk them through a couple examples.
 
 ----
@@ -122,87 +124,123 @@ Bookkeeping can help improve performance
 
 ----
 
-Hash Function
+Sorting
 ========================================
 
-Hash Function - Transforms a key into a slot index.
+* Generic Process
+* Sorting Algorithms
+* Modular Sorting
 
-The 8-04-hash_functions only gives you half the answer: the hash.
+.. note::
 
-Your code will have to compute the slot index.
+	This "sorting" section is purposely short.  This isn't 8-02: Sorting.  This is 8-02: Linked Lists.
+	It's only here because there's one objective that requires sorting.
+
+----
+
+Sorting - Process
+========================================
+
+* Generic Process
+	1. Gather the input
+	2. Sort it
+	3. Put it back
+
+.. note::
+
+	1. Sometimes the input is already gathered.  Sometimes it's best to put the input into an array.  That way, the sorting implementation works regardless of the original data structure format.
+	2. There are numerous sorting algorithms, each with their own strengths and weaknesses.
+	3. Sometimes the data can be sorted in-place but if you gathered the input into an array then you'll need to put it back into its original format.
+
+----
+
+:class: split-table
+
+Sorting - Algorithms
+========================================
+
+Common Sorting Algorithms
+
++---------------+---------------+-------------+
+| **Algorithm** |    **PRO**    | **Time**    |
++---------------+---------------+-------------+
+| Bubble        | Simplest      | Slowest     |
++---------------+---------------+-------------+
+| Insertion     | Almost sorted | Slow        |
++---------------+---------------+-------------+
+| Quick         | Most common   | Fast        |
++---------------+---------------+-------------+
+| Merge         | Worst == Best | Fastest     |
++---------------+---------------+-------------+
+
+.. note::
+
+	Bubble sort touches all permutations of all elements while sorting.  "Worst case" == "Best case" time complexity: O(n^2).
+
+	Insertion sort is a good choice when the array is nearly sorted
+
+	Quick sort (AKA partition sort) is a divide-and-conquer algorithm
+
+	Merge sort's "worst case" time complexity is the same as its "best case": O(nlogn).
+
+	SOURCE: https://www.geeksforgeeks.org/sorting-algorithms/#
+	        https://builtin.com/machine-learning/fastest-sorting-algorithm
+
+----
+
+:class: center-image
+
+Sorting - Algorithms
+========================================
+
+.. image:: images/08-02_001_01-Linux-qsort-cropped.png
+
+.. note::
+
+	The Linux API implements a quick sort alogrithm.
+
+	man qsort
+
+----
+
+Sorting - Modular
+========================================
+
+Modular Sorting
 
 .. code:: c
 
-	get_jank_hash();
+	/* Should they be swapped? */
+	int compare(char *left, char *right);
 
-	// Fowler-Noll-Vo (FNV)
-	get_fnv_hash();
+	/* Swaps two array v indices */
+	void swap(char *v[], int i, int j);
 
-.. code:: mathematica
-
-	slot_index = get_fnv_hash(key) % table_size
-
-.. note::
-
-	It might help to have 8-04-hash_functions.h open in a code editor.
-
-	A "hash collision" is when a hash function computes the same result for two different inputs.
-
-	Focus on get_fnv_hash().  If someone asks about get_jank_hash(), tell them it's a poor hash function to help test hash collision mitigation.
-	(Then again, the 8-04-2 unit test code does an adequate job of creating hash collisions from different keys.)
-
-	The % is a reference to mod
-
-	NOTE: I wanted to implement it all together but I decided against it.  I didn't want the students wrestling with hashing functions but I *did* want them to compute slot indices.
-
-	TRANSITION: We know what a hash collision is now but what do we do with it?
-
-----
-
-Mitigating Hash Collisions
-========================================
-
-Hash collisions resolution:
-	* Chain Results - Store key/value pairs as linked lists
-	* Open Addressing - Probe-and-store
+	/* Implements quick sort */
+	void qsort(char *v[], int left, int right);
 
 .. note::
 
-	Also, discuss the difference between duplicates and hash collisions.
-	(SPOILERS: The exact same key is a duplicate.  Different key, same hash is a collision.)
+	The trick here is that the quick sort function utilizes both compare and swap under-the-hood.
+	This modular programming technique is a best practice.  It makes updates/changes/support/testing easier.
+	This modular technique can be extended by adding a "compare" function pointer to the sorting algorithm function declaration.
 
-----
+	SIDE NOTE: Why does the qsort() function take left/right indices as parameters?  To facilitate recursive function calls.
+	Quick sort (AKA partition sort) is a divide-and-conquer algorithm.
 
-Resizing
-========================================
-
-One solution for a high load factor is to resize.
-
-1. Allocates a new `void *table_ptr` with double the capacity (1)
-2. Transfer all entries from the old `table_ptr` to the new `table_ptr`
-3. Free the old `table_ptr`
-
-\(1) Best practice is to round-up the capacity to a prime number
-
-.. note::
-
-	1. Make maximum reuse of existing code.  (Sounds like a job for `create_hash_table()`)
-
-	2. There's a lot of "yadda yadda yadda" in that statement.
-	The important thing to note for 2 is that we can't do this if we didn't store the keys (so store the keys).
-	Also, the hash wouldn't have changed but the capacity did so the hash % capacity formulate will calculate all new slot indices.
-	Lastly, if each `table_ptr` entry is heap-allocated, you can just move the pointers over.  No need to RE-allocate.
-	Modular programming suggests there is the opportunity for a lot of reused code here.
-
-	3. This is also easier said than done.
-	There's a high chance for memory leaks here.
+	SOURCE: The C Programming Language 5.6
 
 ----
 
 Resources
 ========================================
 
-* Data Structures and Algorithms Made Easy Ch. 13 & 14
+* Linked Lists:
+	* Data Structures and Algorithms Made Easy Ch. 3
+* Sorting:
+	* https://www.geeksforgeeks.org/sorting-algorithms/#
+	* https://builtin.com/machine-learning/fastest-sorting-algorithm
+	* The C Programming Language 5.6
 
 ----
 
@@ -252,15 +290,17 @@ Suggested implementation order:
 
 CONSIDER THIS THE HINT OF THE CENTURY:
 
-	typedef struct _linked_list
+.. code:: c
+
+	typedef struct _circular_list
 	{
 	    // Linked list head node
-	    list_node_ptr head_ptr;
+	    circular_node_ptr head_ptr;
 	    // Linked list tail node
-	    list_node_ptr tail_ptr;
+	    circular_node_ptr tail_ptr;
 	    // Number of entries
 	    unsigned int entries;
-	} linked_list, *linked_list_ptr;
+	} circular_list, *circular_list_ptr;
 
 .. note::
 
@@ -367,9 +407,7 @@ Summary
 
 * "Any data type"
 * Data Structure Bookkeeping
-* Hash Function
-* Mitigating Hash Collisions
-* Resizing
+* Sorting
 * Resources
 * Student Labs
 
