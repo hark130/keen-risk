@@ -1,0 +1,38 @@
+/*
+ *  PLACEHOLDER
+ */
+
+#ifndef _8_02_SORT_FUNCTIONS_
+#define _8_02_SORT_FUNCTIONS_
+
+#include "8-02-linked_list.h"
+#include <stdbool.h>  // true, false, bool
+
+
+/*
+ *  Compares d_ptr pointer of left_data to right_data.  Returns true if left_data < right_data.
+ *  Returns false for all other conditions.
+ */
+bool compare_any_data_ptr(any_data_ptr left_data, any_data_ptr right_data);
+
+
+/*
+ *  Compares d_ptr value of left_data to right_data.  Returns true if left_data < right_data.
+ *  Returns false for all other conditions.
+ */
+bool compare_any_data_val(any_data_ptr left_data, any_data_ptr right_data);
+
+
+/*
+ *  Swap the value stored in left_data with the value stored in right_data.
+ */
+void swap_data(any_data_ptr *left_data, any_data_ptr *right_data);
+
+
+/*
+ *  Swap the value stored in left_node with the value stored in right_node.
+ */
+void swap_node(list_node_ptr *left_node, list_node_ptr *right_node);
+
+
+#endif  /* _8_02_SORT_FUNCTIONS_ */
