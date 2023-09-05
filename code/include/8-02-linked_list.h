@@ -11,6 +11,9 @@
 #define _8_02_LINKED_LIST_
 
 
+#include <stdbool.h>  // bool
+
+
 typedef enum _return_value
 {
     RET_SUCCESS = 0,     // Success
@@ -41,6 +44,13 @@ typedef struct _list_node
 } list_node, *list_node_ptr;
 
 
+/*
+ *  Defined data type for a function pointer to an any_data pointer comparison function.  Returns
+ *  true if left_data < right_data.  Returns false for all other conditions.
+ */
+typedef bool (*compare_any_data)(any_data_ptr left_data, any_data_ptr right_data);
+
+
 /**************************************************************************************************/
 /*************************************** LIBRARY FUNCTIONS ****************************************/
 /**************************************************************************************************/
@@ -52,7 +62,8 @@ typedef struct _list_node
  *  end of head_node.  If head_node is NULL, then the new list_node becomes the new head_node.
  *  The result value is updated with the return_value.
  *
- *  Returns a pointer to the head_node on success.  Returns NULL on failure (consult result).
+ *  Returns a pointer to the head_node, which may change, on success.
+ *  Returns NULL on failure (consult result).
  */
 list_node_ptr append_data(list_node_ptr head_node, any_data_ptr node_data, return_value_ptr result);
 
@@ -83,7 +94,8 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
  *  NULL, then the new list_node becomes the new head_node.  If pos is greater than the list length
  *  then the node will be appended.  The result value is updated with the return_value.
  *
- *  Returns a pointer to the head_node on success.  Returns NULL on failure (consult result).
+ *  Returns a pointer to the head_node, which may change, on success.
+ *  Returns NULL on failure (consult result).
  */
  list_node_ptr insert_data(list_node_ptr head_node, any_data_ptr node_data, unsigned int pos,
                            return_value_ptr result);
@@ -93,7 +105,8 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
  *  Finds the node at position pos, removes that node from the list, and frees that node.
  *  The head_node is position 1.  The result value is updated with the return_value.
  *
- *  Returns a pointer to the head_node on success.  Returns NULL on failure (consult result).
+ *  Returns a pointer to the head_node, which may change, on success.
+ *  Returns NULL on failure (consult result).
  */
  list_node_ptr remove_node_pos(list_node_ptr head_node, unsigned int pos, return_value_ptr result);
 
@@ -106,7 +119,15 @@ list_node_ptr find_node_pos(list_node_ptr head_node, unsigned int pos, return_va
 list_node_ptr find_node_val(list_node_ptr head_node, any_data_ptr needle, return_value_ptr result);
 
 
-// return_value sort_list(list_node_ptr head_node, SORT FUNCTION POINTER PLACEHOLDER);
+/*
+ *  Sort all nodes found in the head_node linked list in ascending order according to the
+ *  comp_func results.
+ *
+ *  Returns a pointer to the head_node, which may change, on success.
+ *  Returns NULL on failure (consult result).
+ */
+list_node_ptr sort_list(list_node_ptr head_node, compare_any_data comp_func,
+                        return_value_ptr result);
 
 
 #endif  /* _8_02_LINKED_LIST_ */
