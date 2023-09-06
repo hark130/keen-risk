@@ -1,10 +1,12 @@
 #include "8-02-linked_list.h"
+#include "8-02-sort_functions.h"
 #include <errno.h>   // errno
 #include <stdio.h>   // fprintf()
-#include <stdlib.h>  // calloc(), free()
+#include <stdlib.h>  // calloc(), free(), rand(), srand()
 #include <string.h>  // memcpy()
+#include <time.h>    // time()
 
-#define ARRAY_LEN (unsigned int)11
+#define ARRAY_LEN (unsigned int)43  // (6 * 7) + 1 for NULL termination
 #define GOOD_JOB "\xE2\x9C\x94"    // Check mark?
 #define BAD_JOB "X"                // Fail
 #define HARKLE_ERROR(funcName, msg) do { fprintf(stderr, "<<<ERROR>>> - %s - %s() - %s!\n", \
@@ -56,6 +58,12 @@ void _clear_array(any_data_ptr *old_arr);
 void _fill_any_data(any_data_ptr fill_me, int selection);
 
 /*
+ *  Randomize a number ranging from 1 (new head node) to cur_count + 1 (new tail node).
+ *  Returns 1 if cur_count is 0.
+ */
+unsigned int _get_rand_pos(unsigned int cur_count);
+
+/*
  *  Allocates a NULL-terminated array of any_data pointers on the heap.
  *  Allocates any_data struct pointers in each index (except for the last).
  */
@@ -86,6 +94,7 @@ int main()
     list_node_ptr head_node = NULL;                               // Don't lose this
     list_node_ptr temp_node = NULL;                               // Temp linked list node ptr
     unsigned int exp_count = 0;                                   // Expected linked list count
+    unsigned int rand_pos = 0;                                    // Random linked list pos
 
     // VALIDATION
     if (!input_arr)
@@ -95,6 +104,7 @@ int main()
     }
 
     // START TESTING
+    srand(time(NULL));  // Seed the psuedo-random generator
     // TEST 1 - Append nodes to a linked list
     // Create a linked list
     if (RET_SUCCESS == result)
@@ -447,22 +457,227 @@ int main()
         }
         _print_results(result, "TEST 7: Verify true negative - find_node_val()");
     }
-    // TEST 8 - Clean up
+    // TEST 8 - Sort (by pointer)
     if (RET_SUCCESS == result)
     {
         // Assumed Starting State: [4]->[1]->[2]
+        temp_node = sort_list(head_node, compare_any_data_ptr, &result);
+        if (!temp_node || RET_SUCCESS != result)
+        {
+            fprintf(stderr, "The call to sort_list() failed\n");
+            if (RET_SUCCESS == result)
+            {
+                result = RET_ERROR;  // Success and NULL returns don't mix
+            }
+        }
+        else
+        {
+            head_node = temp_node;  // The head node likely changed
+            while (temp_node && temp_node->next_ptr)
+            {
+                if (temp_node >= temp_node->next_ptr)
+                {
+                    fprintf(stderr, "The linked list is not sorted, by pointer, "
+                            "in ascending order\n");
+                    result = RET_ERROR;
+                    break;
+                }
+                temp_node = temp_node->next_ptr;  // Next node
+            }
+        }
+        _print_results(result, "TEST 8: Sort - compare_any_data_ptr()");
+    }
+    // TEST 9 - Big Sort (by pointer)
+    // Interim cleanup
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: Doesn't matter because it's getting torn down
         result = delete_list(head_node);
         if (RET_SUCCESS == result)
         {
             head_node = NULL;
         }
-        _print_results(result, "TEST 8: delete_list()");
+        _print_results(result, "TEST 9: Big Sort (by pointer) - interim cleanup");
+    }
+    // Big list
+    if (RET_SUCCESS == result)
+    {
+        exp_count = 0;  // Using this as a temp var for the time being
+        // Assumed Starting State: NULL
+        // Insert new any_data into psuedo-random positions (so the pointers aren't ordered)
+        for (int i = 0; i < ARRAY_LEN - 1; i++)
+        {
+            // fprintf(stderr, "INPUT ARRAY[%d] == %p\n", i, input_arr[i]);  // DEBUGGING
+            temp_node = insert_data(head_node, input_arr[i], _get_rand_pos(exp_count), &result);
+            if (RET_SUCCESS == result)
+            {
+                if (temp_node)
+                {
+                    exp_count++;
+                    if (temp_node != head_node)
+                    {
+                        head_node = temp_node;  // New head node
+                    }
+                }
+                else
+                {
+                    fprintf(stderr, "insert_data() reported success but returned %p\n", temp_node);
+                    result = RET_ERROR;
+                    break;  // We encountered an error
+                }
+            }
+            else
+            {
+                fprintf(stderr, "insert_data() failed with %d on index %d\n", result, i);
+                break;  // We encountered an error
+            }
+        }
+        // Verify count
+        if (exp_count != count_nodes(head_node) || exp_count != ARRAY_LEN - 1)
+        {
+            fprintf(stderr, "The count is off.  \n"
+                    "Expected count: %d\nCurrent count: %d\n", exp_count,
+                    count_nodes(head_node));
+            result = RET_ERROR;
+        }
+        _print_results(result, "TEST 9: Big Sort (by pointer) - list creation");
+    }
+    // Big sort
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: Who knows?  Insertion was random!  [0]->[?]
+        temp_node = sort_list(head_node, compare_any_data_ptr, &result);
+        if (!temp_node || RET_SUCCESS != result)
+        {
+            fprintf(stderr, "The call to sort_list(Big List, sort-by-ptr) failed\n");
+            if (RET_SUCCESS == result)
+            {
+                result = RET_ERROR;  // Success and NULL returns don't mix
+            }
+        }
+        else
+        {
+            head_node = temp_node;  // The head node likely changed
+            while (temp_node && temp_node->next_ptr)
+            {
+                if (temp_node >= temp_node->next_ptr)
+                {
+                    fprintf(stderr, "The linked list is not sorted, by pointer, "
+                            "in ascending order\n");
+                    result = RET_ERROR;
+                    break;
+                }
+                temp_node = temp_node->next_ptr;  // Next node
+            }
+        }
+        _print_results(result, "TEST 9: Big Sort (by pointer) - compare_any_data_ptr()");
+    }
+    // TEST 10 - Big Sort (by value)
+    // Interim cleanup
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: Doesn't matter because it's getting torn down
+        result = delete_list(head_node);
+        if (RET_SUCCESS == result)
+        {
+            head_node = NULL;
+        }
+        _print_results(result, "TEST 10: Big Sort (by value) - interim cleanup");
+    }
+    // Big list
+    if (RET_SUCCESS == result)
+    {
+        exp_count = 0;  // Using this as a temp var for the time being
+        // Assumed Starting State: NULL
+        // Append new any_data nodes
+        for (int i = 0; i < ARRAY_LEN - 1; i++)
+        {
+            // fprintf(stderr, "INPUT ARRAY[%d] == %p\n", i, input_arr[i]);  // DEBUGGING
+            temp_node = insert_data(head_node, input_arr[i], exp_count + 1, &result);  // Append it
+            if (RET_SUCCESS == result)
+            {
+                if (temp_node)
+                {
+                    exp_count++;
+                    if (temp_node != head_node)
+                    {
+                        head_node = temp_node;  // New head node
+                    }
+                }
+                else
+                {
+                    fprintf(stderr, "insert_data() reported success but returned %p\n", temp_node);
+                    result = RET_ERROR;
+                    break;  // We encountered an error
+                }
+            }
+            else
+            {
+                fprintf(stderr, "insert_data() failed with %d on index %d\n", result, i);
+                break;  // We encountered an error
+            }
+        }
+        // Verify count
+        if (exp_count != count_nodes(head_node) || exp_count != ARRAY_LEN - 1)
+        {
+            fprintf(stderr, "The count is off.  \n"
+                    "Expected count: %d\nCurrent count: %d\n", exp_count,
+                    count_nodes(head_node));
+            result = RET_ERROR;
+        }
+        _print_results(result, "TEST 10: Big Sort (by value) - list creation");
+    }
+    // Big sort
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [0]->[1]->[n-1]->[n]
+        temp_node = sort_list(head_node, compare_any_data_val, &result);
+        if (!temp_node || RET_SUCCESS != result)
+        {
+            fprintf(stderr, "The call to sort_list(Big List, sort-by-val) failed\n");
+            if (RET_SUCCESS == result)
+            {
+                result = RET_ERROR;  // Success and NULL returns don't mix
+            }
+        }
+        else
+        {
+            head_node = temp_node;  // The head node likely changed
+            while (temp_node && temp_node->next_ptr)
+            {
+                /* TO DO: DON'T DO NOW... WORK OUT HOW TO BEST VALIDATE THE RESULTS */
+                // if (temp_node >= temp_node->next_ptr)
+                // {
+                //     fprintf(stderr, "The linked list is not sorted, by pointer, "
+                //             "in ascending order\n");
+                //     result = RET_ERROR;
+                //     break;
+                // }
+                temp_node = temp_node->next_ptr;  // Next node
+                /* TO DO: DON'T DO NOW... WHY IS THE ASAN BUILD FAILING UNIT TESTS?! */
+            }
+        }
+        _print_results(result, "TEST 10: Big Sort (by value) - compare_any_data_val()");
+    }
+    // TEST 12 - Clean up
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: Doesn't matter because it's all getting deleted
+        result = delete_list(head_node);
+        if (RET_SUCCESS == result)
+        {
+            head_node = NULL;
+        }
+        _print_results(result, "TEST 11: Final clean up");
     }
 
     // DONE
     if (head_node)
     {
-        fprintf(stderr, "You may have failed but let's try to clean up the linked list anyway\n");
+        if (RET_SUCCESS != result)
+        {
+            fprintf(stderr, "You may have failed but let's clean up the linked list anyway\n");
+        }
         delete_list(head_node);
         head_node = NULL;
     }
@@ -613,6 +828,7 @@ void _fill_any_data(any_data_ptr fill_me, int selection)
     float tmp_float = (float)selection / num_options;   // Temp float var
     char *tmp_str = NULL;                               // Temp string
 
+    // fprintf(stderr, "SELECTION %d BECAME CHOICE %d FOR %p\n", selection, choice, fill_me);  // DEBUGGING
     if (fill_me)
     {
         call_num++;
@@ -689,6 +905,23 @@ void _fill_any_data(any_data_ptr fill_me, int selection)
                 break;
         }
     }
+}
+
+
+unsigned int _get_rand_pos(unsigned int cur_count)
+{
+    // LOCAL VARIABLES
+    unsigned int retval = 1;  // Position to insert
+
+    // INPUT VALIDATION
+    if (cur_count > 0)
+    {
+        // Generates a pseudo-random integer between 1 and cur_count + 1
+        retval = (rand() % (cur_count + 1)) + 1;
+    }
+
+    // DONE
+    return retval;
 }
 
 
