@@ -5,7 +5,7 @@
 #ifndef _8_02_SORT_FUNCTIONS_
 #define _8_02_SORT_FUNCTIONS_
 
-#include "8-02-linked_list.h"
+#include "8-02-1-linked_list.h"
 #include <stdbool.h>  // true, false, bool
 
 

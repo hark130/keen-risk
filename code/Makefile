@@ -46,9 +46,9 @@ all:
 8-02-solution:
 	$(CALL_MAKE) 8-02-linked_list
 
-8-02-linked_list: $(DST)/8-02-linked_list-solution.o $(DST)/8-02-sort_functions.o
-	$(CC) $(CFLAGS) $(SRC)/8-02-linked_list-main.c $^ -o $(DST)/8-02-linked_list.bin -I $(INC) -L $(DST)
-	$(CC) $(AFLAGS) $(SRC)/8-02-linked_list-main.c $^ -o $(DST)/8-02-linked_list_asan.bin -I $(INC) -L $(DST)
+8-02-1-solution: $(DST)/8-02-1-linked_list-solution.o $(DST)/8-02-sort_functions.o
+	$(CC) $(CFLAGS) $(SRC)/8-02-1-linked_list-main.c $^ -o $(DST)/8-02-1-linked_list.bin -I $(INC) -L $(DST)
+	$(CC) $(AFLAGS) $(SRC)/8-02-1-linked_list-main.c $^ -o $(DST)/8-02-1-linked_list_asan.bin -I $(INC) -L $(DST)
 
 8-04-solution:
 	$(CALL_MAKE) 8-04-1-solution
