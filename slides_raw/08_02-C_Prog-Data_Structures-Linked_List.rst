@@ -217,7 +217,7 @@ Modular Sorting
 	void swap(char *v[], int i, int j);
 
 	/* Implements quick sort */
-	void qsort(char *v[], int left, int right);
+	void quick_sort(char *v[], int left, int right);
 
 .. note::
 
@@ -247,158 +247,105 @@ Resources
 STUDENT LABS
 ========================================
 
-All labs will utilize the 8-02-circular_list "library".
-Each lab has unit tests available to validate your work.
+All labs will utilize the 8-02-sort_functions "library".
+Some labs have unit tests available to validate the work.
 Be sure to use ASAN and Valgrind.
 
-* 8-02-1: Minimum functionality: append data, delete list
-* 8-02-2: Basic functionality: count nodes, find node (pos), insert data (pos), remove node (pos)
-* 8-02-3: More functionality: find node (value), sort list
+* 8-02-1: Linked list implementation
+* 8-02-2: Circular linked list implementation
 
 General Files:
-	* 8-02-circular_list.h - Defines the circularly linked list interface
-	* 8-02-circular_list-lab.c - Implments the circularly linked list
 	* 8-02-sort_functions.h - Declares sorting functions
-	* 8-02-sort_functions.c - Implments sorting functions
+	* 8-02-sort_functions.c - Implements sorting functions
 
 .. note::
 
-	These files will be used throughout all three labs
-	The labs represent crawl-walk-run milestones while implementing a circularly linked list
-	Files
-	The interface is already designed in 8-02-circular_list.h (wait for applause/thanks)
-	It's important to note that 8-02-circular_list-lab.c is the single most important file in the list.  It's where the students do all their work.
-	The 8-02-sort_functions library already defines sorting algorithms to use in the labs (wait for applause/thanks)
+	Lab 1 is intended to be a demonstration-performance lab.
+	Lab 2 is intended to be a stand-alone student lab.
 
 ----
 
 STUDENT LABS
 ========================================
 
-8-04-1: PLACEHOLDER
+8-02-1: Linked List
 
 Key Files:
-	* 8-04-1-hash_table-main.c - Unit tests for basic functionality
+	* 8-02-1-linked_list.h - Declares library API and data structures
+	* 8-02-1-linked_list-lab.c - Implements library functionality
+	* 8-02-1-linked_list-main.c - Unit tests for basic functionality
 
 Suggested implementation order:
-	1. create_hash_table()
-	2. destroy_table()
-	3. find_value()
-	4. add_key()
-	5. delete_key()
-	6. delete_all_keys()
-
-CONSIDER THIS THE HINT OF THE CENTURY:
-
-.. code:: c
-
-	typedef struct _circular_list
-	{
-	    // Linked list head node
-	    circular_node_ptr head_ptr;
-	    // Linked list tail node
-	    circular_node_ptr tail_ptr;
-	    // Number of entries
-	    unsigned int entries;
-	} circular_list, *circular_list_ptr;
+	1. append_data()
+	2. delete_list()
+	3. count_nodes()
+	4. find_node_pos()
+	5. insert_data()
+	6. remove_node_pos()
+	7. find_node_val()
+	8. sort_list()
 
 .. note::
 
 	The file comment block includes a description, build instructions, and notes on testing.
-	You might want to have 8-04-hash_table.h open in a code editor when discussing these.
-	The function prototypes are copy/pasted from 8-04-hash_table.h.
+	You might want to have 8-02-1-linked_list.h open in a code editor when discussing these.
 	Essentially, the function comment blocks serve as instructions.
 	The library function prototypes are presented in order of "recommended implementation"
+	It's important to note that 8-02-1-linked_list-lab.c is the single most important file in the list.  It's where the work is done.
 
 	Suggested implementation order:
-		1. create_hash_table() - Can't test a hash table if you don't have one.
-		2. destroy_table() - Write the free() anytime you alloc() something.
-		3. find_value() - Can't detect duplicates if you can't find a value
-		4. add_key() - Should probably use find_value() to detect duplicates.
-		5. delete_key() - Should probably underpin delete_all_keys().
-		6. delete_all_keys() - Maybe refactor destroy_table() to use this.
+		1. append_data() - Essentially, creates a linked list.
+		2. delete_list() - Write the free() anytime you alloc() something.
+		3. count_nodes() - Will be used to help validate adds and removes.
+		4. find_node_pos() - Mid-tier functionality
+		5. insert_data() - Mid-tier functionality
+		6. remove_node_pos() - Mid-tier functionality
+		7. find_node_val() - Mid-tier functionality
+		8. sort_list() - This will likely become a "stretch goal" for fast students
 
 	After 1 & 2 - Unit tests will be failing but you shouldn't have any memory leaks.
-	After 3 & 4 - Most of the unit tests should be passing but you may have some leaks.
-	After 5 & 6 - All of the unit tests should be passing, ASAN should be happy, and Valgrind should be happy.
+	After 3-->7 - This is probably "good enough"
+	Regarding 8 - Sorting is non-trivial work.  Sure, the 8-02-sort_functions library defines *some* functionality but the actual sorting algorithm (e.g., quick sort, bubble sort) is for the students to implement.
 
-	The students may appreciate a demonstration of the unit test build and execution (just to put them on the right path)
+	Be sure to make frequent use of the unit test build and execution.  A similar format is used for later objectives/labs.
+
+	SPOILERS: An example implementation of the 8-02-1-linked_list "library" exists as 8-02-1-linked_list-solution.c.  That solution file passes all the unit tests, ASAN, and Valgrind.
+
+	QUESTIONS TO THE AUTHOR OF 8-02-1-linked_list-main.c...
+	Q: Why didn't you use a framework?
+	A: Testing frameworks for C are a pain.  I didn't want anyone to have to download/compile/link anything special just to test the lab.
+	Q: Why didn't you implement the local main.c functionality in a library?
+	A: I didn't want any "not me" instructors (or the students) to have to fuss with multiple files just to test the lab.
+	Q: Why did I manually implement quick sort instead of using a library implmementation?
+	A: I could have used qsort() (Linux API) but is that implemented on all distros?  Are there packages to install?  Plus, now the example code won't work on non-Linux systems.  TL;DR - I just wanted it to "work" with little-to-no fuss.
 
 ----
 
 STUDENT LABS
 ========================================
 
-8-04-2: PLACEHOLDER
+8-02-2: Circular Linked List
+
+This lab DOES NOT have unit tests to validate your work.
+Write your own main() to test your work.
+Be sure to use ASAN and Valgrind.
+
+* Minimum functionality: append data, delete list
+* Basic functionality: count nodes, find node (pos), insert data (pos), remove node (pos)
+* More functionality: find node (value), sort list
 
 Key Files:
-	* 8-04-2-hash_table-main.c - Hash collision unit tests
-
-PRO TIP: Store the keys with the values.
-
-.. note::
-
-	The file comment block includes a description, build instructions, and notes on testing.
-	Discuss resolution techniques with the students.  Encourage them to use chaining (AKA linked lists).
-	Also, discuss the difference between duplicates and hash collisions.
-	(SPOILERS: The exact same key is a duplicate.  Different key, same hash is a collision.)
-
-----
-
-STUDENT LABS
-========================================
-
-8-04-3: PLACEHOLDER
-
-Key Files:
-	* 8-04-3-hash_table-main.c - Load factor unit tests
-
-Load factor = (entries) / (capacity)
-	* High load factor == full table
-	* High load factor == efficient hashing function (1)
-
-\(1) Assuming hash collisions get rejected or handled by open addressing
-
-For this lab, check the load factor when a user calls `add_key()`.
-
-If the load factor exceeds the threshold, double the capacity (at least)
+	* 8-02-circular_list.h - Defines the circularly linked list interface
+	* 8-02-circular_list-lab.c - Implements the circularly linked list
 
 .. note::
 
-	The file comment block includes a description, build instructions, and notes on testing.
-	Discuss the beauty of abstraction.  Talk to the students about the "opaque" nature of table_ptr.
-	(It's not for the user, it's for the library.  The user doesn't need to know about it.)
-	The table_ptr member can be destroyed and remade larger or even realloc()d without the user knowing.
-	Also, discuss the function comment block for create_hash_table() at length (with regards to resizing).
+	Minimum, basic, and "more" represent crawl-walk-run milestones while implementing a circularly linked list
 
-----
-
-STUDENT LABS
-========================================
-
-8-04-3: Extend hash table capacity (cont)
-
-.. code:: c
-
-	typedef struct _hash_table
-	{
-	    // Array of entries
-	    void *table_ptr;
-	    // Number of entries
-	    unsigned int entries;
-	    // Number of indices
-	    unsigned int capacity;
-	    // Load factor threshold
-	    float threshold;
-	} hash_table, *hash_table_ptr;
-
-.. note::
-
-	The file comment block includes a description, build instructions, and notes on testing.
-	Discuss the beauty of abstraction.  Talk to the students about the "opaque" nature of table_ptr.
-	(It's not for the user, it's for the library.  The user doesn't need to know about it.)
-	The table_ptr member can be destroyed and remade larger or even realloc()d without the user knowing.
-	Also, discuss the function comment block for create_hash_table() at length (with regards to resizing).
+	Key Files
+	The interface is already designed in 8-02-circular_list.h (wait for applause/thanks)
+	It's important to note that 8-02-circular_list-lab.c is the single most important file in the list.  It's where the students do all their work.
+	Don't forget that the 8-02-sort_functions library already defines sorting algorithms to use in the labs (wait for applause/thanks)
 
 ----
 
@@ -420,13 +367,13 @@ Summary
 Objectives
 ========================================
 
-* 8-04-1:   Creating a hash table with n number of items
-* 8-04-1:   Navigating through a hash table to find the nth item
-* 8-04-1:   Finding an item in a hash table
-* 8-04-1:   Removing selected items from a hash table
-* 8-04-1:   Inserting an item into a hash table
-* 8-04-2/3: Implement functionality to mitigate hash collisions within the hash table
-* 8-04-1:   Removing all items from the hash table
+* 8-04-2:   Creating a hash table with n number of items
+* 8-04-2:   Navigating through a hash table to find the nth item
+* 8-04-2:   Finding an item in a hash table
+* 8-04-2:   Removing selected items from a hash table
+* 8-04-2:   Inserting an item into a hash table
+* 8-04-2: Implement functionality to mitigate hash collisions within the hash table
+* 8-04-2:   Removing all items from the hash table
 
 .. note::
 
