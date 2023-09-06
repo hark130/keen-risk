@@ -1,5 +1,8 @@
 /*
- *  PLACEHOLDER
+ *  This library was written to aid the 8-02 labs.  It may not implement an actual sorting
+ *  algorithm but it does implement compare functions and swap functions (which an algorithm
+ *  would use).  The compare_any_data_*() functions allow for dependency injection into
+ *  linked list library sort() functions.
  */
 
 #ifndef _8_02_SORT_FUNCTIONS_
