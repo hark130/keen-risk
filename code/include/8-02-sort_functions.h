@@ -10,8 +10,8 @@
 
 
 /*
- *  Compares d_ptr pointer of left_data to right_data.  Returns true if left_data < right_data.
- *  Returns false for all other conditions.
+ *  Compares d_ptr pointer of left_data to right_data.  Returns true if
+ *  left_data->d_ptr < right_data->d_ptr.  Returns false for all other conditions.
  */
 bool compare_any_data_ptr(any_data_ptr left_data, any_data_ptr right_data);
 
