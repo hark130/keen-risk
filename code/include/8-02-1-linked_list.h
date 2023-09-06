@@ -1,5 +1,5 @@
 /*
- *  This header file declares the functions used in the instructor's 8-02 linked list demonstration.
+ *  This header file declares functions used in the instructor's 8-02-1 linked list demonstration.
  *  Consider these functions the entry point of the library.  Validate all input.
  *  In general, the library is responsible for allocating memory to copy user input.
  *  The any_data structs are used to format user input, but the library does not own the contents.
@@ -7,8 +7,8 @@
  *  The data_type struct may seem unimportant but could help identify duplicates and DEBUGGING.
  */
 
-#ifndef _8_02_LINKED_LIST_
-#define _8_02_LINKED_LIST_
+#ifndef _8_02_1_LINKED_LIST_
+#define _8_02_1_LINKED_LIST_
 
 
 #include <stdbool.h>  // bool
@@ -130,4 +130,4 @@ list_node_ptr sort_list(list_node_ptr head_node, compare_any_data comp_func,
                         return_value_ptr result);
 
 
-#endif  /* _8_02_LINKED_LIST_ */
+#endif  /* _8_02_1_LINKED_LIST_ */
