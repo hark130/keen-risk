@@ -70,6 +70,11 @@ unsigned int _get_rand_pos(unsigned int cur_count);
 any_data_ptr *_initialize_array(unsigned int array_len);
 
 /*
+ *  On success, prints data details to stdout.  On error, prints message to stderr.
+ */
+void _print_any_data(any_data_ptr data);
+
+/*
  *  Provide human-readable and actionable test case feedback to the user.
  */
 void _print_results(return_value result, const char *message);
@@ -475,7 +480,7 @@ int main()
             head_node = temp_node;  // The head node likely changed
             while (temp_node && temp_node->next_ptr)
             {
-                if (temp_node >= temp_node->next_ptr)
+                if (temp_node->data_ptr->d_ptr >= temp_node->next_ptr->data_ptr->d_ptr)
                 {
                     fprintf(stderr, "The linked list is not sorted, by pointer, "
                             "in ascending order\n");
@@ -507,7 +512,6 @@ int main()
         // Insert new any_data into psuedo-random positions (so the pointers aren't ordered)
         for (int i = 0; i < ARRAY_LEN - 1; i++)
         {
-            // fprintf(stderr, "INPUT ARRAY[%d] == %p\n", i, input_arr[i]);  // DEBUGGING
             temp_node = insert_data(head_node, input_arr[i], _get_rand_pos(exp_count), &result);
             if (RET_SUCCESS == result)
             {
@@ -560,7 +564,7 @@ int main()
             head_node = temp_node;  // The head node likely changed
             while (temp_node && temp_node->next_ptr)
             {
-                if (temp_node >= temp_node->next_ptr)
+                if (temp_node->data_ptr->d_ptr >= temp_node->next_ptr->data_ptr->d_ptr)
                 {
                     fprintf(stderr, "The linked list is not sorted, by pointer, "
                             "in ascending order\n");
@@ -572,7 +576,7 @@ int main()
         }
         _print_results(result, "TEST 9: Big Sort (by pointer) - compare_any_data_ptr()");
     }
-    // TEST 10 - Big Sort (by value)
+    // TEST 10 - Big Sort (by size)
     // Interim cleanup
     if (RET_SUCCESS == result)
     {
@@ -582,7 +586,7 @@ int main()
         {
             head_node = NULL;
         }
-        _print_results(result, "TEST 10: Big Sort (by value) - interim cleanup");
+        _print_results(result, "TEST 10: Big Sort (by size) - interim cleanup");
     }
     // Big list
     if (RET_SUCCESS == result)
@@ -592,7 +596,6 @@ int main()
         // Append new any_data nodes
         for (int i = 0; i < ARRAY_LEN - 1; i++)
         {
-            // fprintf(stderr, "INPUT ARRAY[%d] == %p\n", i, input_arr[i]);  // DEBUGGING
             temp_node = insert_data(head_node, input_arr[i], exp_count + 1, &result);  // Append it
             if (RET_SUCCESS == result)
             {
@@ -625,16 +628,16 @@ int main()
                     count_nodes(head_node));
             result = RET_ERROR;
         }
-        _print_results(result, "TEST 10: Big Sort (by value) - list creation");
+        _print_results(result, "TEST 10: Big Sort (by size) - list creation");
     }
     // Big sort
     if (RET_SUCCESS == result)
     {
         // Assumed Starting State: [0]->[1]->[n-1]->[n]
-        temp_node = sort_list(head_node, compare_any_data_val, &result);
+        temp_node = sort_list(head_node, compare_any_data_siz, &result);
         if (!temp_node || RET_SUCCESS != result)
         {
-            fprintf(stderr, "The call to sort_list(Big List, sort-by-val) failed\n");
+            fprintf(stderr, "The call to sort_list(Big List, sort-by-siz) failed\n");
             if (RET_SUCCESS == result)
             {
                 result = RET_ERROR;  // Success and NULL returns don't mix
@@ -645,21 +648,21 @@ int main()
             head_node = temp_node;  // The head node likely changed
             while (temp_node && temp_node->next_ptr)
             {
-                /* TO DO: DON'T DO NOW... WORK OUT HOW TO BEST VALIDATE THE RESULTS */
-                // if (temp_node >= temp_node->next_ptr)
-                // {
-                //     fprintf(stderr, "The linked list is not sorted, by pointer, "
-                //             "in ascending order\n");
-                //     result = RET_ERROR;
-                //     break;
-                // }
+                if (temp_node->data_ptr->d_size > temp_node->next_ptr->data_ptr->d_size)
+                {
+                    fprintf(stderr, "The linked list is not sorted, by size, "
+                            "in ascending order\n");
+                    _print_any_data(temp_node->data_ptr);
+                    _print_any_data(temp_node->next_ptr->data_ptr);
+                    result = RET_ERROR;
+                    break;  // We encountered an error
+                }
                 temp_node = temp_node->next_ptr;  // Next node
-                /* TO DO: DON'T DO NOW... WHY IS THE ASAN BUILD FAILING UNIT TESTS?! */
             }
         }
-        _print_results(result, "TEST 10: Big Sort (by value) - compare_any_data_val()");
+        _print_results(result, "TEST 10: Big Sort (by size) - compare_any_data_siz()");
     }
-    // TEST 12 - Clean up
+    // TEST 11 - Clean up
     if (RET_SUCCESS == result)
     {
         // Assumed Starting State: Doesn't matter because it's all getting deleted
@@ -828,7 +831,6 @@ void _fill_any_data(any_data_ptr fill_me, int selection)
     float tmp_float = (float)selection / num_options;   // Temp float var
     char *tmp_str = NULL;                               // Temp string
 
-    // fprintf(stderr, "SELECTION %d BECAME CHOICE %d FOR %p\n", selection, choice, fill_me);  // DEBUGGING
     if (fill_me)
     {
         call_num++;
@@ -841,7 +843,6 @@ void _fill_any_data(any_data_ptr fill_me, int selection)
                 if (fill_me->d_ptr)
                 {
                     tmp_char = str_selections[0][call_num % strlen(str_selections[0])];
-                    // fprintf(stderr, "Got character %c\n", tmp_char);  // DEBUGGING
                     memcpy(fill_me->d_ptr, &tmp_char, fill_me->d_size);
                 }
                 break;
@@ -877,7 +878,6 @@ void _fill_any_data(any_data_ptr fill_me, int selection)
                 // call_num as a seed value
                 tmp_str = str_selections[call_num % \
                           ((sizeof(str_selections) / sizeof(*str_selections)) - 1)];
-                // fprintf(stderr, "Got string %s\n", tmp_str);  // DEBUGGING
                 fill_me->d_type = STRING_DT;
                 fill_me->d_size = strlen(tmp_str) + 1;
                 fill_me->d_ptr = calloc(1, fill_me->d_size);
@@ -891,9 +891,8 @@ void _fill_any_data(any_data_ptr fill_me, int selection)
                 // call_num as a seed value
                 tmp_str = str_selections[call_num % \
                           ((sizeof(str_selections) / sizeof(*str_selections)) - 1)];
-                // fprintf(stderr, "Got void string %s\n", tmp_str);  // DEBUGGING
                 fill_me->d_type = VOID_DT;
-                fill_me->d_size = strlen(tmp_str) + 1;
+                fill_me->d_size = strlen(tmp_str);
                 fill_me->d_ptr = calloc(1, fill_me->d_size);
                 if (fill_me->d_ptr)
                 {
@@ -951,6 +950,54 @@ any_data_ptr *_initialize_array(unsigned int array_len)
     }
 
     return any_data_arr;
+}
+
+
+void _print_any_data(any_data_ptr data)
+{
+    if (data && data->d_ptr && NULL_DT != data->d_type && data->d_size > 0)
+    {
+        // CHAR_DT, DOUBLE_DT, FLOAT_DT, INT_DT, STRING_DT, VOID_DT
+        switch (data->d_type)
+        {
+            case CHAR_DT:
+                printf("Any_data type of %d: '%c' [%X]\n", data->d_type, *((char*)data->d_ptr),
+                       *((int*)data->d_ptr));
+                break;
+            case DOUBLE_DT:
+                printf("Any_data type of %d: %f\n", data->d_type, *((double*)data->d_ptr));
+                break;
+            case FLOAT_DT:
+                printf("Any_data type of %d: %lf\n", data->d_type, *((float*)data->d_ptr));
+                break;
+            case INT_DT:
+                printf("Any_data type of %d: %d\n", data->d_type, *((int*)data->d_ptr));
+                break;
+            case STRING_DT:
+                printf("Any_data type of %d: ", data->d_type);
+                for (int i = 0; i < data->d_size; i++)
+                {
+                    printf("%c", ((char*)data->d_ptr)[i]);
+                }
+                printf("\n");
+                break;
+            case VOID_DT:
+                printf("Any_data type of %d: ", data->d_type);
+                for (int i = 0; i < data->d_size; i++)
+                {
+                    printf("0x%02X ", 0xFF & ((char*)data->d_ptr)[i]);
+                }
+                printf("\n");
+                printf("Any_data VOID_DT as a string: %s\n", ((char*)data->d_ptr));
+                break;
+            default:
+                fprintf(stderr, "Unsupported data->d_type of %d\n", data->d_type);
+        }
+    }
+    else
+    {
+        fprintf(stderr, "Bad input for %p\n", data);
+    }
 }
 
 
