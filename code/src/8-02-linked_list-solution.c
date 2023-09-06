@@ -466,8 +466,6 @@ list_node_ptr sort_list(list_node_ptr head_node, compare_any_data comp_func,
     retval = _validate_node(head_node);
     if (RET_SUCCESS == retval && (!comp_func || !result))
     {
-        // fprintf(stderr, "How did we get here with HEAD NODE %p, COMP FUNC %p, and RESULT %p\n",
-        //         head_node, comp_func, result);  // DEBUGGING
         retval = RET_INV_PARAM;
     }
 
@@ -859,22 +857,17 @@ return_value _quick_sort_arr(list_node_ptr *node_arr, int low, int high, compare
         {
             // Deterine the partitioning index
             part_index = _quick_partition(node_arr, low, high, comp_func);
-            // fprintf(stderr, "PARTITION: %d\n", part_index);  // DEBUGGING
             // Separately sort elements before partition
             retval = _quick_sort_arr(node_arr, low, part_index - 1, comp_func);
-            // fprintf(stderr, "LEFT SIDE SORTED WITH RESULT %d\n", retval);  // DEBUGGING
             if (RET_SUCCESS == retval)
             {
                 // Separately sort elements after partition
                 retval = _quick_sort_arr(node_arr, part_index + 1, high, comp_func);
-                // fprintf(stderr, "RIGHT SIDE SORTED WITH RESULT %d\n", retval);  // DEBUGGING
             }
         }
     }
     else
     {
-        // fprintf(stderr, "BAD INPUT FOR NODE_ARR %p NODE_ARR[LOW %d] %p NODE_ARR[HIGH %d] %p COMP FUNC %p\n",
-        //         node_arr, low, node_arr[low], high, node_arr[high], comp_func);  // DEBUGGING
         retval = RET_INV_PARAM;
     }
 
@@ -918,38 +911,30 @@ list_node_ptr _quick_sort_list(list_node_ptr head_node, compare_any_data comp_fu
     // 1. Gather the input
     if (RET_SUCCESS == retval)
     {
-        // fprintf(stderr, "Calloc() succeeded.  Num nodes: %d\n", num_nodes);  // DEBUGGING
         for (int i = 0; i < num_nodes, NULL != tmp_node; i++)
         {
             (*(list_arr + i)) = tmp_node;  // Store a node in the array
             tmp_node = tmp_node->next_ptr;  // Iterate to the next node
             (*(list_arr + i))->next_ptr = NULL;  // Sever the old linked list connections
         }
-        // fprintf(stderr, "Done storing node pointers in the array\n");  // DEBUGGING
     }
     // 2. Sort it
     if (RET_SUCCESS == retval)
     {
-        // fprintf(stderr, "About to quick sort the array with %d nodes\n", num_nodes);  // DEBUGGING
         retval = _quick_sort_arr(list_arr, 0, num_nodes - 1, comp_func);
-        // fprintf(stderr, "Done quick sorting the array with %d\n", retval);  // DEBUGGING
     }
     // 3. Put it back
     if (RET_SUCCESS == retval)
     {
-        // fprintf(stderr, "About to reconstrict the list from the array\n");  // DEBUGGING
         new_head = list_arr[0];
-        // new_head->next_ptr = NULL;  // Sever any pre-existing linked list connections
         for (int i = 1; i < num_nodes; i++)
         {
-            // fprintf(stderr, "About to append %p to %p\n", (*(list_arr + i)), new_head);  // DEBUGGING
             retval = _append_node(new_head, (*(list_arr + i)));  // Append this node
             if (RET_SUCCESS != retval)
             {
                 break;  // Something went wrong
             }
         }
-        // fprintf(stderr, "Done(?) reconstructing the list from the array with %d\n", retval);  // DEBUGGING
     }
 
     // CLEANUP
