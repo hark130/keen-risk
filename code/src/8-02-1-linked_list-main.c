@@ -1,3 +1,19 @@
+/*
+ *  DESCRIPTION:
+ *      This source file contains unit tests for student lab 8-02-1.
+ *
+ *  BUILD:
+ *      The easiest way to build these unit tests is to copy all the files into a dir and:
+ *      gcc -o 8-02-1-lab.bin 8-02-1-linked_list-main.c 8-02-sort_functions.c 8-02-1-linked_list-lab.c
+ *
+ *      BONUS: Stop copy pasting gcc commands and create a Makefile.  See: JQS 6-17.
+ *
+ *  TEST:
+ *      ./8-02-1-lab.bin  # Read the output.  Failures go to stderr.  Read the test code.
+ *      # Be sure to build and run the solution through ASAN.  See: JQS 6-16 and 6-21.
+ *      # Also use Valgrind to identify issues with memory management.  See: JQS 6-21.
+ */
+
 #include "8-02-1-linked_list.h"
 #include "8-02-sort_functions.h"
 #include <errno.h>   // errno
@@ -7,8 +23,8 @@
 #include <time.h>    // time()
 
 #define ARRAY_LEN (unsigned int)43  // (6 * 7) + 1 for NULL termination
-#define GOOD_JOB "\xE2\x9C\x94"    // Check mark?
-#define BAD_JOB "X"                // Fail
+#define GOOD_JOB "\xE2\x9C\x94"     // Check mark?
+#define BAD_JOB "X"                 // Fail
 #define HARKLE_ERROR(funcName, msg) do { fprintf(stderr, "<<<ERROR>>> - %s - %s() - %s!\n", \
                                                  __FILE__, #funcName, #msg); } while (0);
 #define HARKLE_ERRNO(funcName, errorNum) if (errorNum) { fprintf(stderr, "<<<ERROR>>> - %s - \
