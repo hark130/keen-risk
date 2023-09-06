@@ -1,5 +1,14 @@
 /*
- *  PLACEHOLDER
+ *  This is an example implementation for the 8-02-1 lab.
+ *  This solution should work, as-is, when copy pasted into 8-02-1-linked_list-lab.c.
+ *
+ *  DISCLAIMER: This implementation is not perfect.
+ *      The Good:
+ *          - It works.
+ *          - ASAN and Valgrind both give this implementation a clean bill of health.
+ *      The Bad:
+ *          - I probably shouldn't have manually implemented quick sort.  It's best to
+ *            use libraries (e.g., qsort()) instead of re-inventing the wheel.
  */
 
 #include "8-02-1-linked_list.h"
