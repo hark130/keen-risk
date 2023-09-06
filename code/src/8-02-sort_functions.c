@@ -46,6 +46,30 @@ bool compare_any_data_ptr(any_data_ptr left_data, any_data_ptr right_data)
 }
 
 
+bool compare_any_data_siz(any_data_ptr left_data, any_data_ptr right_data)
+{
+    // LOCAL VARIABLES
+    bool results = false;         // Return true if left_data < right_data
+
+    // INPUT VALIDATION
+    if (left_data && right_data)
+    {
+        // COMPARE THEM
+        if (left_data->d_size == right_data->d_size)
+        {
+            results = _compare_data_size(left_data->d_ptr, right_data->d_ptr, left_data->d_size);
+        }
+        else if (left_data->d_size < right_data->d_size)
+        {
+            results = true;  // Left data is smaller than right data
+        }
+    }
+
+    // DONE
+    return results;
+}
+
+
 bool compare_any_data_val(any_data_ptr left_data, any_data_ptr right_data)
 {
     // LOCAL VARIABLES

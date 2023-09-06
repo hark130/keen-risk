@@ -17,6 +17,14 @@ bool compare_any_data_ptr(any_data_ptr left_data, any_data_ptr right_data);
 
 
 /*
+ *  Compares d_size of left_data to right_data.  If left_data and right_data have the same d_size,
+ *  Compares the d_ptr value byte by byte.  Returns true if left_data < right_data.
+ *  Returns false for all other conditions.
+ */
+bool compare_any_data_siz(any_data_ptr left_data, any_data_ptr right_data);
+
+
+/*
  *  Compares d_ptr value of left_data to right_data.  Returns true if left_data < right_data.
  *  Returns false for all other conditions.
  */
