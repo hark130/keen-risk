@@ -237,7 +237,6 @@ Suggested implementation order:
 
 	The file comment block includes a description, build instructions, and notes on testing.
 	You might want to have 8-04-hash_table.h open in a code editor when discussing these.
-	The function prototypes are copy/pasted from 8-04-hash_table.h.
 	Essentially, the function comment blocks serve as instructions.
 	The library function prototypes are presented in order of "recommended implementation"
 
