@@ -330,8 +330,8 @@ This lab DOES NOT have unit tests to validate your work.
 Write your own main() to test your work.
 Be sure to use ASAN and Valgrind.
 
-* Minimum functionality: append data, delete list
-* Basic functionality: count nodes, find node (pos), insert data (pos), remove node (pos)
+* Minimum functionality: create list, empty list, delete list
+* Basic functionality: find node (pos), insert data (pos), remove node (pos)
 * More functionality: find node (value), sort list
 
 Key Files:
@@ -346,6 +346,77 @@ Key Files:
 	The interface is already designed in 8-02-circular_list.h (wait for applause/thanks)
 	It's important to note that 8-02-circular_list-lab.c is the single most important file in the list.  It's where the students do all their work.
 	Don't forget that the 8-02-sort_functions library already defines sorting algorithms to use in the labs (wait for applause/thanks)
+
+----
+
+STUDENT LABS
+========================================
+
+8-02-2: Circular Linked List
+
+Suggested implementation order:
+	1. create_circular_list()
+	2. empty_the_list()
+	3. delete_list()
+	4. find_node_pos()
+	5. insert_data()
+	6. remove_node_pos()
+	7. find_node_val()
+	8. sort_list()
+
+.. note::
+
+	The file comment block includes a description, build instructions, and notes on testing.
+	You might want to have 8-04-hash_table.h open in a code editor when discussing these.
+	Essentially, the function comment blocks serve as instructions.
+	The library function prototypes are presented in order of "recommended implementation"
+
+	Suggested implementation order:
+	1. create_circular_list() - PRO TIP: All allocations/frees should be handled by the same library
+	2. empty_the_list() - This can be used later
+	3. delete_list() - Write a free() every time you allocate
+	4. find_node_pos() - Used by insert_data()
+	5. insert_data() - Basic functionality
+	6. remove_node_pos() - Could possible underpin (or reuse) empty_the_list() functionality
+	7. find_node_val() - A step-up
+	8. sort_list() - Stetch goal?
+
+	After 1-->3 - Unit tests will be failing, if they exist, but you shouldn't have any memory leaks.
+	After 4-->6 - Most of the unit tests should be passing.
+	After 7 & 8 - All of the unit tests should be passing, ASAN should be happy, and Valgrind should be happy.
+
+	The students may appreciate a demonstration of the unit test build and execution (just to put them on the right path)
+
+----
+
+STUDENT LABS
+========================================
+
+8-02-2: Circular Linked List
+
+.. code:: c
+
+	/* Circular Linked List Bookkeeping */
+	typedef struct _circular_list
+	{
+	    // Head node
+	    struct circular_node_ptr head_ptr;
+	    // Tail node
+	    struct circular_node_ptr tail_ptr;
+	    // Number of entries
+	    unsigned int entries;
+	} circular_list, *circular_list_ptr;
+
+.. note::
+
+	Take this opportunity to discuss the bookkeeping inherint in the circular_list struct.
+	Some basic rules will make these operations a bit easier.
+	1. Always keep head_ptr up to date
+	2. Always keep tail_ptr up to date
+	3. Always keep the entry count up to date
+
+	Also, take note that this bookkeeping strategy will save our user from having to swap out head_node/tail_node pointers.
+	The circular_list struct keeps track of everything.
 
 ----
 
