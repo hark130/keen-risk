@@ -14,6 +14,7 @@
 #include <stdbool.h>  // bool
 
 
+/* Standardize Return Values */
 typedef enum _return_value
 {
     RET_SUCCESS = 0,     // Success
@@ -23,12 +24,14 @@ typedef enum _return_value
 } return_value, *return_value_ptr;
 
 
+/* Keep Track Of The Data Type */
 typedef enum _data_type
 {
     NULL_DT = 0, CHAR_DT, DOUBLE_DT, FLOAT_DT, INT_DT, STRING_DT, VOID_DT
 } data_type, *data_type_ptr;
 
 
+/* Store "any data" */
 typedef struct _any_data
 {
     void *d_ptr;          // Pointer to data
@@ -37,6 +40,7 @@ typedef struct _any_data
 } any_data, *any_data_ptr;
 
 
+/* One Linked List Node */
 typedef struct _list_node
 {
     any_data_ptr data_ptr;        // Data
