@@ -295,6 +295,28 @@ return_value remove_node_pos(circular_list_ptr c_list, unsigned int pos)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
+    circular_node_ptr old_node = NULL;  // Node to remove and free
+
+    // INPUT VALIDATION
+    retval = _validate_circular_list(c_list);
+
+    // REMOVE IT
+    // Find it
+    if (RET_SUCCESS == retval)
+    {
+        old_node = find_node_pos(c_list, pos, &retval);
+    }
+    // Unlink it
+    if (RET_SUCCESS == retval)
+    {
+        retval = _remove_node(old_node);
+    }
+    // Destroy it
+    if (RET_SUCCESS == retval)
+    {
+        retval = _delete_circular_node(old_node);
+        old_node = NULL;
+    }
 
     // DONE
     return retval;
@@ -306,7 +328,48 @@ circular_node_ptr find_node_val(circular_list_ptr c_list, any_data_ptr needle,
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;     // Function call results
+    circular_node_ptr tmp_node = NULL;     // Iterate the linked list
     circular_node_ptr needle_node = NULL;  // Node found matching data needle
+
+    // INPUT VALIDATION
+    retval = _validate_circular_list(c_list);
+    if (RET_SUCCESS == retval)
+    {
+        retval = _validate_any_data(needle);
+    }
+    if (RET_SUCCESS == retval && !result)
+    {
+        retval = RET_INV_PARAM;
+    }
+
+    // FIND IT
+    if (RET_SUCCESS == retval)
+    {
+        tmp_node = c_list->head_ptr;
+        do
+        {
+            retval = _validate_circular_node(tmp_node);
+            if (RET_SUCCESS == retval)
+            {
+                // bool _compare_any_data(any_data_ptr s1_data, any_data_ptr s2_data, return_value_ptr result)
+                if (true == compare_any_data(tmp_node->data_ptr, needle, &retval))
+                {
+                    needle_node = tmp_node;  // Found it
+                    break;  // Stop looking
+                }
+            }
+            if (RET_SUCCESS != retval)
+            {
+                break;  // Something went wrong
+            }
+            tmp_node = tmp_node->next_ptr;
+        } while (tmp_node != c_list->head_ptr);
+        // Did we find it?
+        if (!needle_ptr && RET_SUCCESS == retval)
+        {
+            retval = RET_NOT_FOUND;  // Didn't find it but there were no errors
+        }
+    }
 
     // DONE
     if (result)
@@ -321,6 +384,8 @@ return_value sort_list(circular_list_ptr c_list, compare_any_data comp_func)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
+
+    /* TO DO: DON'T DO NOW */
 
     // DONE
     return retval;
