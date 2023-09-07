@@ -375,12 +375,12 @@ Suggested implementation order:
 	Suggested implementation order:
 	1. create_circular_list() - PRO TIP: All allocations/frees should be handled by the same library
 	2. empty_the_list() - This can be used later
-	3. delete_list() - Write a free() every time you allocate
-	4. find_node_pos() - Used by insert_data()
-	5. insert_data() - Basic functionality
-	6. remove_node_pos() - Could possible underpin (or reuse) empty_the_list() functionality
-	7. find_node_val() - A step-up
-	8. sort_list() - Stetch goal?
+	3. delete_clist() - Write a free() every time you allocate
+	4. find_cnode_pos() - Used by insert_data()
+	5. insert_cdata() - Basic functionality
+	6. remove_cnode_pos() - Could possible underpin (or reuse) empty_the_list() functionality
+	7. find_cnode_val() - A step-up
+	8. sort_list() - Stretch goal?
 
 	After 1-->3 - Unit tests will be failing, if they exist, but you shouldn't have any memory leaks.
 	After 4-->6 - Most of the unit tests should be passing.
