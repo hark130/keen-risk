@@ -11,33 +11,8 @@
 #define _8_02_1_LINKED_LIST_
 
 
+#include "8-02-definitions.h"  // any_data, any_data_ptr, return_value, return_value_ptr
 #include <stdbool.h>  // bool
-
-
-/* Standardize Return Values */
-typedef enum _return_value
-{
-    RET_SUCCESS = 0,     // Success
-    RET_INV_PARAM = 1,   // Bad input: NULL pointer, unsupported data type
-    RET_ERROR = 2,       // System call failed (print errno)
-    RET_NOT_FOUND = 3,   // Node not found
-} return_value, *return_value_ptr;
-
-
-/* Keep Track Of The Data Type */
-typedef enum _data_type
-{
-    NULL_DT = 0, CHAR_DT, DOUBLE_DT, FLOAT_DT, INT_DT, STRING_DT, VOID_DT
-} data_type, *data_type_ptr;
-
-
-/* Store "any data" */
-typedef struct _any_data
-{
-    void *d_ptr;          // Pointer to data
-    data_type d_type;     // The data type of the data
-    unsigned int d_size;  // Total size of the data, in memory, as bytes
-} any_data, *any_data_ptr;
 
 
 /* One Linked List Node */
@@ -46,13 +21,6 @@ typedef struct _list_node
     any_data_ptr data_ptr;        // Data
     struct _list_node *next_ptr;  // Next node
 } list_node, *list_node_ptr;
-
-
-/*
- *  Defined data type for a function pointer to an any_data pointer comparison function.  Returns
- *  true if left_data < right_data.  Returns false for all other conditions.
- */
-typedef bool (*compare_any_data)(any_data_ptr left_data, any_data_ptr right_data);
 
 
 /**************************************************************************************************/
