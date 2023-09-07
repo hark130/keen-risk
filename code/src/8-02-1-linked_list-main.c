@@ -117,6 +117,9 @@ int main()
     unsigned int exp_count = 0;                                   // Expected linked list count
     unsigned int rand_pos = 0;                                    // Random linked list pos
 
+    // SETUP
+    fprintf(stdout, "Running tests from %s\n", __FILE__);
+
     // VALIDATION
     if (!input_arr)
     {
