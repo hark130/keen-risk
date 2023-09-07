@@ -255,6 +255,7 @@ Be sure to use ASAN and Valgrind.
 * 8-02-2: Circular linked list implementation
 
 General Files:
+	* 8-02-definitions.h - Defines common-use data types
 	* 8-02-sort_functions.h - Declares sorting functions
 	* 8-02-sort_functions.c - Implements sorting functions
 
@@ -357,12 +358,12 @@ STUDENT LABS
 Suggested implementation order:
 	1. create_circular_list()
 	2. empty_the_list()
-	3. delete_list()
-	4. find_node_pos()
-	5. insert_data()
-	6. remove_node_pos()
-	7. find_node_val()
-	8. sort_list()
+	3. delete_clist()
+	4. find_cnode_pos()
+	5. insert_cdata()
+	6. remove_cnode_pos()
+	7. find_cnode_val()
+	8. sort_clist()
 
 .. note::
 
