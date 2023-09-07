@@ -1,6 +1,7 @@
 
 
 #include "8-02-2-circular_list.h"
+#include "8-02-definitions.h"
 #include "8-02-sort_functions.h"
 #include <errno.h>  // errno
 #include <stdio.h>  // fprintf()
@@ -88,9 +89,9 @@ return_value _validate_circular_list(circular_list_ptr c_list);
 
 /*
  *  Validates a circular_node struct pointer.  Returns RET_INV_PARAM if c_node is NULL.  Returns
- *  RET_ERROR if c_node is not part of a circular linked list.
+ *  RET_ERROR if c_node is not part of a circular linked list and full_check is true.
  */
-return_value _validate_circular_node(circular_node_ptr c_node);
+return_value _validate_circular_node(circular_node_ptr c_node, bool full_check);
 
 /*
  *  Validates raw data on behalf of the library.
@@ -154,20 +155,32 @@ return_value empty_the_list(circular_list_ptr c_list)
     if (RET_SUCCESS == retval)
     {
         tmp_node = c_list->head_ptr;
+        // fprintf(stderr, "HEAD NODE IS %p\n", c_list->head_ptr);  // DEBUGGING
         while (tmp_node)
         {
+            // fprintf(stderr, "About to remove node %p\n", tmp_node);  // DEBUGGING
             tmp_next = tmp_node->next_ptr;
             retval = _remove_node(tmp_node);
             if (RET_SUCCESS == retval)
             {
+                // fprintf(stderr, "About to delete node %p\n", tmp_node);  // DEBUGGING
                 retval = _delete_circular_node(tmp_node);
             }
             if (RET_SUCCESS != retval)
             {
+                // fprintf(stderr, "Encountered error with %p\n", tmp_node);  // DEBUGGING
                 break;  // Encountered an error
             }
             c_list->entries -= 1;  // Best effort bookkeeping
-            tmp_node = tmp_next;  // Iterate to the next node
+            if (tmp_node == tmp_next)
+            {
+                break;  // The snake is about to eat its own tail
+            }
+            else
+            {
+                tmp_node = tmp_next;  // Iterate to the next node
+            }
+            // fprintf(stderr, "TMP NODE IS %p\n", tmp_node);  // DEBUGGING
         }
     }
     // Update bookkeeping
@@ -183,7 +196,7 @@ return_value empty_the_list(circular_list_ptr c_list)
 }
 
 
-return_value delete_list(circular_list_ptr c_list)
+return_value delete_clist(circular_list_ptr c_list)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
@@ -194,7 +207,12 @@ return_value delete_list(circular_list_ptr c_list)
     // Delete it
     if (RET_SUCCESS == retval)
     {
+        // fprintf(stderr, "Freeing %p c_list\n", c_list);  // DEBUGGING
         free(c_list);
+    }
+    else
+    {
+        // fprintf(stderr, "empty_the_list() returned %d\n", retval);  // DEBUGGING
     }
 
     // DONE
@@ -202,12 +220,13 @@ return_value delete_list(circular_list_ptr c_list)
 }
 
 
-circular_node_ptr find_node_pos(circular_list_ptr c_list, unsigned int pos,
-                                return_value_ptr result)
+circular_node_ptr find_cnode_pos(circular_list_ptr c_list, unsigned int pos,
+                                 return_value_ptr result)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;    // Function call results
     unsigned int counter = 0;             // Count the positions
+    circular_node_ptr tmp_node = NULL;    // Temp var to iterate the linked list
     circular_node_ptr needle_ptr = NULL;  // Node found at position pos
 
     // INPUT VALIDATION
@@ -230,7 +249,7 @@ circular_node_ptr find_node_pos(circular_list_ptr c_list, unsigned int pos,
         tmp_node = c_list->head_ptr;
         for (int i = 1; i <= c_list->entries; i++)
         {
-            retval = _validate_circular_node(tmp_node);
+            retval = _validate_circular_node(tmp_node, true);
             if (RET_SUCCESS != retval)
             {
                 break;  // This circular list is broken
@@ -257,7 +276,7 @@ circular_node_ptr find_node_pos(circular_list_ptr c_list, unsigned int pos,
 }
 
 
-return_value insert_data(circular_list_ptr c_list, any_data_ptr node_data, unsigned int pos)
+return_value insert_cdata(circular_list_ptr c_list, any_data_ptr node_data, unsigned int pos)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
@@ -273,8 +292,8 @@ return_value insert_data(circular_list_ptr c_list, any_data_ptr node_data, unsig
     // MAKE A NODE
     if (RET_SUCCESS == retval)
     {
-        new_data = _allocate_node(node_data, &retval);
-        if (!new_data && RET_SUCCESS == retval)
+        new_node = _allocate_node(node_data, &retval);
+        if (!new_node && RET_SUCCESS == retval)
         {
             retval = RET_ERROR;  // Suffer not the NULL pointer
         }
@@ -283,7 +302,7 @@ return_value insert_data(circular_list_ptr c_list, any_data_ptr node_data, unsig
     // INSERT IT
     if (RET_SUCCESS == retval)
     {
-        // HERE
+        retval = _insert_node(c_list, new_node, pos);
     }
 
     // DONE
@@ -291,7 +310,7 @@ return_value insert_data(circular_list_ptr c_list, any_data_ptr node_data, unsig
 }
 
 
-return_value remove_node_pos(circular_list_ptr c_list, unsigned int pos)
+return_value remove_cnode_pos(circular_list_ptr c_list, unsigned int pos)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
@@ -304,7 +323,7 @@ return_value remove_node_pos(circular_list_ptr c_list, unsigned int pos)
     // Find it
     if (RET_SUCCESS == retval)
     {
-        old_node = find_node_pos(c_list, pos, &retval);
+        old_node = find_cnode_pos(c_list, pos, &retval);
     }
     // Unlink it
     if (RET_SUCCESS == retval)
@@ -323,7 +342,7 @@ return_value remove_node_pos(circular_list_ptr c_list, unsigned int pos)
 }
 
 
-circular_node_ptr find_node_val(circular_list_ptr c_list, any_data_ptr needle,
+circular_node_ptr find_cnode_val(circular_list_ptr c_list, any_data_ptr needle,
                                 return_value_ptr result)
 {
     // LOCAL VARIABLES
@@ -348,11 +367,10 @@ circular_node_ptr find_node_val(circular_list_ptr c_list, any_data_ptr needle,
         tmp_node = c_list->head_ptr;
         do
         {
-            retval = _validate_circular_node(tmp_node);
+            retval = _validate_circular_node(tmp_node, true);
             if (RET_SUCCESS == retval)
             {
-                // bool _compare_any_data(any_data_ptr s1_data, any_data_ptr s2_data, return_value_ptr result)
-                if (true == compare_any_data(tmp_node->data_ptr, needle, &retval))
+                if (true == _compare_any_data(tmp_node->data_ptr, needle, &retval))
                 {
                     needle_node = tmp_node;  // Found it
                     break;  // Stop looking
@@ -365,7 +383,7 @@ circular_node_ptr find_node_val(circular_list_ptr c_list, any_data_ptr needle,
             tmp_node = tmp_node->next_ptr;
         } while (tmp_node != c_list->head_ptr);
         // Did we find it?
-        if (!needle_ptr && RET_SUCCESS == retval)
+        if (!needle_node && RET_SUCCESS == retval)
         {
             retval = RET_NOT_FOUND;  // Didn't find it but there were no errors
         }
@@ -380,7 +398,7 @@ circular_node_ptr find_node_val(circular_list_ptr c_list, any_data_ptr needle,
 }
 
 
-return_value sort_list(circular_list_ptr c_list, compare_any_data comp_func)
+return_value sort_clist(circular_list_ptr c_list, compare_any_data comp_func)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
@@ -424,9 +442,9 @@ any_data_ptr _allocate_any_data(return_value_ptr result)
 circular_node_ptr _allocate_node(any_data_ptr new_data, return_value_ptr result)
 {
     // LOCAL VARIABLES
-    return_value retval = RET_SUCCESS;                         // Function call results
-    any_data_ptr new_node = calloc(1, sizeof(circular_node));  // New any_data struct
-    int errnum = errno;                                        // Errno value
+    return_value retval = RET_SUCCESS;                              // Function call results
+    circular_node_ptr new_node = calloc(1, sizeof(circular_node));  // New any_data struct
+    int errnum = errno;                                             // Errno value
 
     // VALIDATION
     if (!new_node)
@@ -453,7 +471,7 @@ circular_node_ptr _allocate_node(any_data_ptr new_data, return_value_ptr result)
     {
         *result = retval;
     }
-    return new_data;
+    return new_node;
 }
 
 
@@ -624,7 +642,7 @@ return_value _delete_circular_node(circular_node_ptr old_node)
     // any_data
     if (RET_SUCCESS == retval)
     {
-        retval = _destroy_any_data(old_node->data_ptr);
+        retval = _destroy_any_data((any_data_ptr)old_node->data_ptr);
     }
     // old_node
     if (RET_SUCCESS == retval)
@@ -679,10 +697,10 @@ return_value _insert_here(circular_node_ptr new_node, circular_node_ptr old_node
     return_value retval = RET_SUCCESS;  // Function call results
 
     // INPUT VALIDATION
-    retval = _validate_circular_node(old_node);
-    if (RET_SUCCESS == retval && !new_node)
+    retval = _validate_circular_node(old_node, true);
+    if (RET_SUCCESS == retval)
     {
-        retval = RET_INV_PARAM;
+        retval = _validate_circular_node(new_node, false);
     }
 
     // INSERT HERE
@@ -738,7 +756,7 @@ return_value _insert_node(circular_list_ptr c_list, circular_node_ptr new_node, 
         // New tail
         else if (pos >= c_list->entries)
         {
-            tmp_node = c_list->tail_ptr->next_ptr;
+            tmp_node = (circular_node_ptr)c_list->tail_ptr->next_ptr;
             retval = _insert_here(new_node, tmp_node);
             if (RET_SUCCESS == retval)
             {
@@ -748,7 +766,7 @@ return_value _insert_node(circular_list_ptr c_list, circular_node_ptr new_node, 
         // Chain node
         else
         {
-            tmp_node = find_node_pos(c_list, pos, &retval);
+            tmp_node = find_cnode_pos(c_list, pos, &retval);
             if (RET_SUCCESS == retval)
             {
                 retval = _insert_here(new_node, tmp_node);
@@ -771,13 +789,22 @@ return_value _remove_node(circular_node_ptr old_node)
     return_value retval = RET_SUCCESS;  // Function call results
 
     // INPUT VALIDATION
-    retval = _validate_circular_node(old_node);
+    retval = _validate_circular_node(old_node, true);
+    // fprintf(stderr, "Validate circular_node returned %d for node %p\n", retval, old_node);  // DEBUGGING
 
     // REMOVE IT
     if (RET_SUCCESS == retval)
     {
-        old_node->prev_ptr->next_ptr = old_node->next_ptr;
-        old_node->next_ptr->prev_ptr = old_node->prev_ptr;
+        // fprintf(stderr, "Removing node %p\n", old_node);  // DEBUGGING
+        // Gently remove it
+        if (old_node->prev_ptr)
+        {
+            old_node->prev_ptr->next_ptr = old_node->next_ptr;
+        }
+        if (old_node->next_ptr)
+        {
+            old_node->next_ptr->prev_ptr = old_node->prev_ptr;
+        }
         old_node->prev_ptr = NULL;
         old_node->next_ptr = NULL;
     }
@@ -823,10 +850,10 @@ return_value _validate_circular_list(circular_list_ptr c_list)
         // Non-empty circular list
         else if (c_list->head_ptr && c_list->tail_ptr && c_list->entries > 0)
         {
-            retval = _validate_circular_node(c_list->head_ptr);
+            retval = _validate_circular_node(c_list->head_ptr, true);
             if (RET_SUCCESS == retval)
             {
-                retval = _validate_circular_node(c_list->tail_ptr);
+                retval = _validate_circular_node(c_list->tail_ptr, true);
             }
         }
     }
@@ -836,7 +863,7 @@ return_value _validate_circular_list(circular_list_ptr c_list)
 }
 
 
-return_value _validate_circular_node(circular_node_ptr c_node)
+return_value _validate_circular_node(circular_node_ptr c_node, bool full_check)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
@@ -846,8 +873,9 @@ return_value _validate_circular_node(circular_node_ptr c_node)
     {
         retval = RET_INV_PARAM;
     }
-    else if (NULL == c_node->prev_ptr || NULL == c_node->next_ptr)
+    else if (true == full_check && (NULL == c_node->prev_ptr || NULL == c_node->next_ptr))
     {
+        // fprintf(stderr, "CNODE %p:\tPREV: %p\tNEXT: %p\n", c_node, c_node->prev_ptr, c_node->next_ptr);  // DEBUGGING
         retval = RET_ERROR;
     }
 
