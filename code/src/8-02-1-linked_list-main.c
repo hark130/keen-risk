@@ -980,20 +980,23 @@ void _print_any_data(any_data_ptr data)
         switch (data->d_type)
         {
             case CHAR_DT:
-                printf("Any_data type of %d: '%c' [%X]\n", data->d_type, *((char*)data->d_ptr),
-                       *((int*)data->d_ptr));
+                printf("Any_data type of %d (size %d): '%c' [%X]\n", data->d_type, data->d_size,
+                       *((char*)data->d_ptr), *((int*)data->d_ptr));
                 break;
             case DOUBLE_DT:
-                printf("Any_data type of %d: %f\n", data->d_type, *((double*)data->d_ptr));
+                printf("Any_data type of %d (size %d): %f\n", data->d_type, data->d_size,
+                       *((double*)data->d_ptr));
                 break;
             case FLOAT_DT:
-                printf("Any_data type of %d: %lf\n", data->d_type, *((float*)data->d_ptr));
+                printf("Any_data type of %d (size %d): %lf\n", data->d_type, data->d_size,
+                       *((float*)data->d_ptr));
                 break;
             case INT_DT:
-                printf("Any_data type of %d: %d\n", data->d_type, *((int*)data->d_ptr));
+                printf("Any_data type of %d (size %d): %d\n", data->d_type, data->d_size,
+                       *((int*)data->d_ptr));
                 break;
             case STRING_DT:
-                printf("Any_data type of %d: ", data->d_type);
+                printf("Any_data type of %d (size %d): ", data->d_type, data->d_size);
                 for (int i = 0; i < data->d_size; i++)
                 {
                     printf("%c", ((char*)data->d_ptr)[i]);
@@ -1001,7 +1004,7 @@ void _print_any_data(any_data_ptr data)
                 printf("\n");
                 break;
             case VOID_DT:
-                printf("Any_data type of %d: ", data->d_type);
+                printf("Any_data type of %d (size %d): ", data->d_type, data->d_size);
                 for (int i = 0; i < data->d_size; i++)
                 {
                     printf("0x%02X ", 0xFF & ((char*)data->d_ptr)[i]);
@@ -1010,7 +1013,8 @@ void _print_any_data(any_data_ptr data)
                 printf("Any_data VOID_DT as a string: %s\n", ((char*)data->d_ptr));
                 break;
             default:
-                fprintf(stderr, "Unsupported data->d_type of %d\n", data->d_type);
+                fprintf(stderr, "Unsupported data->d_type of %d (size: %d)\n", data->d_type,
+                        data->d_size);
         }
     }
     else
