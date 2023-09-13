@@ -327,8 +327,7 @@ STUDENT LABS
 
 8-02-2: Circular Linked List
 
-This lab DOES NOT have unit tests to validate your work.
-Write your own main() to test your work.
+This lab has unit tests to validate your work.
 Be sure to use ASAN and Valgrind.
 
 * Minimum functionality: create list, empty list, delete list
