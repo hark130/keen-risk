@@ -222,7 +222,7 @@ int main()
                 break;  // We encountered an error
             }
         }
-        _print_results(result, "TEST 4: Find a node (by pos) - Fill the empty circular linked list");
+        _print_results(result, "TEST 4: Find a node (by pos) - Fill an empty circular linked list");
     }
     // Find a node
     // Head Node
@@ -519,19 +519,6 @@ int main()
                 }
                 temp_node = temp_node->next_ptr;  // Next node
             }
-            // do
-            // {
-            //     if (temp_node->data_ptr->d_size > temp_node->next_ptr->data_ptr->d_size)
-            //     {
-            //         fprintf(stderr, "The circular linked list is not sorted, by size, "
-            //                 "in ascending order\n");
-            //         _print_any_data(temp_node->data_ptr);
-            //         _print_any_data(temp_node->next_ptr->data_ptr);
-            //         result = RET_ERROR;
-            //         break;  // We encountered a failure
-            //     }
-            //     temp_node = temp_node->next_ptr;  // Next node
-            // } while (temp_node != c_list->head_ptr && temp_node);
         }
         _print_results(result, "TEST 11: Sort (by size)");
     }
@@ -551,7 +538,6 @@ int main()
             {
                 if (temp_node->data_ptr->d_ptr >= temp_node->next_ptr->data_ptr->d_ptr)
                 {
-                    fprintf(stderr, "FAILED ON %d\n", i);  // DEBUGGING
                     fprintf(stderr, "The circular linked list is not sorted, by size, "
                             "in ascending order\n");
                     _print_any_data(temp_node->data_ptr);
@@ -561,17 +547,6 @@ int main()
                 }
                 temp_node = temp_node->next_ptr;  // Next node
             }
-            // do
-            // {
-            //     if (temp_node->data_ptr->d_ptr >= temp_node->next_ptr->data_ptr->d_ptr)
-            //     {
-            //         fprintf(stderr, "The circular linked list is not sorted, by pointer, "
-            //                 "in ascending order\n");
-            //         result = RET_ERROR;
-            //         break;  // We encountered a failure
-            //     }
-            //     temp_node = temp_node->next_ptr;  // Next node
-            // } while (temp_node != c_list->head_ptr && temp_node);
         }
         _print_results(result, "TEST 12: Sort (by pointer)");
     }
