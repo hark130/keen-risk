@@ -1,4 +1,17 @@
-
+/*
+ *  This is an example implementation for the 8-02-2 lab.
+ *  This solution should work, as-is, when copy pasted into 8-02-2-circular_list-lab.c.
+ *
+ *  DISCLAIMER: This implementation is not perfect.
+ *      The Good:
+ *          - It works.
+ *          - ASAN and Valgrind both give this implementation a clean bill of health.
+ *      The Bad:
+ *          - I probably shouldn't have manually implemented quick sort.  It's best to
+ *            use libraries (e.g., qsort()) instead of re-inventing the wheel.
+ *          - I probably could have done a better job avoiding name collisions with 8-02-1 lab.
+ *          - I sacrificed modular programming in the interest of making this easy to compile.
+ */
 
 #include "8-02-2-circular_list.h"
 #include "8-02-definitions.h"
