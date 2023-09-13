@@ -9,6 +9,7 @@
 #define _8_02_SORT_FUNCTIONS_
 
 #include "8-02-1-linked_list.h"
+#include "8-02-2-circular_list.h"
 #include <stdbool.h>  // true, false, bool
 
 
@@ -32,6 +33,12 @@ bool compare_any_data_siz(any_data_ptr left_data, any_data_ptr right_data);
  *  Returns false for all other conditions.
  */
 bool compare_any_data_val(any_data_ptr left_data, any_data_ptr right_data);
+
+
+/*
+ *  Swap the value stored in left_node with the value stored in right_node.
+ */
+void swap_cnode(circular_node_ptr *left_node, circular_node_ptr *right_node);
 
 
 /*

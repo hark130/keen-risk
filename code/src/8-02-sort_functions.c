@@ -99,6 +99,18 @@ bool compare_any_data_val(any_data_ptr left_data, any_data_ptr right_data)
 }
 
 
+void swap_cnode(circular_node_ptr *left_node, circular_node_ptr *right_node)
+{
+    circular_node_ptr temp_node = NULL;  // Use this var for swapping
+    if (left_node && right_node)
+    {
+        temp_node = *left_node;
+        *left_node = *right_node;
+        *right_node = temp_node;
+    }
+}
+
+
 void swap_data(any_data_ptr *left_data, any_data_ptr *right_data)
 {
     any_data_ptr temp_data = NULL;  // Use this var for swapping
