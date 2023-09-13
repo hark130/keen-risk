@@ -82,7 +82,7 @@ circular_node_ptr find_cnode_pos(circular_list_ptr c_list, unsigned int pos,
  *  Finds the node at position pos, removes that node from the list, and frees that node.
  *  The head_node is position 1.
  */
- return_value remove_cnode_pos(circular_list_ptr c_list, unsigned int pos);
+return_value remove_cnode_pos(circular_list_ptr c_list, unsigned int pos);
 
 
 /*
