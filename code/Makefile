@@ -32,6 +32,7 @@ all:
 	$(CALL_MAKE) clean
 	$(CALL_MAKE) 6-02-1
 	$(CALL_MAKE) 6-15-3
+	$(CALL_MAKE) 8-02-solution
 	$(CALL_MAKE) 8-04-solution
 
 6-02-1: $(SO_NAME)$(SO_EXT) owe_mem.c
@@ -41,6 +42,18 @@ all:
 6-15-3: $(SO_NAME)$(SO_EXT)
 	$(CC) $(CFLAGS) $(SRC)/main.c -o $(DST)/6-15-3.bin -lharklemem -I $(INC) -L $(DST)
 	$(CC) $(AFLAGS) $(SRC)/main.c -o $(DST)/6-15-3_asan.bin -lharklemem -I $(INC) -L $(DST)
+
+8-02-solution:
+	$(CALL_MAKE) 8-02-1-solution
+	$(CALL_MAKE) 8-02-2-solution
+
+8-02-1-solution: $(DST)/8-02-1-linked_list-solution.o $(DST)/8-02-sort_functions.o
+	$(CC) $(CFLAGS) $(SRC)/8-02-1-linked_list-main.c $^ -o $(DST)/8-02-1-linked_list.bin -I $(INC) -L $(DST)
+	$(CC) $(AFLAGS) $(SRC)/8-02-1-linked_list-main.c $^ -o $(DST)/8-02-1-linked_list_asan.bin -I $(INC) -L $(DST)
+
+8-02-2-solution: $(DST)/8-02-2-circular_list-solution.o $(DST)/8-02-sort_functions.o
+	$(CC) $(CFLAGS) $(SRC)/8-02-2-circular_list-main.c $^ -o $(DST)/8-02-2-circular_list.bin -I $(INC) -L $(DST)
+	$(CC) $(AFLAGS) $(SRC)/8-02-2-circular_list-main.c $^ -o $(DST)/8-02-2-circular_list_asan.bin -I $(INC) -L $(DST)
 
 8-04-solution:
 	$(CALL_MAKE) 8-04-1-solution

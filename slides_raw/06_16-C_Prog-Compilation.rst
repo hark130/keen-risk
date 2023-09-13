@@ -266,7 +266,7 @@ Basic Debugging Statement
 
 	my_func(char *my_string)
 	{
-		puts("Entered my_func()");  // DEBUGGING
+	    puts("Entered my_func()");  // DEBUGGING
 	    char temp_char = 0x0;  // Iterate the string
 	    printf("Why am I crashing with %p?!", my_string);  // DEBUGGING
 	    temp_char = my_string[0];  // BOOM GOES THE NULL POINTER
