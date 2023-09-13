@@ -50,9 +50,9 @@ return_value _compare_test_data(any_data_ptr s1_data, void *s2_data, data_type s
                                 unsigned int s2_data_size);
 
 /*
- *  Compare an any_data_ptr (input) to the contents of a list_node_ptr (results).
+ *  Compare an any_data_ptr (input) to the contents of a circular_list_ptr (results).
  */
-return_value _compare_test_results(any_data_ptr input, list_node_ptr test_result);
+return_value _compare_test_results(any_data_ptr input, circular_node_ptr test_result);
 
 /*
  *  Allocate a NULL-terminated array of any_data_ptrs and fill each one.  Array_len will be used
@@ -178,580 +178,414 @@ int main()
         }
         _print_results(result, "TEST 2: Add a new node to the circular linked list");
     }
+    // Verify the linked list is circular
     if (RET_SUCCESS == result)
     {
-        
+        // Assumed Starting State: [0]->[1]->[2]->[0]...
+        if (c_list->tail_ptr->next_ptr != c_list->head_ptr)
+        {
+            fprintf(stderr, "The tail node doesn't point at the head node\n");
+            result = RET_ERROR;  // This counts as a fail
+        }
+        _print_results(result, "TEST 2: Verify the linked list is circular");
     }
+    // TEST 3 - Empty the circular linked list
     if (RET_SUCCESS == result)
     {
-        
+        // Assumed Starting State: [0]->[1]->[2]->[0]...
+        result = empty_the_list(c_list);
+        exp_count = 0;  // The circular linked list should have been cleared
+        if (RET_SUCCESS == result)
+        {
+            result = _check_count(c_list, exp_count);
+        }
+        _print_results(result, "TEST 3: Empty the circular linked list");
     }
+    // TEST 4 - Find a node (by position)
+    // Big list
     if (RET_SUCCESS == result)
     {
-        
+        // Assumed Starting State: NULL
+        exp_count = 0;  // Using this as a temp var for the time being
+        // Assumed Starting State: NULL
+        // Insert new any_data into predictable positions
+        for (int i = 0; i < ARRAY_LEN - 1; i++)
+        {
+            result = insert_cdata(c_list, input_arr[i], ARRAY_LEN + 2);  // Append it
+            if (RET_SUCCESS == result)
+            {
+                result = _check_count(c_list, ++exp_count);
+            }
+            else
+            {
+                fprintf(stderr, "insert_cdata() failed with %d on index %d\n", result, i);
+                break;  // We encountered an error
+            }
+        }
+        _print_results(result, "TEST 4: Find a node (by pos) - Fill the empty circular linked list");
     }
-    // // Create a linked list
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: NULL
-    //     // Node 1
-    //     head_node = append_data(NULL, input_arr[0], &result);
-    //     if (!head_node)
-    //     {
-    //         fprintf(stderr, "Failed to allocate a node!\n");
-    //         if (RET_SUCCESS == result)
-    //         {
-    //             result = RET_ERROR;  // This counts as a fail
-    //         }
-    //     }
-    //     else
-    //     {
-    //         exp_count++;
-    //     }
-    //     _print_results(result, "TEST 1: Allocate head node in a linked list");
-    // }
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [0]
-    //     // Node 2
-    //     temp_node = append_data(head_node, input_arr[1], &result);
-    //     if (temp_node != head_node && temp_node)
-    //     {
-    //         fprintf(stderr, "Failed to append node!  The new node became the head node?!\n");
-    //         if (RET_SUCCESS == result)
-    //         {
-    //             result = RET_ERROR;  // This counts as a fail
-    //         }
-    //     }
-    //     else
-    //     {
-    //         exp_count++;
-    //     }
-
-    //     _print_results(result, "TEST 1: Append a node to a head node");
-    // }
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [0]->[1]
-    //     // Node 3
-    //     temp_node = append_data(head_node, input_arr[2], &result);
-    //     if (temp_node != head_node && temp_node)
-    //     {
-    //         fprintf(stderr, "Failed to append node!  The new node became the head node?!\n");
-    //         if (RET_SUCCESS == result)
-    //         {
-    //             result = RET_ERROR;  // This counts as a fail
-    //         }
-    //     }
-    //     else
-    //     {
-    //         exp_count++;
-    //     }
-    //     _print_results(result, "TEST 1: Append a node to a linked list");
-    // }
-    // // TEST 2 - Validate linked list length
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [0]->[1]->[2]
-    //     if (exp_count != count_nodes(head_node))
-    //     {
-    //         result = RET_ERROR;
-    //     }
-    //     _print_results(result, "TEST 2: Linked list length");
-    // }
-    // // TEST 3 - Validate linked list contents (by position)
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [0]->[1]->[2]
-    //     temp_node = find_node_pos(head_node, 1, &result);
-    //     if (RET_SUCCESS == result)
-    //     {
-    //         result = _compare_test_results(input_arr[0], temp_node);
-    //     }
-    //     _print_results(result, "TEST 3: Linked list contents - node 1");
-    // }
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [0]->[1]->[2]
-    //     temp_node = find_node_pos(head_node, 2, &result);
-    //     if (RET_SUCCESS == result)
-    //     {
-    //         result = _compare_test_results(input_arr[1], temp_node);
-    //     }
-    //     _print_results(result, "TEST 3: Linked list contents - node 2");
-    // }
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [0]->[1]->[2]
-    //     temp_node = find_node_pos(head_node, 3, &result);
-    //     if (RET_SUCCESS == result)
-    //     {
-    //         result = _compare_test_results(input_arr[2], temp_node);
-    //     }
-    //     _print_results(result, "TEST 3: Linked list contents - node 3");
-    // }
-    // // TEST 4 - Insert data
-    // // Insert front
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [0]->[1]->[2]
-    //     temp_node = insert_data(head_node, input_arr[3], 1, &result);
-    //     if (RET_SUCCESS == result)
-    //     {
-    //         if (temp_node == head_node)
-    //         {
-    //             fprintf(stderr, "Data was not inserted at the front\n");
-    //             result = RET_ERROR;
-    //         }
-    //         else
-    //         {
-    //             head_node = temp_node;  // Store the new head node
-    //             if (++exp_count != count_nodes(head_node))
-    //             {
-    //                 fprintf(stderr, "Invalid linked list node count\n");
-    //                 result = RET_ERROR;
-    //             }
-    //             else
-    //             {
-    //                 result = _compare_test_results(input_arr[3], head_node);
-    //             }
-    //         }
-    //     }
-    //     _print_results(result, "TEST 4: Insert data - front");
-    // }
-    // // Insert middle
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [3]->[0]->[1]->[2]
-    //     temp_node = insert_data(head_node, input_arr[4], 3, &result);
-    //     if (temp_node != head_node && temp_node)
-    //     {
-    //         fprintf(stderr, "Why did the head node change?\n");
-    //         result = RET_ERROR;
-    //     }
-    //     else if (RET_SUCCESS == result)
-    //     {
-    //         if (++exp_count != count_nodes(head_node))
-    //         {
-    //             fprintf(stderr, "Invalid linked list node count\n");
-    //             result = RET_ERROR;
-    //         }
-    //         else
-    //         {
-    //             temp_node = find_node_pos(head_node, 3, &result);
-    //             result = _compare_test_results(input_arr[4], temp_node);
-    //         }
-    //     }
-    //     _print_results(result, "TEST 4: Insert data - middle");
-    // }
-    // // Insert end
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [3]->[0]->[4]->[1]->[2]
-    //     temp_node = insert_data(head_node, input_arr[5], 6, &result);
-    //     if (temp_node != head_node && temp_node)
-    //     {
-    //         fprintf(stderr, "Why did the head node change?\n");
-    //         result = RET_ERROR;
-    //     }
-    //     else if (RET_SUCCESS == result)
-    //     {
-    //         if (++exp_count != count_nodes(head_node))
-    //         {
-    //             fprintf(stderr, "Invalid linked list node count\n");
-    //             result = RET_ERROR;
-    //         }
-    //         else
-    //         {
-    //             temp_node = find_node_pos(head_node, 6, &result);
-    //             result = _compare_test_results(input_arr[5], temp_node);
-    //         }
-    //     }
-    //     _print_results(result, "TEST 4: Insert data - back");
-    // }
-    // // TEST 5 - Remove node (by position)
-    // // Remove middle
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [3]->[0]->[4]->[1]->[2]->[5]
-    //     temp_node = remove_node_pos(head_node, 2, &result);
-    //     if (temp_node != head_node && temp_node)
-    //     {
-    //         fprintf(stderr, "Why did the head node change?\n");
-    //         result = RET_ERROR;
-    //     }
-    //     else if (RET_SUCCESS == result)
-    //     {
-    //         if (--exp_count != count_nodes(head_node))
-    //         {
-    //             fprintf(stderr, "Invalid linked list node count\n");
-    //             result = RET_ERROR;
-    //         }
-    //         else
-    //         {
-    //             temp_node = find_node_pos(head_node, 2, &result);
-    //             result = _compare_test_results(input_arr[4], temp_node);
-    //         }
-    //     }
-    //     _print_results(result, "TEST 5: Remove node - middle");
-    // }
-    // // Remove back
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [3]->[4]->[1]->[2]->[5]
-    //     temp_node = remove_node_pos(head_node, 5, &result);
-    //     if (temp_node != head_node && temp_node)
-    //     {
-    //         fprintf(stderr, "Why did the head node change?\n");
-    //         result = RET_ERROR;
-    //     }
-    //     else if (RET_SUCCESS == result)
-    //     {
-    //         if (--exp_count != count_nodes(head_node))
-    //         {
-    //             fprintf(stderr, "Invalid linked list node count\n");
-    //             result = RET_ERROR;
-    //         }
-    //         else
-    //         {
-    //             temp_node = find_node_pos(head_node, 4, &result);
-    //             result = _compare_test_results(input_arr[2], temp_node);
-    //         }
-    //     }
-    //     _print_results(result, "TEST 5: Remove node - back");
-    // }
-    // // Remove front
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [3]->[4]->[1]->[2]
-    //     temp_node = remove_node_pos(head_node, 1, &result);
-    //     if (temp_node == head_node && temp_node)
-    //     {
-    //         fprintf(stderr, "Why didn't the head node change?\n");
-    //         result = RET_ERROR;
-    //     }
-    //     else if (RET_SUCCESS == result)
-    //     {
-    //         head_node = temp_node;  // Store the new head node
-    //         if (--exp_count != count_nodes(head_node))
-    //         {
-    //             fprintf(stderr, "Invalid linked list node count\n");
-    //             result = RET_ERROR;
-    //         }
-    //         else
-    //         {
-    //             temp_node = find_node_pos(head_node, 1, &result);
-    //             result = _compare_test_results(input_arr[4], temp_node);
-    //         }
-    //     }
-    //     _print_results(result, "TEST 5: Remove node - front");
-    // }
-    // // TEST 6 - Validate linked list contents (by value)
-    // // Find [4]
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [4]->[1]->[2]
-    //     temp_node = find_node_val(head_node, input_arr[4], &result);
-    //     if (temp_node)
-    //     {
-    //         result = _compare_test_results(input_arr[4], temp_node);
-    //     }
-    //     else if (RET_SUCCESS == result)
-    //     {
-    //         result = RET_ERROR;  // Success and NULL returns don't mix
-    //     }
-    //     _print_results(result, "TEST 6: Find node 1 by value");
-    // }
-    // // Find [1]
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [4]->[1]->[2]
-    //     temp_node = find_node_val(head_node, input_arr[1], &result);
-    //     if (temp_node)
-    //     {
-    //         result = _compare_test_results(input_arr[1], temp_node);
-    //     }
-    //     else if (RET_SUCCESS == result)
-    //     {
-    //         result = RET_ERROR;  // Success and NULL returns don't mix
-    //     }
-    //     _print_results(result, "TEST 6: Find node 2 by value");
-    // }
-    // // Find [2]
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [4]->[1]->[2]
-    //     temp_node = find_node_val(head_node, input_arr[2], &result);
-    //     if (temp_node)
-    //     {
-    //         result = _compare_test_results(input_arr[2], temp_node);
-    //     }
-    //     else if (RET_SUCCESS == result)
-    //     {
-    //         result = RET_ERROR;  // Success and NULL returns don't mix
-    //     }
-    //     _print_results(result, "TEST 6: Find node 3 by value");
-    // }
-    // // TEST 7 - Verify true negatives
-    // // find_node_pos()
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [4]->[1]->[2]
-    //     temp_node = find_node_pos(head_node, 4, &result);
-    //     if (temp_node || RET_NOT_FOUND != result)
-    //     {
-    //         fprintf(stderr, "How did it find that position?\n");
-    //         result = RET_ERROR;
-    //     }
-    //     else
-    //     {
-    //         result = RET_SUCCESS;  // This counts as a "pass"
-    //     }
-    //     _print_results(result, "TEST 7: Verify true negative - find_node_pos()");
-    // }
-    // // remove_node_pos()
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [4]->[1]->[2]
-    //     temp_node = remove_node_pos(head_node, 4, &result);
-    //     if (temp_node || RET_NOT_FOUND != result)
-    //     {
-    //         fprintf(stderr, "What did it remove?\n");
-    //         result = RET_ERROR;
-    //     }
-    //     else
-    //     {
-    //         result = RET_SUCCESS;  // This counts as a "pass"
-    //     }
-    //     _print_results(result, "TEST 7: Verify true negative - remove_node_pos()");
-    // }
-    // // find_node_val()
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [4]->[1]->[2]
-    //     temp_node = find_node_val(head_node, input_arr[0], &result);
-    //     if (temp_node || RET_NOT_FOUND != result)
-    //     {
-    //         fprintf(stderr, "How did it find that value?\n");
-    //         result = RET_ERROR;  // Success and NULL returns don't mix
-    //     }
-    //     else
-    //     {
-    //         result = RET_SUCCESS;  // This counts as a "pass"
-    //     }
-    //     _print_results(result, "TEST 7: Verify true negative - find_node_val()");
-    // }
-    // // TEST 8 - Sort (by pointer)
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [4]->[1]->[2]
-    //     temp_node = sort_list(head_node, compare_any_data_ptr, &result);
-    //     if (!temp_node || RET_SUCCESS != result)
-    //     {
-    //         fprintf(stderr, "The call to sort_list() failed\n");
-    //         if (RET_SUCCESS == result)
-    //         {
-    //             result = RET_ERROR;  // Success and NULL returns don't mix
-    //         }
-    //     }
-    //     else
-    //     {
-    //         head_node = temp_node;  // The head node likely changed
-    //         while (temp_node && temp_node->next_ptr)
-    //         {
-    //             if (temp_node->data_ptr->d_ptr >= temp_node->next_ptr->data_ptr->d_ptr)
-    //             {
-    //                 fprintf(stderr, "The linked list is not sorted, by pointer, "
-    //                         "in ascending order\n");
-    //                 result = RET_ERROR;
-    //                 break;
-    //             }
-    //             temp_node = temp_node->next_ptr;  // Next node
-    //         }
-    //     }
-    //     _print_results(result, "TEST 8: Sort - compare_any_data_ptr()");
-    // }
-    // // TEST 9 - Big Sort (by pointer)
-    // // Interim cleanup
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: Doesn't matter because it's getting torn down
-    //     result = delete_list(head_node);
-    //     if (RET_SUCCESS == result)
-    //     {
-    //         head_node = NULL;
-    //     }
-    //     _print_results(result, "TEST 9: Big Sort (by pointer) - interim cleanup");
-    // }
-    // // Big list
-    // if (RET_SUCCESS == result)
-    // {
-    //     exp_count = 0;  // Using this as a temp var for the time being
-    //     // Assumed Starting State: NULL
-    //     // Insert new any_data into psuedo-random positions (so the pointers aren't ordered)
-    //     for (int i = 0; i < ARRAY_LEN - 1; i++)
-    //     {
-    //         temp_node = insert_data(head_node, input_arr[i], _get_rand_pos(exp_count), &result);
-    //         if (RET_SUCCESS == result)
-    //         {
-    //             if (temp_node)
-    //             {
-    //                 exp_count++;
-    //                 if (temp_node != head_node)
-    //                 {
-    //                     head_node = temp_node;  // New head node
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 fprintf(stderr, "insert_data() reported success but returned %p\n", temp_node);
-    //                 result = RET_ERROR;
-    //                 break;  // We encountered an error
-    //             }
-    //         }
-    //         else
-    //         {
-    //             fprintf(stderr, "insert_data() failed with %d on index %d\n", result, i);
-    //             break;  // We encountered an error
-    //         }
-    //     }
-    //     // Verify count
-    //     if (exp_count != count_nodes(head_node) || exp_count != ARRAY_LEN - 1)
-    //     {
-    //         fprintf(stderr, "The count is off.  \n"
-    //                 "Expected count: %d\nCurrent count: %d\n", exp_count,
-    //                 count_nodes(head_node));
-    //         result = RET_ERROR;
-    //     }
-    //     _print_results(result, "TEST 9: Big Sort (by pointer) - list creation");
-    // }
-    // // Big sort
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: Who knows?  Insertion was random!  [0]->[?]
-    //     temp_node = sort_list(head_node, compare_any_data_ptr, &result);
-    //     if (!temp_node || RET_SUCCESS != result)
-    //     {
-    //         fprintf(stderr, "The call to sort_list(Big List, sort-by-ptr) failed\n");
-    //         if (RET_SUCCESS == result)
-    //         {
-    //             result = RET_ERROR;  // Success and NULL returns don't mix
-    //         }
-    //     }
-    //     else
-    //     {
-    //         head_node = temp_node;  // The head node likely changed
-    //         while (temp_node && temp_node->next_ptr)
-    //         {
-    //             if (temp_node->data_ptr->d_ptr >= temp_node->next_ptr->data_ptr->d_ptr)
-    //             {
-    //                 fprintf(stderr, "The linked list is not sorted, by pointer, "
-    //                         "in ascending order\n");
-    //                 result = RET_ERROR;
-    //                 break;
-    //             }
-    //             temp_node = temp_node->next_ptr;  // Next node
-    //         }
-    //     }
-    //     _print_results(result, "TEST 9: Big Sort (by pointer) - compare_any_data_ptr()");
-    // }
-    // // TEST 10 - Big Sort (by size)
-    // // Interim cleanup
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: Doesn't matter because it's getting torn down
-    //     result = delete_list(head_node);
-    //     if (RET_SUCCESS == result)
-    //     {
-    //         head_node = NULL;
-    //     }
-    //     _print_results(result, "TEST 10: Big Sort (by size) - interim cleanup");
-    // }
-    // // Big list
-    // if (RET_SUCCESS == result)
-    // {
-    //     exp_count = 0;  // Using this as a temp var for the time being
-    //     // Assumed Starting State: NULL
-    //     // Append new any_data nodes
-    //     for (int i = 0; i < ARRAY_LEN - 1; i++)
-    //     {
-    //         temp_node = insert_data(head_node, input_arr[i], exp_count + 1, &result);  // Append it
-    //         if (RET_SUCCESS == result)
-    //         {
-    //             if (temp_node)
-    //             {
-    //                 exp_count++;
-    //                 if (temp_node != head_node)
-    //                 {
-    //                     head_node = temp_node;  // New head node
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 fprintf(stderr, "insert_data() reported success but returned %p\n", temp_node);
-    //                 result = RET_ERROR;
-    //                 break;  // We encountered an error
-    //             }
-    //         }
-    //         else
-    //         {
-    //             fprintf(stderr, "insert_data() failed with %d on index %d\n", result, i);
-    //             break;  // We encountered an error
-    //         }
-    //     }
-    //     // Verify count
-    //     if (exp_count != count_nodes(head_node) || exp_count != ARRAY_LEN - 1)
-    //     {
-    //         fprintf(stderr, "The count is off.  \n"
-    //                 "Expected count: %d\nCurrent count: %d\n", exp_count,
-    //                 count_nodes(head_node));
-    //         result = RET_ERROR;
-    //     }
-    //     _print_results(result, "TEST 10: Big Sort (by size) - list creation");
-    // }
-    // // Big sort
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: [0]->[1]->[n-1]->[n]
-    //     temp_node = sort_list(head_node, compare_any_data_siz, &result);
-    //     if (!temp_node || RET_SUCCESS != result)
-    //     {
-    //         fprintf(stderr, "The call to sort_list(Big List, sort-by-siz) failed\n");
-    //         if (RET_SUCCESS == result)
-    //         {
-    //             result = RET_ERROR;  // Success and NULL returns don't mix
-    //         }
-    //     }
-    //     else
-    //     {
-    //         head_node = temp_node;  // The head node likely changed
-    //         while (temp_node && temp_node->next_ptr)
-    //         {
-    //             if (temp_node->data_ptr->d_size > temp_node->next_ptr->data_ptr->d_size)
-    //             {
-    //                 fprintf(stderr, "The linked list is not sorted, by size, "
-    //                         "in ascending order\n");
-    //                 _print_any_data(temp_node->data_ptr);
-    //                 _print_any_data(temp_node->next_ptr->data_ptr);
-    //                 result = RET_ERROR;
-    //                 break;  // We encountered an error
-    //             }
-    //             temp_node = temp_node->next_ptr;  // Next node
-    //         }
-    //     }
-    //     _print_results(result, "TEST 10: Big Sort (by size) - compare_any_data_siz()");
-    // }
-    // // TEST 11 - Clean up
-    // if (RET_SUCCESS == result)
-    // {
-    //     // Assumed Starting State: Doesn't matter because it's all getting deleted
-    //     result = delete_list(head_node);
-    //     if (RET_SUCCESS == result)
-    //     {
-    //         head_node = NULL;
-    //     }
-    //     _print_results(result, "TEST 11: Final clean up");
-    // }
+    // Find a node
+    // Head Node
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [0]->[1]->[2]->[N]->[0]...
+        temp_node = find_cnode_pos(c_list, 1, &result);
+        if (RET_SUCCESS == result)
+        {
+            if (!temp_node)
+            {
+                fprintf(stderr, "The find_cnode_pos(1) call returned NULL but reported success\n");
+                result = RET_ERROR;  // This counts as a fail
+            }
+            else
+            {
+                result = _compare_test_results(input_arr[0], temp_node);
+            }
+        }
+        _print_results(result, "TEST 4: Find a node (by pos) - Head node");
+    }
+    // Middle Node
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [0]->[1]->[2]->[N]->[0]...
+        temp_node = find_cnode_pos(c_list, 11, &result);
+        if (RET_SUCCESS == result)
+        {
+            if (!temp_node)
+            {
+                fprintf(stderr, "The find_cnode_pos(11) call returned NULL but reported success\n");
+                result = RET_ERROR;  // This counts as a fail
+            }
+            else
+            {
+                result = _compare_test_results(input_arr[10], temp_node);
+            }
+        }
+        _print_results(result, "TEST 4: Find a node (by pos) - Middle node");
+    }
+    // Tail Node
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [0]->[1]->[2]->[N]->[0]...
+        temp_node = find_cnode_pos(c_list, ARRAY_LEN - 1, &result);
+        if (RET_SUCCESS == result)
+        {
+            if (!temp_node)
+            {
+                fprintf(stderr, "The find_cnode_pos(%d) call returned NULL but reported success\n",
+                        ARRAY_LEN - 1);
+                result = RET_ERROR;  // This counts as a fail
+            }
+            else
+            {
+                result = _compare_test_results(input_arr[ARRAY_LEN - 2], temp_node);
+            }
+        }
+        _print_results(result, "TEST 4: Find a node (by pos) - Tail node");
+    }
+    // TEST 5 - Remove middle node from the circular linked list
+    // Remove a node - middle
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [0]->[1]->[2]->[3]->[4]->[N]->[0]...
+        result = remove_cnode_pos(c_list, 3);
+        if (RET_SUCCESS == result)
+        {
+            result = _check_count(c_list, --exp_count);
+        }
+        _print_results(result, "TEST 5: Remove middle node - Actual removal");
+    }
+    // Verify the prev node is unchanged
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [0]->[1]->[3]->[4]->[N]->[0]...
+        temp_node = find_cnode_pos(c_list, 2, &result);
+        if (RET_SUCCESS == result)
+        {
+            if (!temp_node)
+            {
+                fprintf(stderr, "The find_cnode_pos() call returned NULL but reported success\n");
+                result = RET_ERROR;  // This counts as a fail
+            }
+            else
+            {
+                result = _compare_test_results(input_arr[1], temp_node);
+            }
+        }
+        _print_results(result, "TEST 5: Remove middle node - Verify previous node unchanged");
+    }
+    // Verify the new position node
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [0]->[1]->[3]->[4]->[N]->[0]...
+        temp_node = find_cnode_pos(c_list, 3, &result);
+        if (RET_SUCCESS == result)
+        {
+            if (!temp_node)
+            {
+                fprintf(stderr, "The find_cnode_pos() call returned NULL but reported success\n");
+                result = RET_ERROR;  // This counts as a fail
+            }
+            else
+            {
+                result = _compare_test_results(input_arr[3], temp_node);
+            }
+        }
+        _print_results(result, "TEST 5: Remove middle node - Verify node position changed");
+    }
+    // Verify the new next node
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [0]->[1]->[3]->[4]->[N]->[0]...
+        temp_node = find_cnode_pos(c_list, 4, &result);
+        if (RET_SUCCESS == result)
+        {
+            if (!temp_node)
+            {
+                fprintf(stderr, "The find_cnode_pos() call returned NULL but reported success\n");
+                result = RET_ERROR;  // This counts as a fail
+            }
+            else
+            {
+                result = _compare_test_results(input_arr[4], temp_node);
+            }
+        }
+        _print_results(result, "TEST 5: Remove middle node - Verify new next node unchanged");
+    }
+    // TEST 6 - Remove head node from the circular linked list
+    // Remove a node - head
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [0]->[1]->[3]->[4]->[N]->[0]...
+        result = remove_cnode_pos(c_list, 1);
+        if (RET_SUCCESS == result)
+        {
+            result = _check_count(c_list, --exp_count);
+        }
+        _print_results(result, "TEST 6: Remove head node - Actual removal");
+    }
+    // Verify the new position node
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [1]->[3]->[4]->[N]->[0]...
+        temp_node = find_cnode_pos(c_list, 1, &result);
+        if (RET_SUCCESS == result)
+        {
+            if (!temp_node)
+            {
+                fprintf(stderr, "The find_cnode_pos() call returned NULL but reported success\n");
+                result = RET_ERROR;  // This counts as a fail
+            }
+            else if (temp_node != c_list->head_ptr)
+            {
+                fprintf(stderr, "The struct's head node was not updated\n");
+                result = RET_ERROR;
+            }
+            else
+            {
+                result = _compare_test_results(input_arr[1], temp_node);
+            }
+        }
+        _print_results(result, "TEST 6: Remove head node - Verify new head node");
+    }
+    // Verify the new next node
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [1]->[3]->[4]->[N]->[1]...
+        temp_node = find_cnode_pos(c_list, 2, &result);
+        if (RET_SUCCESS == result)
+        {
+            if (!temp_node)
+            {
+                fprintf(stderr, "The find_cnode_pos() call returned NULL but reported success\n");
+                result = RET_ERROR;  // This counts as a fail
+            }
+            else
+            {
+                result = _compare_test_results(input_arr[3], temp_node);
+            }
+        }
+        _print_results(result, "TEST 6: Remove head node - Verify new next node unchanged");
+    }
+    // TEST 7 - Remove tail node from the circular linked list
+    // Remove a node - head
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [1]->[3]->[4]->...->[41]->[42]->[1]...
+        result = remove_cnode_pos(c_list, exp_count);
+        if (RET_SUCCESS == result)
+        {
+            result = _check_count(c_list, --exp_count);
+        }
+        _print_results(result, "TEST 7: Remove tail node - Actual removal");
+    }
+    // Verify new tail node
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [1]->[3]->[4]->...->[41]->[1]...
+        temp_node = find_cnode_pos(c_list, exp_count, &result);  // Get the tail node
+        if (RET_SUCCESS == result)
+        {
+            if (!temp_node)
+            {
+                fprintf(stderr, "The find_cnode_pos() call returned NULL but reported success\n");
+                result = RET_ERROR;  // This counts as a fail
+            }
+            else if (temp_node != c_list->tail_ptr)
+            {
+                fprintf(stderr, "The struct's tail node was not updated\n");
+                result = RET_ERROR;
+            }
+            else
+            {
+                result = _compare_test_results(input_arr[ARRAY_LEN - 3], temp_node);
+            }
+        }
+        _print_results(result, "TEST 7: Remove tail node - Verify new tail node");
+    }
+    // TEST 8 - Find a node (by value)
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [1]->[3]->[4]->...->[41]->[1]...
+        temp_node = find_cnode_val(c_list, input_arr[12], &result);
+        if (RET_SUCCESS == result)
+        {
+            if (!temp_node)
+            {
+                fprintf(stderr, "The find_cnode_val() call returned NULL but reported success\n");
+                result = RET_ERROR;  // This counts as a fail
+            }
+            else
+            {
+                result = _compare_test_results(input_arr[12], temp_node);
+            }
+        }
+        _print_results(result, "TEST 8: Find a node (by value)");
+    }
+    // TEST 9 - Find a missing node (by position)
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [1]->[3]->[4]->...->[41]->[1]...
+        temp_node = find_cnode_pos(c_list, exp_count * 2, &result);
+        if (RET_NOT_FOUND == result)
+        {
+            result = RET_SUCCESS;  // Counts as a success
+        }
+        else if (RET_SUCCESS == result)
+        {
+            fprintf(stderr, "The find_cnode_pos() succeeded when it should not have\n");
+            result = RET_ERROR;  // This counts as a fail
+        }
+        _print_results(result, "TEST 9: Find a missing node (by position)");
+    }
+    // TEST 10 - Find a node (by value)
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [1]->[3]->[4]->...->[41]->[1]...
+        temp_node = find_cnode_val(c_list, input_arr[0], &result);
+        if (RET_NOT_FOUND == result)
+        {
+            result = RET_SUCCESS;  // Counts as a success
+        }
+        else if (RET_SUCCESS == result)
+        {
+            fprintf(stderr, "The find_cnode_val() succeeded when it should not have\n");
+            result = RET_ERROR;  // This counts as a fail
+        }
+        _print_results(result, "TEST 10: Find a missing node (by value)");
+    }
+    // TEST 11 - Sort (by size)
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: [1]->[3]->[4]->...->[41]->[1]...
+        result = sort_clist(c_list, compare_any_data_siz);
+        if (RET_SUCCESS != result)
+        {
+            fprintf(stderr, "The call to sort_clist(clist, sort-by-siz) failed\n");
+        }
+        else
+        {
+            temp_node = c_list->head_ptr;  // Check the order
+            for (int i = 0; i < c_list->entries - 1; i++)  // -1 to avoid tail->head comparison
+            {
+                if (temp_node->data_ptr->d_size > temp_node->next_ptr->data_ptr->d_size)
+                {
+                    fprintf(stderr, "The circular linked list is not sorted, by size, "
+                            "in ascending order\n");
+                    _print_any_data(temp_node->data_ptr);
+                    _print_any_data(temp_node->next_ptr->data_ptr);
+                    result = RET_ERROR;
+                    break;  // We encountered a failure
+                }
+                temp_node = temp_node->next_ptr;  // Next node
+            }
+            // do
+            // {
+            //     if (temp_node->data_ptr->d_size > temp_node->next_ptr->data_ptr->d_size)
+            //     {
+            //         fprintf(stderr, "The circular linked list is not sorted, by size, "
+            //                 "in ascending order\n");
+            //         _print_any_data(temp_node->data_ptr);
+            //         _print_any_data(temp_node->next_ptr->data_ptr);
+            //         result = RET_ERROR;
+            //         break;  // We encountered a failure
+            //     }
+            //     temp_node = temp_node->next_ptr;  // Next node
+            // } while (temp_node != c_list->head_ptr && temp_node);
+        }
+        _print_results(result, "TEST 11: Sort (by size)");
+    }
+    // TEST 12 - Sort (by pointer)
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: ???
+        result = sort_clist(c_list, compare_any_data_ptr);
+        if (RET_SUCCESS != result)
+        {
+            fprintf(stderr, "The call to sort_clist(clist, sort-by-ptr) failed\n");
+        }
+        else
+        {
+            temp_node = c_list->head_ptr;  // Check the order
+            for (int i = 0; i < c_list->entries - 1; i++)  // -1 to avoid tail->head comparison
+            {
+                if (temp_node->data_ptr->d_ptr >= temp_node->next_ptr->data_ptr->d_ptr)
+                {
+                    fprintf(stderr, "FAILED ON %d\n", i);  // DEBUGGING
+                    fprintf(stderr, "The circular linked list is not sorted, by size, "
+                            "in ascending order\n");
+                    _print_any_data(temp_node->data_ptr);
+                    _print_any_data(temp_node->next_ptr->data_ptr);
+                    result = RET_ERROR;
+                    break;  // We encountered a failure
+                }
+                temp_node = temp_node->next_ptr;  // Next node
+            }
+            // do
+            // {
+            //     if (temp_node->data_ptr->d_ptr >= temp_node->next_ptr->data_ptr->d_ptr)
+            //     {
+            //         fprintf(stderr, "The circular linked list is not sorted, by pointer, "
+            //                 "in ascending order\n");
+            //         result = RET_ERROR;
+            //         break;  // We encountered a failure
+            //     }
+            //     temp_node = temp_node->next_ptr;  // Next node
+            // } while (temp_node != c_list->head_ptr && temp_node);
+        }
+        _print_results(result, "TEST 12: Sort (by pointer)");
+    }
+    // TEST 13 - Delete the circular linked list
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: Doesn't matter because it's getting torn down
+        result = delete_clist(c_list);
+        if (RET_SUCCESS == result)
+        {
+            c_list = NULL;
+        }
+        _print_results(result, "TEST 13: Delete the circular linked list");
+    }
 
     // DONE
     if (c_list)
@@ -884,7 +718,7 @@ return_value _compare_test_data(any_data_ptr s1_data, void *s2_data, data_type s
 }
 
 
-return_value _compare_test_results(any_data_ptr input, list_node_ptr test_result)
+return_value _compare_test_results(any_data_ptr input, circular_node_ptr test_result)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
@@ -1067,20 +901,23 @@ void _print_any_data(any_data_ptr data)
         switch (data->d_type)
         {
             case CHAR_DT:
-                printf("Any_data type of %d: '%c' [%X]\n", data->d_type, *((char*)data->d_ptr),
-                       *((int*)data->d_ptr));
+                printf("Any_data type of %d (size %d): '%c' [%X]\n", data->d_type, data->d_size,
+                       *((char*)data->d_ptr), *((int*)data->d_ptr));
                 break;
             case DOUBLE_DT:
-                printf("Any_data type of %d: %f\n", data->d_type, *((double*)data->d_ptr));
+                printf("Any_data type of %d (size %d): %f\n", data->d_type, data->d_size,
+                       *((double*)data->d_ptr));
                 break;
             case FLOAT_DT:
-                printf("Any_data type of %d: %lf\n", data->d_type, *((float*)data->d_ptr));
+                printf("Any_data type of %d (size %d): %lf\n", data->d_type, data->d_size,
+                       *((float*)data->d_ptr));
                 break;
             case INT_DT:
-                printf("Any_data type of %d: %d\n", data->d_type, *((int*)data->d_ptr));
+                printf("Any_data type of %d (size %d): %d\n", data->d_type, data->d_size,
+                       *((int*)data->d_ptr));
                 break;
             case STRING_DT:
-                printf("Any_data type of %d: ", data->d_type);
+                printf("Any_data type of %d (size %d): ", data->d_type, data->d_size);
                 for (int i = 0; i < data->d_size; i++)
                 {
                     printf("%c", ((char*)data->d_ptr)[i]);
@@ -1088,7 +925,7 @@ void _print_any_data(any_data_ptr data)
                 printf("\n");
                 break;
             case VOID_DT:
-                printf("Any_data type of %d: ", data->d_type);
+                printf("Any_data type of %d (size %d): ", data->d_type, data->d_size);
                 for (int i = 0; i < data->d_size; i++)
                 {
                     printf("0x%02X ", 0xFF & ((char*)data->d_ptr)[i]);
@@ -1097,7 +934,8 @@ void _print_any_data(any_data_ptr data)
                 printf("Any_data VOID_DT as a string: %s\n", ((char*)data->d_ptr));
                 break;
             default:
-                fprintf(stderr, "Unsupported data->d_type of %d\n", data->d_type);
+                fprintf(stderr, "Unsupported data->d_type of %d (size: %d)\n", data->d_type,
+                        data->d_size);
         }
     }
     else
