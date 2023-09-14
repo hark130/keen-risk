@@ -21,6 +21,7 @@ typedef enum _return_value
     RET_INV_PARAM = 1,   // Bad input: NULL pointer, unsupported data type
     RET_ERROR = 2,       // System call failed (print errno)
     RET_NOT_FOUND = 3,   // Node not found
+    RET_FULL = 4,        // No room left in the data structure
 } return_value, *return_value_ptr;
 
 
