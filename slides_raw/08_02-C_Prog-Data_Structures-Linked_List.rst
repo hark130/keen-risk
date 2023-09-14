@@ -255,7 +255,7 @@ Be sure to use ASAN and Valgrind.
 * 8-02-2: Circular linked list implementation
 
 General Files:
-	* 8-02-definitions.h - Defines common-use data types
+	* 8-00-definitions.h - Defines common-use data types
 	* 8-02-sort_functions.h - Declares sorting functions
 	* 8-02-sort_functions.c - Implements sorting functions
 
