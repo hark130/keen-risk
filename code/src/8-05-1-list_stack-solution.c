@@ -22,17 +22,21 @@
  *            example solution.
  */
 
-#include "8-00-definitions.h"  // any_data, any_data_ptr, return_value, return_value_ptr
-#include "8-02-linked_list.h"  // delete_list(), insert_data(), list_node_ptr
-#include "8-05-stack.h"        // stack_adt, stack_adt_ptr
+#include "8-00-definitions.h"    // any_data, any_data_ptr, return_value, return_value_ptr
+#include "8-02-1-linked_list.h"  // delete_list(), insert_data(), list_node_ptr
+#include "8-05-stack.h"          // stack_adt, stack_adt_ptr
+#include <errno.h>               // errno
+#include <string.h>              // memset()
+#include <stdio.h>               // fprintf()
+#include <stdlib.h>              // free()
 
 
 /* A Linked List Stack Struct */
-typedef struct _stack_adt
+struct _stack_adt
 {
     unsigned int entries;  // Number of entries
-    list_node_ptr *top;    // List implementation
-} _stack_adt;
+    list_node_ptr top;    // List implementation
+};
 
 
 
@@ -111,14 +115,22 @@ return_value push_data(stack_adt_ptr stack, any_data_ptr new_data)
 
     // INPUT VALIDATION
     retval = _validate_stack(stack);
+    // fprintf(stderr, "_validate_stack() returned %d\n", retval);  // DEBUGGING
 
     // PUSH IT
     if (RET_SUCCESS == retval)
     {
+        // fprintf(stderr, "Pushing %p onto stack at %p\n", new_data, stack->top);  // DEBUGGING
         tmp_node = insert_data(stack->top, new_data, 1, &retval);  // New head node
-        if (tmp_node && RET_SUCCESS == retval && tmp_node != stack->top)
+        // fprintf(stderr, "Call to insert_data(%p, %p, 1, %p) returned node_ptr %p w/ retval %d\n",
+        //         stack->top, new_data, &retval, tmp_node, retval);  // DEBUGGING
+        if (tmp_node && RET_SUCCESS == retval)
         {
-            stack->top = tmp_node;  // New head top (AKA top)
+            stack->entries += 1;
+            if (tmp_node != stack->top)
+            {
+                stack->top = tmp_node;  // New head top (AKA top)
+            }
             tmp_node = NULL;
         }
         else if (RET_SUCCESS == retval)
@@ -132,6 +144,7 @@ return_value push_data(stack_adt_ptr stack, any_data_ptr new_data)
     {
         delete_list(tmp_node);  // Destroy this node
     }
+    // fprintf(stderr, "push_data() is about to return %d\n", retval);  // DEBUGGING
     return retval;
 }
 
@@ -141,6 +154,7 @@ any_data_ptr get_top(stack_adt_ptr stack, return_value_ptr result)
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
     list_node_ptr top_node = NULL;      // Store linked list return values
+    any_data_ptr top_data = NULL;       // Data from the top of the stack
 
     // INPUT VALIDATION
     retval = _validate_stack(stack);
@@ -153,7 +167,15 @@ any_data_ptr get_top(stack_adt_ptr stack, return_value_ptr result)
     if (RET_SUCCESS == retval)
     {
         top_node = stack->top;  // Top node
-        if (NULL == stack->top)
+        if (top_node)
+        {
+            top_data = top_node->data_ptr;
+            if (!top_data)
+            {
+                retval = RET_NOT_FOUND;
+            }
+        }
+        else
         {
             retval = RET_NOT_FOUND;
         }
@@ -164,7 +186,7 @@ any_data_ptr get_top(stack_adt_ptr stack, return_value_ptr result)
     {
         *result = retval;
     }
-    return top_node
+    return top_data;
 }
 
 
@@ -185,7 +207,7 @@ any_data_ptr pop_data(stack_adt_ptr stack, return_value_ptr result)
     // POP IT
     if (RET_SUCCESS == retval)
     {
-        top_node = get_top(stack, &retval);
+        top_node = find_node_pos(stack->top, 1, &retval);
         if (top_node)
         {
             stack->top = top_node->next_ptr;
@@ -206,7 +228,7 @@ any_data_ptr pop_data(stack_adt_ptr stack, return_value_ptr result)
 }
 
 
-int get_size(stack_adt_ptr stack, ireturn_value_ptr result)
+int get_size(stack_adt_ptr stack, return_value_ptr result)
 {
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
@@ -273,14 +295,33 @@ return_value empty_stack(stack_adt_ptr stack)
     retval = _validate_node_count(stack);
 
     // EMPTY IT
-    if (RET_SUCCESS == retval)
+    if (RET_SUCCESS == retval && stack->top)
     {
         retval = delete_list(stack->top);
+        // fprintf(stderr, "delete_list() returned %d\n", retval);  // DEBUGGING
         if (RET_SUCCESS == retval)
         {
             stack->top = NULL;
             stack->entries = 0;
         }
+    }
+
+    // DONE
+    return retval;
+}
+
+
+return_value destroy_stack(stack_adt_ptr stack)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+
+    // DESTROY IT
+    retval = empty_stack(stack);  // Validated by empty_stack()
+    // fprintf(stderr, "empty_stack() returned %d\n", retval);  // DEBUGGING
+    if (RET_SUCCESS == retval)
+    {
+        free(stack);
     }
 
     // DONE
@@ -341,7 +382,7 @@ return_value _validate_stack(stack_adt_ptr stack)
     }
 
     // DONE
-    return retval
+    return retval;
 }
 
 
