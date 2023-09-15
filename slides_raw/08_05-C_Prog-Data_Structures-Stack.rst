@@ -1,0 +1,348 @@
+:title: C Programming - Data Structures - Stack
+:data-transition-duration: 1500
+:css: keri.css
+
+CCD Basic JQR v1.0
+8.5 Demonstrate skill in creating and using a stack that accepts any data type
+
+----
+
+8.5 Demonstrate skill in creating and using a stack that accepts any data type
+==============================================================================
+
+----
+
+Objectives
+========================================
+
+* Removing all items from the stack
+* Create a stack (cannot be fixed sized)
+* Adding an item in a stack (enforce FILO)
+* Removing n items from a stack
+* Destroying a stack
+* Preventing a stack overrun
+
+.. note::
+
+	I intend to accomplish these objectives in incremental stages.
+
+----
+
+Overview
+========================================
+
+* "Any data type"
+* Implementations
+* Data Structure Bookkeeping
+* Resources
+* Student Labs
+
+----
+
+"Any data type"
+========================================
+
+How can you store "any data type"?
+
+.. code:: c
+
+	typedef enum _data_type
+	{
+	    NULL_DT = 0, CHAR_DT,
+	    DOUBLE_DT, FLOAT_DT,
+	    INT_DT, STRING_DT, VOID_DT
+	} data_type, *data_type_ptr;
+
+	typedef struct _any_data
+	{
+	    // Pointer to data
+	    void *d_ptr;
+	    // Data type
+	    data_type d_type;
+	    // Total data size
+	    unsigned int d_size;
+	} any_data, *any_data_ptr;
+
+.. note::
+
+	Whomever wrote the "any data type" objective hates students or they meant "discrete data type".
+	You store "any data type" by saving the raw data, the original data type, and the size of that data in memory.
+	Another solution would be to use a Union but you'd still have to store the original data type.
+	Walk them through a couple examples.
+
+----
+
+Implementations
+========================================
+
+* Array
+* Linked List
+
+.. note::
+
+	You could just operate on a list_node_ptr without doing any data structure bookkeeping.
+	Bookkeeping can save you some time though.
+
+----
+
+Data Structure Bookkeeping - Array
+========================================
+
+.. code:: c
+
+	typedef struct _array_stack
+	{
+	    // Top of the stack
+	    int top;
+	    // Number of entries
+	    int entries;
+	    // Available space
+	    int capacity;
+	    // Array implementation
+	    any_data_ptr *stack;
+	} array_stack, *array_stack_ptr;	
+
+.. note::
+
+	This bookkeeping abstraction could also be used to "grow" the stack if it ever becomes full.
+	Unsigned ints could work for top and capacity but storing top as -1 is a good way to indicate the stack is empty.
+
+----
+
+Data Structure Bookkeeping - Linked List
+========================================
+
+.. code:: c
+
+	typedef struct _list_stack
+	{
+	    // Number of entries
+	    int entries;
+	    // List implementation
+	    list_node_ptr *top;
+	} list_stack, *list_stack_ptr;	
+
+.. note::
+
+	This implementation is easier to grow capacity.
+	The head node of the linked list *becomes* the "top" entry in the stack.
+
+----
+
+Resources
+========================================
+
+* Linked Lists:
+	* Data Structures and Algorithms Made Easy Ch. 3
+* Sorting:
+	* https://www.geeksforgeeks.org/sorting-algorithms/#
+	* https://builtin.com/machine-learning/fastest-sorting-algorithm
+	* The C Programming Language 5.6
+
+----
+
+STUDENT LABS
+========================================
+
+All labs will utilize the 8-02-sort_functions "library".
+Some labs have unit tests available to validate the work.
+Be sure to use ASAN and Valgrind.
+
+* 8-02-1: Linked list implementation
+* 8-02-2: Circular linked list implementation
+
+General Files:
+	* 8-00-definitions.h - Defines common-use data types
+	* 8-02-sort_functions.h - Declares sorting functions
+	* 8-02-sort_functions.c - Implements sorting functions
+
+.. note::
+
+	Lab 1 is intended to be a demonstration-performance lab.
+	Lab 2 is intended to be a stand-alone student lab.
+
+----
+
+STUDENT LABS
+========================================
+
+8-02-1: Linked List
+
+Key Files:
+	* 8-02-1-linked_list.h - Declares library API and data structures
+	* 8-02-1-linked_list-lab.c - Implements library functionality
+	* 8-02-1-linked_list-main.c - Unit tests for basic functionality
+
+Suggested implementation order:
+	1. append_data()
+	2. delete_list()
+	3. count_nodes()
+	4. find_node_pos()
+	5. insert_data()
+	6. remove_node_pos()
+	7. find_node_val()
+	8. sort_list()
+
+.. note::
+
+	The file comment block includes a description, build instructions, and notes on testing.
+	You might want to have 8-02-1-linked_list.h open in a code editor when discussing these.
+	Essentially, the function comment blocks serve as instructions.
+	The library function prototypes are presented in order of "recommended implementation"
+	It's important to note that 8-02-1-linked_list-lab.c is the single most important file in the list.  It's where the work is done.
+
+	Suggested implementation order:
+		1. append_data() - Essentially, creates a linked list.
+		2. delete_list() - Write the free() anytime you alloc() something.
+		3. count_nodes() - Will be used to help validate adds and removes.
+		4. find_node_pos() - Mid-tier functionality
+		5. insert_data() - Mid-tier functionality
+		6. remove_node_pos() - Mid-tier functionality
+		7. find_node_val() - Mid-tier functionality
+		8. sort_list() - This will likely become a "stretch goal" for fast students
+
+	After 1 & 2 - Unit tests will be failing but you shouldn't have any memory leaks.
+	After 3-->7 - This is probably "good enough"
+	Regarding 8 - Sorting is non-trivial work.  Sure, the 8-02-sort_functions library defines *some* functionality but the actual sorting algorithm (e.g., quick sort, bubble sort) is for the students to implement.
+
+	Be sure to make frequent use of the unit test build and execution.  A similar format is used for later objectives/labs.
+
+	SPOILERS: An example implementation of the 8-02-1-linked_list "library" exists as 8-02-1-linked_list-solution.c.  That solution file passes all the unit tests, ASAN, and Valgrind.
+
+	QUESTIONS TO THE AUTHOR OF 8-02-1-linked_list-main.c...
+	Q: Why didn't you use a framework?
+	A: Testing frameworks for C are a pain.  I didn't want anyone to have to download/compile/link anything special just to test the lab.
+	Q: Why didn't you implement the local main.c functionality in a library?
+	A: I didn't want any "not me" instructors (or the students) to have to fuss with multiple files just to test the lab.
+	Q: Why did I manually implement quick sort instead of using a library implmementation?
+	A: I could have used qsort() (Linux API) but is that implemented on all distros?  Are there packages to install?  Plus, now the example code won't work on non-Linux systems.  TL;DR - I just wanted it to "work" with little-to-no fuss.
+
+----
+
+STUDENT LABS
+========================================
+
+8-02-2: Circular Linked List
+
+This lab has unit tests to validate your work.
+Be sure to use ASAN and Valgrind.
+
+* Minimum functionality: create list, empty list, delete list
+* Basic functionality: find node (pos), insert data (pos), remove node (pos)
+* More functionality: find node (value), sort list
+
+Key Files:
+	* 8-02-circular_list.h - Defines the circularly linked list interface
+	* 8-02-circular_list-lab.c - Implements the circularly linked list
+
+.. note::
+
+	Minimum, basic, and "more" represent crawl-walk-run milestones while implementing a circularly linked list
+
+	Key Files
+	The interface is already designed in 8-02-circular_list.h (wait for applause/thanks)
+	It's important to note that 8-02-circular_list-lab.c is the single most important file in the list.  It's where the students do all their work.
+	Don't forget that the 8-02-sort_functions library already defines sorting algorithms to use in the labs (wait for applause/thanks)
+
+----
+
+STUDENT LABS
+========================================
+
+8-02-2: Circular Linked List
+
+Suggested implementation order:
+	1. create_circular_list()
+	2. empty_the_list()
+	3. delete_clist()
+	4. find_cnode_pos()
+	5. insert_cdata()
+	6. remove_cnode_pos()
+	7. find_cnode_val()
+	8. sort_clist()
+
+.. note::
+
+	The file comment block includes a description, build instructions, and notes on testing.
+	You might want to have 8-04-hash_table.h open in a code editor when discussing these.
+	Essentially, the function comment blocks serve as instructions.
+	The library function prototypes are presented in order of "recommended implementation"
+
+	Suggested implementation order:
+	1. create_circular_list() - PRO TIP: All allocations/frees should be handled by the same library
+	2. empty_the_list() - This can be used later
+	3. delete_clist() - Write a free() every time you allocate
+	4. find_cnode_pos() - Used by insert_data()
+	5. insert_cdata() - Basic functionality
+	6. remove_cnode_pos() - Could possible underpin (or reuse) empty_the_list() functionality
+	7. find_cnode_val() - A step-up
+	8. sort_list() - Stretch goal?
+
+	After 1-->3 - Unit tests will be failing, if they exist, but you shouldn't have any memory leaks.
+	After 4-->6 - Most of the unit tests should be passing.
+	After 7 & 8 - All of the unit tests should be passing, ASAN should be happy, and Valgrind should be happy.
+
+	The students may appreciate a demonstration of the unit test build and execution (just to put them on the right path)
+
+----
+
+STUDENT LABS
+========================================
+
+8-02-2: Circular Linked List
+
+.. code:: c
+
+	/* Circular Linked List Bookkeeping */
+	typedef struct _circular_list
+	{
+	    // Head node
+	    struct circular_node_ptr head_ptr;
+	    // Tail node
+	    struct circular_node_ptr tail_ptr;
+	    // Number of entries
+	    unsigned int entries;
+	} circular_list, *circular_list_ptr;
+
+.. note::
+
+	Take this opportunity to discuss the bookkeeping inherint in the circular_list struct.
+	Some basic rules will make these operations a bit easier.
+	1. Always keep head_ptr up to date
+	2. Always keep tail_ptr up to date
+	3. Always keep the entry count up to date
+
+	Also, take note that this bookkeeping strategy will save our user from having to swap out head_node/tail_node pointers.
+	The circular_list struct keeps track of everything.
+
+----
+
+Summary
+========================================
+
+* "Any data type"
+* Data Structure Bookkeeping
+* Sorting
+* Resources
+* Student Labs
+
+.. note::
+
+	Last chance to cover student questions.
+
+----
+
+Objectives
+========================================
+
+* 8-04-2:   Creating a hash table with n number of items
+* 8-04-2:   Navigating through a hash table to find the nth item
+* 8-04-2:   Finding an item in a hash table
+* 8-04-2:   Removing selected items from a hash table
+* 8-04-2:   Inserting an item into a hash table
+* 8-04-2: Implement functionality to mitigate hash collisions within the hash table
+* 8-04-2:   Removing all items from the hash table
+
+.. note::
+
+	This slide is presented as a lookup table of lab-to-objective
