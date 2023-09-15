@@ -21,7 +21,7 @@
 
 
 /* A Stack Abstract Data Type */
-typedef _stack_adt stack_adt, *stack_adt_ptr;
+typedef struct _stack_adt stack_adt, *stack_adt_ptr;
 
 
 /**************************************************************************************************/
@@ -60,7 +60,7 @@ any_data_ptr pop_data(stack_adt_ptr stack, return_value_ptr result);
  *  Returns the number of elements contained in the stack.  Returns 0 for an empty stack and
  *  -1 on failure (consult result).
  */
-int get_size(stack_adt_ptr stack, ireturn_value_ptr result);
+int get_size(stack_adt_ptr stack, return_value_ptr result);
 
 /*
  *  Returns true if stack is empty (and error).  Consult result to verify success.
@@ -72,6 +72,12 @@ bool is_empty(stack_adt_ptr stack, return_value_ptr result);
  *  empty.
  */
 return_value empty_stack(stack_adt_ptr stack);
+
+/*
+ *  Remove and free all entries from the stack.  Then free the stack_adt_ptr.  Calls empty_stack()
+ *	under the hood.
+ */
+return_value destroy_stack(stack_adt_ptr stack);
 
 /*
  *  Free all heap-allocated memory from old_data.  Only use this function for any_data_ptr values
