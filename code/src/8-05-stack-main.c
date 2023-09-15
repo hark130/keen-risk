@@ -12,7 +12,8 @@
  *      BONUS: Stop copy pasting gcc commands and create a Makefile.  See: JQS 6-17.
  *
  *  TEST:
- *      ./8-02-1-lab.bin  # Read the output.  Failures go to stderr.  Read the test code.
+ *      ./8-05-1-lab.bin  # Read the output.  Failures go to stderr.  Read the test code.
+ *      ./8-05-2-lab.bin  # Read the output.  Failures go to stderr.  Read the test code.
  *      # Be sure to build and run the solution through ASAN.  See: JQS 6-16 and 6-21.
  *      # Also use Valgrind to identify issues with memory management.  See: JQS 6-21.
  */
@@ -46,11 +47,6 @@ return_value _compare_any_test_data(any_data_ptr input, any_data_ptr test_data_r
  */
 return_value _compare_test_data(any_data_ptr s1_data, void *s2_data, data_type s2_data_type,
                                 unsigned int s2_data_size);
-
-/*
- *  Compare an any_data_ptr (input) to the contents of a list_node_ptr (results).
- */
-return_value _compare_test_results(any_data_ptr input, list_node_ptr test_result);
 
 /*
  *  Allocate a NULL-terminated array of any_data_ptrs and fill each one.  Array_len will be used
@@ -337,19 +333,23 @@ int main()
     if (RET_SUCCESS == result)
     {
         // Assumed Starting State: Doesn't matter because it's all getting deleted
-        /* TO DO: DON'T DO NOW... Implement thIs unit tests */
+        result = destroy_stack(stack);
+        if (RET_SUCCESS == result)
+        {
+            stack = NULL;
+        }
         _print_results(result, "TEST 10: Final clean up");
     }
 
     // DONE
-    if (head_node)
+    if (stack)
     {
         if (RET_SUCCESS != result)
         {
             fprintf(stderr, "You may have failed but let's clean up the linked list anyway\n");
         }
-        /* TO DO: DON'T DO NOW... Implement thIs unit tests */
-        head_node = NULL;
+        destroy_stack(stack);
+        stack = NULL;
     }
     if (input_arr)
     {
@@ -438,31 +438,6 @@ return_value _compare_test_data(any_data_ptr s1_data, void *s2_data, data_type s
         {
             retval = RET_ERROR;  // Memory doesn't match
         }
-    }
-
-    // DONE
-    return retval;
-}
-
-
-return_value _compare_test_results(any_data_ptr input, list_node_ptr test_result)
-{
-    // LOCAL VARIABLES
-    return_value retval = RET_SUCCESS;  // Function call results
-
-    // INPUT VALIDATION
-    retval = _validate_any_test_data(input);
-    if (RET_SUCCESS != retval)
-    {
-        HARKLE_ERROR(_compare_results, Bad input from the test author!);
-    }
-    else if (!test_result || NULL == test_result->data_ptr)
-    {
-        retval = RET_INV_PARAM;
-    }
-    else
-    {
-        retval = _compare_any_test_data(input, test_result->data_ptr);
     }
 
     // DONE
