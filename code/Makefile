@@ -72,6 +72,17 @@ all:
 	$(CC) $(CFLAGS) $(SRC)/8-04-3-hash_table-main.c $^ -o $(DST)/8-04-3.bin -I $(INC) -L $(DST)
 	$(CC) $(AFLAGS) $(SRC)/8-04-3-hash_table-main.c $^ -o $(DST)/8-04-3_asan.bin -I $(INC) -L $(DST)
 
+8-05-solution:
+	$(CALL_MAKE) 8-05-1-solution
+	$(CALL_MAKE) 8-05-2-solution
+
+8-05-1-solution: $(DST)/8-05-1-list_stack-solution.o $(DST)/8-02-1-linked_list-solution.o $(DST)/8-02-sort_functions.o
+	$(CC) $(CFLAGS) $(SRC)/8-05-stack-main.c $^ -o $(DST)/8-05-1.bin -I $(INC) -L $(DST)
+	$(CC) $(AFLAGS) $(SRC)/8-05-stack-main.c $^ -o $(DST)/8-05-1_asan.bin -I $(INC) -L $(DST)
+
+8-05-2-solution:
+	echo "8-05-2 Placeholder"
+
 %$(SO_EXT): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(DST)/$@ $(DST)/$^ $(SO_FLAGS)
 	cp $(DST)/$@ $(DST)/$(SO_FILE).$(SO_VER_MAJ).$(SO_VER_MIN).$(SO_VER_MIC)
