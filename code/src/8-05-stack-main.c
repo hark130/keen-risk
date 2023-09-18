@@ -5,9 +5,10 @@
  *
  *  BUILD:
  *      The easiest way to build these unit tests is to copy all the files into a dir and:
- *      gcc -o 8-05-1-lab.bin 8-05-stack-main.c 8-02-1-linked_list-lab.c 8-05-1-list_stack-lab.c
+ *      gcc -o 8-05-1-lab.bin 8-05-stack-main.c 8-02-1-linked_list-lab.c 8-05-1-list_stack-lab.c \
+ *          8-02-sort_functions.c
  *      -or-
- *      gcc -o 8-05-2-lab.bin 8-05-stack-main.c 8-02-1-linked_list-lab.c 8-05-2-array_stack-lab.c
+ *      gcc -o 8-05-2-lab.bin 8-05-stack-main.c 8-05-2-array_stack-lab.c
  *
  *      BONUS: Stop copy pasting gcc commands and create a Makefile.  See: JQS 6-17.
  *
