@@ -39,7 +39,6 @@ struct _stack_adt
 };
 
 
-
 #define HARKLE_ERROR(funcName, msg) do { fprintf(stderr, "<<<ERROR>>> - %s - %s() - %s!\n", \
                                                  __FILE__, #funcName, #msg); } while (0);
 #define HARKLE_ERRNO(funcName, errorNum) if (errorNum) { fprintf(stderr, "<<<ERROR>>> - %s - \
@@ -62,7 +61,6 @@ return_value _validate_stack(stack_adt_ptr stack);
  *  validates the struct contents by calling _validate_stack().
  */
 return_value _validate_node_count(stack_adt_ptr stack);
-
 
 
 /**************************************************************************************************/
