@@ -115,15 +115,11 @@ return_value push_data(stack_adt_ptr stack, any_data_ptr new_data)
 
     // INPUT VALIDATION
     retval = _validate_stack(stack);
-    // fprintf(stderr, "_validate_stack() returned %d\n", retval);  // DEBUGGING
 
     // PUSH IT
     if (RET_SUCCESS == retval)
     {
-        // fprintf(stderr, "Pushing %p onto stack at %p\n", new_data, stack->top);  // DEBUGGING
         tmp_node = insert_data(stack->top, new_data, 1, &retval);  // New head node
-        // fprintf(stderr, "Call to insert_data(%p, %p, 1, %p) returned node_ptr %p w/ retval %d\n",
-        //         stack->top, new_data, &retval, tmp_node, retval);  // DEBUGGING
         if (tmp_node && RET_SUCCESS == retval)
         {
             stack->entries += 1;
@@ -144,7 +140,6 @@ return_value push_data(stack_adt_ptr stack, any_data_ptr new_data)
     {
         delete_list(tmp_node);  // Destroy this node
     }
-    // fprintf(stderr, "push_data() is about to return %d\n", retval);  // DEBUGGING
     return retval;
 }
 
@@ -198,10 +193,14 @@ any_data_ptr pop_data(stack_adt_ptr stack, return_value_ptr result)
     any_data_ptr top_data = NULL;       // Data in the top node
 
     // INPUT VALIDATION
-    // Stack is validated by subsequent function calls
-    if (!result)
+    retval = _validate_stack(stack);
+    if (RET_SUCCESS == retval && !result)
     {
         retval = RET_INV_PARAM;
+    }
+    if (RET_SUCCESS == retval && NULL == stack->top)
+    {
+        retval = RET_NOT_FOUND;  // find_node_pos() will return RET_INV_PARAM on a NULL pointer
     }
 
     // POP IT
@@ -289,21 +288,16 @@ bool is_empty(stack_adt_ptr stack, return_value_ptr result)
 
 return_value empty_stack(stack_adt_ptr stack)
 {
-    fprintf(stderr, "ENTERING empty_stack()\n");  // DEBUGGING
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
 
     // INPUT VALIDATION
     retval = _validate_node_count(stack);
-    fprintf(stderr, "_validate_node_count() just returned %d\n", retval);  // DEBUGGING
-    fprintf(stderr, "stack->top is currently %p\n", stack->top);  // DEBUGGING
 
     // EMPTY IT
     if (RET_SUCCESS == retval && stack->top)
     {
-        fprintf(stderr, "About to delete %p\n", stack->top);  // DEBUGGING
         retval = delete_list(stack->top);
-        fprintf(stderr, "delete_list() returned %d\n", retval);  // DEBUGGING
         if (RET_SUCCESS == retval)
         {
             stack->top = NULL;
@@ -312,21 +306,17 @@ return_value empty_stack(stack_adt_ptr stack)
     }
 
     // DONE
-    fprintf(stderr, "LEAVING empty_stack() with %d\n", retval);  // DEBUGGING
     return retval;
 }
 
 
 return_value destroy_stack(stack_adt_ptr stack)
 {
-    fprintf(stderr, "ENTERING destroy_stack()\n");  // DEBUGGING
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
 
     // DESTROY IT
-    fprintf(stderr, "About to empty stack %p\n", stack);  // DEBUGGING
     retval = empty_stack(stack);  // Validated by empty_stack()
-    // fprintf(stderr, "empty_stack() returned %d\n", retval);  // DEBUGGING
     if (RET_SUCCESS == retval)
     {
         stack->entries = 0;
@@ -335,7 +325,6 @@ return_value destroy_stack(stack_adt_ptr stack)
     }
 
     // DONE
-    fprintf(stderr, "ENTERING destroy_stack() with %d\n", retval);  // DEBUGGING
     return retval;
 }
 
@@ -379,7 +368,6 @@ return_value destroy_any_data(any_data_ptr old_data)
 
 return_value _validate_stack(stack_adt_ptr stack)
 {
-    // fprintf(stderr, "ENTERING _validate_stack()\n");  // DEBUGGING
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
 
@@ -394,14 +382,12 @@ return_value _validate_stack(stack_adt_ptr stack)
     }
 
     // DONE
-    // fprintf(stderr, "LEAVING _validate_stack() with %d\n", retval);  // DEBUGGING
     return retval;
 }
 
 
 return_value _validate_node_count(stack_adt_ptr stack)
 {
-    fprintf(stderr, "ENTERING _validate_node_count()\n");  // DEBUGGING
     // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
     int stack_count = 0;                // Return value
@@ -413,7 +399,6 @@ return_value _validate_node_count(stack_adt_ptr stack)
     if (RET_SUCCESS == retval)
     {
         stack_count = count_nodes(stack->top);
-        fprintf(stderr, "STACK COUNT IS %d AND THE ENTRIES IS AT %d\n", stack_count, stack->entries);  // DEBUGGING
         if (stack_count != stack->entries)
         {
             fprintf(stderr, "Stack count mismatch!  Actual count %d doesn't match %d.\n",
@@ -423,6 +408,5 @@ return_value _validate_node_count(stack_adt_ptr stack)
     }
 
     // DONE
-    fprintf(stderr, "ENTERING _validate_node_count() with %d\n", retval);  // DEBUGGING
     return retval;
 }
