@@ -254,7 +254,7 @@ int main()
                 fprintf(stderr, "empty_stack() succeeded but is_empty() disagrees\n");
             }
         }
-        _print_results(result, "TEST 7: Is it empty?");
+        _print_results(result, "TEST 7: Empty the stack");
     }
     // TEST 8 - Overflow initial capacity
     // Overflow
@@ -328,7 +328,38 @@ int main()
         _print_results(result, "TEST 8: Verify the stack can grow - verify LIFO");
     }
     // TEST 9 - Verify true negatives
-    /* TO DO: DON'T DO NOW... Implement these unit tests */
+    // get_top() of an empty stack
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: EMPTY STACK
+        tmp_data = get_top(stack, &result);
+        if (RET_SUCCESS == result)
+        {
+            fprintf(stderr, "The stack should have been empty\n");
+            result = RET_ERROR;  // This counts as a fail
+        }
+        else if (RET_NOT_FOUND == result)
+        {
+            result = RET_SUCCESS;  // This counts as a pass
+        }
+        _print_results(result, "TEST 9: Verify true negatives - get top from an empty stack");
+    }
+    // pop_data() off an empty stack
+    if (RET_SUCCESS == result)
+    {
+        // Assumed Starting State: EMPTY STACK
+        tmp_data = pop_data(stack, &result);
+        if (RET_SUCCESS == result)
+        {
+            fprintf(stderr, "The stack should have been empty\n");
+            result = RET_ERROR;  // This counts as a fail
+        }
+        else if (RET_NOT_FOUND == result)
+        {
+            result = RET_SUCCESS;  // This counts as a pass
+        }
+        _print_results(result, "TEST 9: Verify true negatives - pop data off an empty stack");
+    }
     // TEST 10 - Clean up
     if (RET_SUCCESS == result)
     {
