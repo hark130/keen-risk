@@ -6,17 +6,10 @@
  *      The Good:
  *          - It works.
  *          - ASAN and Valgrind both give this implementation a clean bill of health.
- *          - It reuses existing code
  *      The Bad:
- *          - It highlighted an oversight in the design of the 8-02-1-linked_list library.
- *              - There's no 8-02-1-linked_list function to free() library-allocated any_data_ptrs.
- *                As you may remember from 6-21, you should allocate and free at the same
- *                level-of-abstraction/module.
- *              - The library should probably expose a delete_node() function.  As it stands,
- *                disconnecting the node from the list and using delete_list() suffices as a
- *                work-around.
- *              - The library should probably expose a function to remove a node at a position
- *                without free()ing the entire node, like remove_node_pos() does.
+ *          - My brain told me to realloc() the stack's array but I don't like realloc() so I
+ *            just allocated and entirely new array and copied the pointers in.  Let history be
+ *            my judge.
  *          - Normally, this is functionality to add/expose/refactor when you find the original
  *            design doesn't meet all needs but I didn't want to pollute another JQS module's
  *            example solution.
@@ -39,7 +32,6 @@ struct _stack_adt
 };
 
 
-
 #define HARKLE_ERROR(funcName, msg) do { fprintf(stderr, "<<<ERROR>>> - %s - %s() - %s!\n", \
                                                  __FILE__, #funcName, #msg); } while (0);
 #define HARKLE_ERRNO(funcName, errorNum) if (errorNum) { fprintf(stderr, "<<<ERROR>>> - %s - \
@@ -57,6 +49,11 @@ struct _stack_adt
  *  Allocate and initialize an array-implemented stack struct.
  */
 stack_adt_ptr _allocate_stack(unsigned int initial_capacity, return_value_ptr result);
+
+/*
+ *  Allocate stack's array to hold initial_capacity and update stack's bookkeeping.
+ */
+return_value _allocate_stack_array(stack_adt_ptr stack, unsigned int initial_capacity);
 
 /*
  *  Compares all contents of s1_data to s2_data.  Returns true on exact match.  Returns false
@@ -83,6 +80,11 @@ any_data_ptr _copy_any_data(any_data_ptr source, return_value_ptr result);
  *  Push new_data onto the top of stack.  Update stack bookkeeping.
  */
 return_value _push_any_data(stack_adt_ptr stack, any_data_ptr new_data);
+
+/*
+ *  Realloc the stack->array and update the stack capacity.
+ */
+return_value _resize_stack_array(stack_adt_ptr stack);
 
 /*
  *  Validates any_data structs on behalf of the library.
@@ -415,23 +417,12 @@ stack_adt_ptr _allocate_stack(unsigned int initial_capacity, return_value_ptr re
     // Allocate array
     if (RET_SUCCESS == retval)
     {
-        new_stack->array = calloc(initial_capacity, sizeof(any_data_ptr));
-        if (NULL == new_stack->array)
+        retval = _allocate_stack_array(new_stack, initial_capacity);
+        if (RET_SUCCESS != retval)
         {
-            errnum = errno;
-            HARKLE_ERRNO(calloc, errnum);  // Already captured errno
-            HARKLE_ERROR(allocate_stack, Calloc failed to allocate the array);
-            retval = RET_ERROR;
-            if (new_stack)
-            {
-                free(new_stack);  // Allocation failed so roll it all back
-                new_stack = NULL;
-            }
-        }
-        else
-        {
-            new_stack->capacity = initial_capacity;
-            new_stack->top = initial_capacity;
+            new_stack->array = NULL;
+            free(new_stack);
+            new_stack = NULL;
         }
     }
 
@@ -441,6 +432,35 @@ stack_adt_ptr _allocate_stack(unsigned int initial_capacity, return_value_ptr re
         *result = retval;
     }
     return new_stack;
+}
+
+
+return_value _allocate_stack_array(stack_adt_ptr stack, unsigned int initial_capacity)
+{
+    // LOCAL VARIABLES
+    int errnum = 0;                     // Store errno
+    return_value retval = RET_SUCCESS;  // Function call results
+
+    // INPUT VALIDATION
+    if (stack)
+    {
+        stack->array = calloc(initial_capacity, sizeof(any_data_ptr));
+        if (NULL == stack->array)
+        {
+            errnum = errno;
+            HARKLE_ERRNO(calloc, errnum);  // Already captured errno
+            HARKLE_ERROR(allocate_stack, Calloc failed to allocate the array);
+            retval = RET_ERROR;
+        }
+        else
+        {
+            stack->capacity = initial_capacity;
+            stack->top = initial_capacity;
+        }
+    }
+
+    // DONE
+    return retval;
 }
 
 
@@ -608,6 +628,16 @@ return_value _push_any_data(stack_adt_ptr stack, any_data_ptr new_data)
         retval = _validate_any_data(new_data);
     }
 
+    // CHECK IT
+    if (RET_SUCCESS == retval)
+    {
+        if (0 == stack->top)
+        {
+            // Stack is full so let's resize
+            retval = _resize_stack_array(stack);
+        }
+    }
+
     // PUSH IT
     if (RET_SUCCESS == retval)
     {
@@ -619,11 +649,69 @@ return_value _push_any_data(stack_adt_ptr stack, any_data_ptr new_data)
         }
         else
         {
+            fprintf(stderr, "The stack should have resized!\n");
             retval = RET_FULL;  // PLACEHOLDER
         }
     }
 
     // DONE
+    return retval;
+}
+
+
+return_value _resize_stack_array(stack_adt_ptr stack)
+{
+    // LOCAL VARIABLES
+    return_value retval = RET_SUCCESS;  // Function call results
+    unsigned int new_cap = 0;           // New capacity
+    stack_adt temp_stack;               // Temp storage
+
+    // INPUT VALIDATION
+    retval = _validate_stack(stack);
+
+    // INITIALIZATION
+    if (RET_SUCCESS == retval)
+    {
+        temp_stack.capacity = 0;
+        temp_stack.top = 0;
+        temp_stack.array = NULL;
+    }
+
+    // RESIZE IT
+    // Make a new array
+    if (RET_SUCCESS == retval)
+    {
+        new_cap = stack->capacity * 2;
+        retval = _allocate_stack_array(&temp_stack, new_cap);
+    }
+    // Move the any_data pointers to the new array
+    if (RET_SUCCESS == retval)
+    {
+        for (int i = stack->capacity - 1; i >= 0; i--)
+        {
+            retval = _push_any_data(&temp_stack, (*(stack->array + i)));
+            if (RET_SUCCESS != retval)
+            {
+                fprintf(stderr, "Resize operations failed to push stack->array[%d]\n", i);
+                break;  // Encountered an error so let's stop
+            }
+        }
+    }
+    // All the moves succeeded so let's replace the old with the new
+    if (RET_SUCCESS == retval)
+    {
+        free(stack->array);
+        stack->array = temp_stack.array;
+        stack->top = temp_stack.top;
+        stack->capacity = temp_stack.capacity;
+    }
+
+    // DONE
+    if (RET_SUCCESS != retval && temp_stack.array)
+    {
+        free(temp_stack.array);
+        temp_stack.array = NULL;
+    }
     return retval;
 }
 
