@@ -156,7 +156,7 @@ Each memory region has advantages and disadvantages
 	stack
 
 	As a C programmer, you need not concern yourself with the stack.  Your default memory region for storing data
-	should be "local varaibles", which are stored here.  No management required.  However, the fact that its
+	should be "local variables", which are stored here.  No management required.  However, the fact that its
 	stored in continguous memory makes it vulnerable to buffer overflow attacks.
 
 ----

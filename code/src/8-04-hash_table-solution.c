@@ -1254,7 +1254,7 @@ any_data_ptr _find_any_data_value(hash_table_ptr table, any_data_ptr data, retur
 any_data_ptr _find_value(hash_table_ptr table, void *raw_data, data_type raw_data_type,
                          unsigned int raw_data_size, return_value_ptr result)
 {
-    // LOCAL VARAIBLES
+    // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
     entry_pair_ptr entry = NULL;        // The entry pulled from the hash table
     any_data_ptr value = NULL;          // The value from the entry
@@ -1307,7 +1307,7 @@ any_data_ptr _find_value(hash_table_ptr table, void *raw_data, data_type raw_dat
 
 return_value _free_table_array(hash_table_ptr old_table)
 {
-    // LOCAL VARAIBLES
+    // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
 
     // INPUT VALIDATION
@@ -1329,7 +1329,7 @@ return_value _free_table_array(hash_table_ptr old_table)
 
 entry_pair_ptr _get_index(hash_table_ptr table, unsigned int index, return_value_ptr result)
 {
-    // LOCAL VARAIBLES
+    // LOCAL VARIABLES
     entry_pair_ptr entry = NULL;        // Entry found in the hash table
     return_value retval = RET_SUCCESS;  // Function call results
 
