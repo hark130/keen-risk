@@ -80,8 +80,9 @@ all:
 	$(CC) $(CFLAGS) $(SRC)/8-05-stack-main.c $^ -o $(DST)/8-05-1.bin -I $(INC) -L $(DST)
 	$(CC) $(AFLAGS) $(SRC)/8-05-stack-main.c $^ -o $(DST)/8-05-1_asan.bin -I $(INC) -L $(DST)
 
-8-05-2-solution:
-	echo "8-05-2 Placeholder"
+8-05-2-solution: $(DST)/8-05-2-array_stack-solution.o
+	$(CC) $(CFLAGS) $(SRC)/8-05-stack-main.c $^ -o $(DST)/8-05-2.bin -I $(INC) -L $(DST)
+	$(CC) $(AFLAGS) $(SRC)/8-05-stack-main.c $^ -o $(DST)/8-05-2_asan.bin -I $(INC) -L $(DST)
 
 %$(SO_EXT): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(DST)/$@ $(DST)/$^ $(SO_FLAGS)
