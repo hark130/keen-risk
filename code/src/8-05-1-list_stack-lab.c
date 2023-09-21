@@ -27,107 +27,90 @@ struct _stack_adt
 
 stack_adt_ptr allocate_stack(unsigned int initial_capacity, return_value_ptr result)
 {
-    // LOCAL VARIABLES
     stack_adt_ptr new_stack = NULL;  // Heap-allocated stack struct
 
     /* CODE GOES HERE */
 
-    // DONE
     return new_stack;
 }
 
 
 return_value push_data(stack_adt_ptr stack, any_data_ptr new_data)
 {
-    // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
 
     /* CODE GOES HERE */
+    /* PRO TIP - Save the "grow the stack" feature for last.  Return RET_FULL in the interim. */
 
-    // DONE
     return retval;
 }
 
 
 any_data_ptr get_top(stack_adt_ptr stack, return_value_ptr result)
 {
-    // LOCAL VARIABLES
     any_data_ptr top_data = NULL;  // Data from the top of the stack
 
     /* CODE GOES HERE */
 
-    // DONE
     return top_data;
 }
 
 
 any_data_ptr pop_data(stack_adt_ptr stack, return_value_ptr result)
 {
-    // LOCAL VARIABLES
     any_data_ptr top_data = NULL;  // Data in the top node
 
     /* CODE GOES HERE */
 
-    // DONE
     return top_data;
 }
 
 
 int get_size(stack_adt_ptr stack, return_value_ptr result)
 {
-    // LOCAL VARIABLES
     int stack_count = -1;  // Return value
 
     /* CODE GOES HERE */
 
-    // DONE
     return stack_count;
 }
 
 
 bool is_empty(stack_adt_ptr stack, return_value_ptr result)
 {
-    // LOCAL VARIABLES
     bool empty = true;  // Return value
 
     /* CODE GOES HERE */
 
-    // DONE
     return empty;
 }
 
 
 return_value empty_stack(stack_adt_ptr stack)
 {
-    // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
 
     /* CODE GOES HERE */
 
-    // DONE
     return retval;
 }
 
 
 return_value destroy_stack(stack_adt_ptr stack)
 {
-    // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
 
     /* CODE GOES HERE */
 
-    // DONE
     return retval;
 }
 
 
 return_value destroy_any_data(any_data_ptr old_data)
 {
-    // LOCAL VARIABLES
     return_value retval = RET_SUCCESS;  // Function call results
 
     /* CODE GOES HERE */
 
-    // DONE
     return retval;
 }

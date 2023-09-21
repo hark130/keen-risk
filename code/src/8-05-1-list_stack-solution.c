@@ -1,6 +1,10 @@
 /*
  *  This is an example implementation for the 8-05-1 lab.
  *  This solution should work, as-is, when copy pasted into 8-05-1-list_stack-lab.c.
+ *  The implementation utilizes the 8-02-1-linked_list library so that solution must be compiled in.
+ *  Easiest solution is to copy the necessary files into a directory and...
+ *  gcc -o 8-05-1-lab.bin 8-05-stack-main.c 8-02-1-linked_list-lab.c 8-05-1-list_stack-lab.c \
+ *          8-02-sort_functions.c
  *
  *  DISCLAIMER: This implementation is not perfect.
  *      The Good:
