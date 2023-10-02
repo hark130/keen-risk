@@ -132,97 +132,70 @@ Data Structure Bookkeeping - Linked List
 Resources
 ========================================
 
-* Linked Lists:
-	* Data Structures and Algorithms Made Easy Ch. 3
-* Sorting:
-	* https://www.geeksforgeeks.org/sorting-algorithms/#
-	* https://builtin.com/machine-learning/fastest-sorting-algorithm
-	* The C Programming Language 5.6
+* Data Structures and Algorithms Made Easy Ch. 4
 
 ----
 
 STUDENT LABS
 ========================================
 
-All labs will utilize the 8-02-sort_functions "library".
-Some labs have unit tests available to validate the work.
+This lab has unit tests available to validate the work.
 Be sure to use ASAN and Valgrind.
 
-* 8-02-1: Linked list implementation
-* 8-02-2: Circular linked list implementation
+* 8-05-1: Linked list implementation
+* 8-05-2: Dynamic Array implementation
 
 General Files:
 	* 8-00-definitions.h - Defines common-use data types
-	* 8-02-sort_functions.h - Declares sorting functions
-	* 8-02-sort_functions.c - Implements sorting functions
+	* 8-05-stack.h - Defines a generic library API
+	* 8-05-stack-main.c - Implements generic API unit tests
 
 .. note::
 
 	Lab 1 is intended to be a demonstration-performance lab.
 	Lab 2 is intended to be a stand-alone student lab.
 
+	"Generic library API" means the same header can be used for both of the lab implementations.
+	SPOILERS: The unit tests can be used for the same.
+
 ----
 
 STUDENT LABS
 ========================================
 
-8-02-1: Linked List
+8-05-1: Linked List Implementation
 
 Key Files:
-	* 8-02-1-linked_list.h - Declares library API and data structures
-	* 8-02-1-linked_list-lab.c - Implements library functionality
-	* 8-02-1-linked_list-main.c - Unit tests for basic functionality
+	* 8-05-1-list_stack-lab.c - Implements 8-05-stack as a linked list
 
 Suggested implementation order:
-	1. append_data()
-	2. delete_list()
-	3. count_nodes()
-	4. find_node_pos()
-	5. insert_data()
-	6. remove_node_pos()
-	7. find_node_val()
-	8. sort_list()
+	1. allocate_stack()
+	2. destroy_stack()
+	3. push_data()
+	4. destroy_any_data()
+	5. pop_data()
+	6. get_top()
+	7. get_size()
+	8. is_empty()
+	9. empty_stack()
 
 .. note::
 
 	The file comment block includes a description, build instructions, and notes on testing.
-	You might want to have 8-02-1-linked_list.h open in a code editor when discussing these.
+	You might want to have 8-05-stack.h open in a code editor when discussing these.
 	Essentially, the function comment blocks serve as instructions.
 	The library function prototypes are presented in order of "recommended implementation"
-	It's important to note that 8-02-1-linked_list-lab.c is the single most important file in the list.  It's where the work is done.
-
-	Suggested implementation order:
-		1. append_data() - Essentially, creates a linked list.
-		2. delete_list() - Write the free() anytime you alloc() something.
-		3. count_nodes() - Will be used to help validate adds and removes.
-		4. find_node_pos() - Mid-tier functionality
-		5. insert_data() - Mid-tier functionality
-		6. remove_node_pos() - Mid-tier functionality
-		7. find_node_val() - Mid-tier functionality
-		8. sort_list() - This will likely become a "stretch goal" for fast students
-
-	After 1 & 2 - Unit tests will be failing but you shouldn't have any memory leaks.
-	After 3-->7 - This is probably "good enough"
-	Regarding 8 - Sorting is non-trivial work.  Sure, the 8-02-sort_functions library defines *some* functionality but the actual sorting algorithm (e.g., quick sort, bubble sort) is for the students to implement.
 
 	Be sure to make frequent use of the unit test build and execution.  A similar format is used for later objectives/labs.
 
-	SPOILERS: An example implementation of the 8-02-1-linked_list "library" exists as 8-02-1-linked_list-solution.c.  That solution file passes all the unit tests, ASAN, and Valgrind.
-
-	QUESTIONS TO THE AUTHOR OF 8-02-1-linked_list-main.c...
-	Q: Why didn't you use a framework?
-	A: Testing frameworks for C are a pain.  I didn't want anyone to have to download/compile/link anything special just to test the lab.
-	Q: Why didn't you implement the local main.c functionality in a library?
-	A: I didn't want any "not me" instructors (or the students) to have to fuss with multiple files just to test the lab.
-	Q: Why did I manually implement quick sort instead of using a library implmementation?
-	A: I could have used qsort() (Linux API) but is that implemented on all distros?  Are there packages to install?  Plus, now the example code won't work on non-Linux systems.  TL;DR - I just wanted it to "work" with little-to-no fuss.
+	SPOILERS: An example implementation of the 8-05-list_stack "library" exists as 8-05-1-list_stack-solution.c.  That solution file passes all the unit tests, ASAN, and Valgrind.
 
 ----
 
 STUDENT LABS
 ========================================
 
-8-02-2: Circular Linked List
+8-05-2: Array Implementation
 
 This lab has unit tests to validate your work.
 Be sure to use ASAN and Valgrind.
