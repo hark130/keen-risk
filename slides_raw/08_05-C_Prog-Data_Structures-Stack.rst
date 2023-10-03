@@ -200,69 +200,33 @@ STUDENT LABS
 This lab has unit tests to validate your work.
 Be sure to use ASAN and Valgrind.
 
-* Minimum functionality: create list, empty list, delete list
-* Basic functionality: find node (pos), insert data (pos), remove node (pos)
-* More functionality: find node (value), sort list
-
 Key Files:
-	* 8-02-circular_list.h - Defines the circularly linked list interface
-	* 8-02-circular_list-lab.c - Implements the circularly linked list
-
-.. note::
-
-	Minimum, basic, and "more" represent crawl-walk-run milestones while implementing a circularly linked list
-
-	Key Files
-	The interface is already designed in 8-02-circular_list.h (wait for applause/thanks)
-	It's important to note that 8-02-circular_list-lab.c is the single most important file in the list.  It's where the students do all their work.
-	Don't forget that the 8-02-sort_functions library already defines sorting algorithms to use in the labs (wait for applause/thanks)
-
-----
-
-STUDENT LABS
-========================================
-
-8-02-2: Circular Linked List
+	* 8-05-2-array_stack-lab.c - Implements 8-05-stack as a dynamic array
 
 Suggested implementation order:
-	1. create_circular_list()
-	2. empty_the_list()
-	3. delete_clist()
-	4. find_cnode_pos()
-	5. insert_cdata()
-	6. remove_cnode_pos()
-	7. find_cnode_val()
-	8. sort_clist()
+	1. allocate_stack()
+	2. destroy_stack()
+	3. push_data()
+	4. destroy_any_data()
+	5. pop_data()
+	6. get_top()
+	7. get_size()
+	8. is_empty()
+	9. empty_stack()
 
 .. note::
 
-	The file comment block includes a description, build instructions, and notes on testing.
-	You might want to have 8-04-hash_table.h open in a code editor when discussing these.
-	Essentially, the function comment blocks serve as instructions.
-	The library function prototypes are presented in order of "recommended implementation"
-
-	Suggested implementation order:
-	1. create_circular_list() - PRO TIP: All allocations/frees should be handled by the same library
-	2. empty_the_list() - This can be used later
-	3. delete_clist() - Write a free() every time you allocate
-	4. find_cnode_pos() - Used by insert_data()
-	5. insert_cdata() - Basic functionality
-	6. remove_cnode_pos() - Could possible underpin (or reuse) empty_the_list() functionality
-	7. find_cnode_val() - A step-up
-	8. sort_list() - Stretch goal?
-
-	After 1-->3 - Unit tests will be failing, if they exist, but you shouldn't have any memory leaks.
-	After 4-->6 - Most of the unit tests should be passing.
-	After 7 & 8 - All of the unit tests should be passing, ASAN should be happy, and Valgrind should be happy.
-
-	The students may appreciate a demonstration of the unit test build and execution (just to put them on the right path)
+	Key Files
+	The interface is already designed in 8-05-stack.h (wait for applause/thanks)
+	The interface and unit tests may be the same but this implementation should be different than 8-05-1.
+	Either write a dedicated Makefile or a dedicated 8-05-2 rule in the Makefile from Lab 1.
 
 ----
 
 STUDENT LABS
 ========================================
 
-8-02-2: Circular Linked List
+8-05-2: Circular Linked List
 
 .. code:: c
 
