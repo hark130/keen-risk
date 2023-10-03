@@ -20,7 +20,6 @@
 #include <string.h>   // memset()
 
 
-
 #define HARKLE_ERROR(funcName, msg) do { fprintf(stderr, "<<<ERROR>>> - %s - %s() - %s!\n", \
                                                  __FILE__, #funcName, #msg); } while (0);
 #define HARKLE_ERRNO(funcName, errorNum) if (errorNum) { fprintf(stderr, "<<<ERROR>>> - %s - \

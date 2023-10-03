@@ -13,8 +13,8 @@
  *          - I sacrificed modular programming in the interest of making this easy to compile.
  */
 
+#include "8-00-definitions.h"
 #include "8-02-2-circular_list.h"
-#include "8-02-definitions.h"
 #include "8-02-sort_functions.h"
 #include <errno.h>  // errno
 #include <stdio.h>  // fprintf()

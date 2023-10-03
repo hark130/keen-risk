@@ -1,14 +1,13 @@
 /*
- *  This header file declares functions used in the instructor's 8-02-2 circular linked list lab.
- *  Consider these functions the entry point of the library.  Validate all input.
- *  In general, the library is responsible for allocating memory to copy user input.
+ *  This header file declares data types used in many of the 8-0? data structure labs.
+ *  In general, the library should be responsible for allocating memory to copy user input.
  *  The any_data structs are used to format user input, but the library does not own the contents.
- *  Data stored in the circular linked list should be duplicated and stored in the heap.
+ *  Data stored in data structures should be duplicated by the library and stored in the heap.
  *  The data_type struct may seem unimportant but could help identify duplicates and DEBUGGING.
  */
 
-#ifndef _8_02_DEFINITIONS_
-#define _8_02_DEFINITIONS_
+#ifndef _8_00_DEFINITIONS_
+#define _8_00_DEFINITIONS_
 
 
 #include <stdbool.h>  // bool
@@ -21,6 +20,7 @@ typedef enum _return_value
     RET_INV_PARAM = 1,   // Bad input: NULL pointer, unsupported data type
     RET_ERROR = 2,       // System call failed (print errno)
     RET_NOT_FOUND = 3,   // Node not found
+    RET_FULL = 4,        // No room left in the data structure
 } return_value, *return_value_ptr;
 
 
@@ -47,4 +47,4 @@ typedef struct _any_data
 typedef bool (*compare_any_data)(any_data_ptr left_data, any_data_ptr right_data);
 
 
-#endif  /* _8_02_DEFINITIONS_ */
+#endif  /* _8_00_DEFINITIONS_ */

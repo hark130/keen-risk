@@ -1,0 +1,20 @@
+CLASS 23-2
+C Programming BOI
+Week 2 Capstone
+
+1. Implement the void_lib library
+	* Utilize at least one "original" macro
+	* Ensure the header includes header guards
+	* Utilize at least one preprocessor operator
+2. Create a Makefile
+	* Compile the library as object code
+	* Link the library against 23-2-C_Prog-W2-cap_test-1.c (void_cat())
+	* Link the library against 23-2-C_Prog-W2-cap_test-2.c (void_search())
+3. Test
+	* Ensure the unit tests pass
+	* Ensure ASAN approves
+	* Ensure Valgrind approves
+
+BONUS POINTS:
+	* Compile the library as a PIC shared library and install it
+	* Incorporate additional conditional compilation into the library
