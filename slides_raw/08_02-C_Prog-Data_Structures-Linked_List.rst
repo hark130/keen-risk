@@ -255,7 +255,7 @@ Be sure to use ASAN and Valgrind.
 * 8-02-2: Circular linked list implementation
 
 General Files:
-	* 8-02-definitions.h - Defines common-use data types
+	* 8-00-definitions.h - Defines common-use data types
 	* 8-02-sort_functions.h - Declares sorting functions
 	* 8-02-sort_functions.c - Implements sorting functions
 
@@ -438,13 +438,14 @@ Summary
 Objectives
 ========================================
 
-* 8-04-2:   Creating a hash table with n number of items
-* 8-04-2:   Navigating through a hash table to find the nth item
-* 8-04-2:   Finding an item in a hash table
-* 8-04-2:   Removing selected items from a hash table
-* 8-04-2:   Inserting an item into a hash table
-* 8-04-2: Implement functionality to mitigate hash collisions within the hash table
-* 8-04-2:   Removing all items from the hash table
+* 8-02-2: Removing selected items from the circularly linked list
+* 8-02-2: Creating a circularly linked list with n number of items
+* 8-02-2: Navigating through a circularly linked list
+* 8-02-2: Finding the first occurrence of an item in a circularly linked list
+* 8-02-2: Sorting the circularly linked list alphanumerically using a function pointer
+* 8-02-2: Destroying a circularly linked list
+* 8-02-2: Inserting an item into a specific location in a circularly linked list
+* 8-02-2: Removing all items from the circularly linked list
 
 .. note::
 

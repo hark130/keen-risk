@@ -6,8 +6,8 @@
  *  The instructor has an example solution for this file and might be willing to share.
  */
 
+#include "8-00-definitions.h"
 #include "8-02-2-circular_list.h"
-#include "8-02-definitions.h"
 #include "8-02-sort_functions.h"
 #include <stddef.h>  // NULL
 
