@@ -23,7 +23,7 @@
 #include <stdlib.h>              // free()
 
 
-/* A Linked List Stack Struct */
+/* An Array-based Stack Struct */
 struct _stack_adt
 {
     unsigned int top;       // Index of the top stack entry

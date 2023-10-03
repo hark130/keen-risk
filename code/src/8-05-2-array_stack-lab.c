@@ -12,7 +12,7 @@
 #include <string.h>              // NULL
 
 
-/* A Linked List Stack Struct */
+/* An Array-based Stack Struct */
 struct _stack_adt
 {
     /* DEFINE YOUR ARRAY BOOKKEEPING HERE */
