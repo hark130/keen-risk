@@ -163,7 +163,7 @@ General Files:
 STUDENT LABS
 ========================================
 
-8-05-1: Linked List Implementation
+8-05-1: Linked List Implementated Stack
 
 Key Files:
 	* 8-05-1-list_stack-lab.c - Implements 8-05-stack as a linked list
@@ -195,7 +195,7 @@ Suggested implementation order:
 STUDENT LABS
 ========================================
 
-8-05-2: Array Implementation
+8-05-2: Array Implementated Stack
 
 This lab has unit tests to validate your work.
 Be sure to use ASAN and Valgrind.
@@ -226,31 +226,29 @@ Suggested implementation order:
 STUDENT LABS
 ========================================
 
-8-05-2: Circular Linked List
+8-05-2: Array Implementated Stack
+
+The header defines an abstract data type of `stack_adt`.
+
+That stack_adt is defined as `struct _stack_adt`.
+
+What members will you need to "bookkeep" this data structure?
 
 .. code:: c
 
-	/* Circular Linked List Bookkeeping */
-	typedef struct _circular_list
+	/* An Array-based Stack Struct */
+	struct _stack_adt
 	{
-	    // Head node
-	    struct circular_node_ptr head_ptr;
-	    // Tail node
-	    struct circular_node_ptr tail_ptr;
-	    // Number of entries
-	    unsigned int entries;
-	} circular_list, *circular_list_ptr;
+	    /* DEFINE YOUR ARRAY BOOKKEEPING HERE */
+	};
 
 .. note::
 
-	Take this opportunity to discuss the bookkeeping inherint in the circular_list struct.
-	Some basic rules will make these operations a bit easier.
-	1. Always keep head_ptr up to date
-	2. Always keep tail_ptr up to date
-	3. Always keep the entry count up to date
-
-	Also, take note that this bookkeeping strategy will save our user from having to swap out head_node/tail_node pointers.
-	The circular_list struct keeps track of everything.
+	Take this opportunity to discuss the necessary bookkeeping for an array-implemented stack.
+	This code snippet is an excerpt from 8-05-2-array_stack-lab.c
+	Previous slides in this section discussed some suggested members to this struct.
+	At a minimum, this struct requires: a pointer to the array, the capacity, and the index to the "top" entry.
+	Everything else is unnecessary.
 
 ----
 
@@ -272,13 +270,12 @@ Summary
 Objectives
 ========================================
 
-* 8-04-2:   Creating a hash table with n number of items
-* 8-04-2:   Navigating through a hash table to find the nth item
-* 8-04-2:   Finding an item in a hash table
-* 8-04-2:   Removing selected items from a hash table
-* 8-04-2:   Inserting an item into a hash table
-* 8-04-2: Implement functionality to mitigate hash collisions within the hash table
-* 8-04-2:   Removing all items from the hash table
+* 8-05-*: Removing all items from the stack
+* 8-05-*: Create a stack (cannot be fixed sized)
+* 8-05-*: Adding an item in a stack (enforce FILO)
+* 8-05-*: Removing n items from a stack
+* 8-05-*: Destroying a stack
+* 8-05-2: Preventing a stack overrun
 
 .. note::
 
