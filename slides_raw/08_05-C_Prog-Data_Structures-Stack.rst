@@ -72,11 +72,18 @@ How can you store "any data type"?
 
 ----
 
+:class: flex-image center-image
+
 Implementations
 ========================================
 
 * Array
+
+.. image:: images/08-01_004_02-simple_stack-cropped.png
+
 * Linked List
+
+.. image:: images/08-01_004_04-linked_list_stack-cropped.png
 
 .. note::
 
@@ -270,12 +277,12 @@ Summary
 Objectives
 ========================================
 
-* 8-05-*: Removing all items from the stack
-* 8-05-*: Create a stack (cannot be fixed sized)
-* 8-05-*: Adding an item in a stack (enforce FILO)
-* 8-05-*: Removing n items from a stack
-* 8-05-*: Destroying a stack
-* 8-05-2: Preventing a stack overrun
+* 8-05-1/2: Removing all items from the stack
+* 8-05-1/2: Create a stack (cannot be fixed sized)
+* 8-05-1/2: Adding an item in a stack (enforce FILO)
+* 8-05-1/2: Removing n items from a stack
+* 8-05-1/2: Destroying a stack
+* 8-05-2:   Preventing a stack overrun
 
 .. note::
 
