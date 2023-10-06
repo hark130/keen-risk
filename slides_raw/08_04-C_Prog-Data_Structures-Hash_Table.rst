@@ -201,6 +201,7 @@ Be sure to use ASAN and Valgrind.
 * 8-04-3: Extend hash table capacity
 
 General Files:
+	* 8-00-definitions.h - Defines common-use data types
 	* 8-04-hash_table.h - Defines the hash table interface
 	* 8-04-hash_table-lab.c - Implments the hash table
 	* 8-04-hash_functions.h - Declares hash functions
