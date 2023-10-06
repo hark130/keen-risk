@@ -93,11 +93,19 @@ At a minimum, someone must hold the head node.
 
 ----
 
+:class: center-image
+
 Binary Tree (BT)
 ============================================
 
+.. image:: images/08-01_003_01-binary_tree-cropped.png
+
 * Operations
 * Traversal
+
+.. note::
+
+	Use this slide as an opportunity to recap some basic facts of BTs, with the students, from 8-01.  E.g., definitions/attributes that make a BT a BT.
 
 ----
 
@@ -268,16 +276,42 @@ Traversal Methods
 
 ----
 
+:class: center-image
+
 Binary Search Tree (BST)
 ============================================
 
+.. image:: images/08-01_003_02-binary_search_tree-cropped.png
+
 * Operations
 * Traversal
+
+.. note::
+
+	Use this slide as an opportunity to recap some basic facts of BSTs, with the students, from 8-01.  E.g., insertion algorithm, what makes a BST different from a BT.
 
 ----
 
 Binary Search Tree - Operations
 ============================================
+
+Common Operations
+	* Insert an item
+	* Delete an item
+	* Search for an item
+	* Traverse the tree
+
+Traversal methods can quickly find data
+	* Preorder (DLR) - 
+	* Inorder (LDR) - Produces a sorted list
+	* Postorder (LRD)
+	* Level Order Traversal
+
+.. note::
+
+	Auxiliary Operations: Finding the Kth-smallest element in the tree, sorting the items, more
+
+	Discuss with the students why
 
 ----
 
@@ -397,6 +431,14 @@ BT vs BST
 	<PRESENTER_NOTE>
 
 ----
+
+Resources
+========================================
+
+* Binary Trees
+	* Data Structures and Algorithms Made Easy Ch. 6
+* Binary Search Trees
+	* Data Structures and Algorithms Made Easy Ch. 6.11
 
 Summary
 ========================================
