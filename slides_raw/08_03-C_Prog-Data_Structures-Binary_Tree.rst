@@ -301,22 +301,28 @@ Common Operations
 	* Search for an item
 	* Traverse the tree
 
-Traversal methods can quickly find data
-	* Preorder (DLR) - 
-	* Inorder (LDR) - Produces a sorted list
-	* Postorder (LRD)
-	* Level Order Traversal
-
 .. note::
 
 	Auxiliary Operations: Finding the Kth-smallest element in the tree, sorting the items, more
-
-	Discuss with the students why
 
 ----
 
 Binary Search Tree - Traversal
 ============================================
+
+Traversal Methods
+	* Preorder (DLR)
+	* Inorder (LDR)
+	* Postorder (LRD)
+
+Binary Search Tree tricks
+	* The Inorder (LDR) traversal method produces a sorted list
+	* The left-most node contains the minimum element
+	* The right-most node contains the maximum element
+
+.. note::
+
+	Discuss with the students why an Inorder traversal produces a sorted list.
 
 ----
 
