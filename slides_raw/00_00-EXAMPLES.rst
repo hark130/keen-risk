@@ -121,7 +121,7 @@ This is an example of code
 <EXAMPLE_IMAGE_2>
 =================
 
-<SMALL_IMAGE_EXAPANDED>
+<SMALL_IMAGE_EXPANDED>
 
 .. image:: images/00_00-01-SHED_logo.jpg
 
