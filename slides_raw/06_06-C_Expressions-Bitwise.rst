@@ -28,12 +28,21 @@ Overview
 * Bitwise Operators
 * Common Uses
 * Common Expressions
-* Exercises
+* Resources
+* Student Labs
 
 ----
 
+:class: shrink-image center-image
+
 Binary 101
 ========================================
+
+.. image:: images/06-06_001_01-XKCD_binary_scale-cropped.png
+
+.. note::
+
+	SOURCE: https://xkcd.com/953
 
 ----
 
@@ -79,7 +88,7 @@ Bitwise Operators
 +-------------+--------+
 | AND         | &      |
 +-------------+--------+
-| OR          | |      |
+| OR          | \|     |
 +-------------+--------+
 | XOR         | ^      |
 +-------------+--------+
@@ -283,6 +292,27 @@ Bitwise Right Shift
 
 ----
 
+Resources
+========================================
+
+* Bitwise Calculator: https://bitwisecmd.com/
+* Bitwise Calculator & Visualizer: https://unsuitable001.github.io/BitViz
+* The C Programming Language 2.9
+* https://www.programiz.com/c-programming/bitwise-operators
+
+----
+
+Student Labs
+========================================
+
+* <STUDENTS_SEE_THIS>
+
+.. note::
+
+	<PRESENTER_NOTE>
+
+----
+
 Summary
 ========================================
 
@@ -298,3 +328,17 @@ Objectives
 * <OBJECTIVE_1>
 * <OBJECTIVE_2>
 * <OBJECTIVE_3>
+
+----
+
+:class: shrink-image center-image
+
+00000000
+========================================
+
+.. image:: images/06-06_002_01-XKCD_binary_heart-cropped.jpg
+	:align: center
+
+.. note::
+
+	SOURCE: https://xkcd.com/99
