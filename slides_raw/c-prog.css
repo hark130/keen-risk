@@ -58,7 +58,8 @@
 
 pre {
 	color: black;
-	text-shadow:  0.5px 0.5px 1px #eaf2f4;
+	text-shadow: 0.5px 0.5px 1px #eaf2f4;
+
 	@include border-style(thin thin thin);
 	@include border-top-radius(5px);
 	@include border-right-radius(5px);
@@ -66,8 +67,15 @@ pre {
 	@include border-left-radius(5px);
 	@include border-color(#70696e #70696e #70696e #70696e);
 	@include padding(10px 40px 10px 10px);
+
 	background-color: #ffffff;
-	box-shadow: 2px 2px 2px 5px rgba(0,0,0,0.3);
+	box-shadow: 2px 2px 2px 5px rgba(0, 0, 0, 0.3);
+
+	// 🔥 Add these to make binary strings look great
+	white-space: pre;        // Don't wrap
+	overflow-x: auto;        // Scroll if needed
+	width: max-content;      // Fit to content
+	max-width: 100%;         // Stay within slide width
 }
 
 pre > span {
