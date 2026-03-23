@@ -56,6 +56,11 @@
 	display: block;
 }
 
+.superscript {
+  vertical-align: super;
+  font-size: smaller;
+}
+
 pre {
 	color: black;
 	text-shadow:  0.5px 0.5px 1px #eaf2f4;
