@@ -212,6 +212,7 @@ Tools - GNURadio
     * Modular, free, versatile, powerful, rapid, well-documented
 * How do I use it?
 	* See: https://wiki.gnuradio.org/index.php/InstallingGR
+	* Then: https://wiki.gnuradio.org/index.php/Tutorials
 
 .. note::
 
@@ -232,7 +233,7 @@ Tools - Inspectrum
     * Export symbols
 * How do I use it?
 	* See: https://github.com/miek/inspectrum#install
-	* See: https://youtu.be/tGff31uGXQU?si=iH9hwLoumiC2z5JU
+	* Then: https://youtu.be/tGff31uGXQU?si=iH9hwLoumiC2z5JU
 
 .. note::
 
@@ -257,8 +258,8 @@ Tools - URH
     * Simulation of signals
 * How do I use it?
     * See: https://github.com/jopohl/urh?tab=readme-ov-file#installation
-    * See: https://github.com/jopohl/urh/releases/download/v2.0.0/userguide.pdf
-    * See: https://youtu.be/kuubkTDAxwA?si=UcrfJj2mLtigw1Bq
+    * Read: https://github.com/jopohl/urh/releases/download/v2.0.0/userguide.pdf
+    * Then: https://youtu.be/kuubkTDAxwA?si=UcrfJj2mLtigw1Bq
 
 .. note::
 
@@ -295,6 +296,7 @@ Tools - SigMF
     * Sample rate
     * Description
 * How do I use it?
+    * See: https://sigmf.org/
     * Parse it
     * Read it (e.g., "captured this on my way home")
     * Some tools are SigMF-aware
@@ -399,6 +401,22 @@ Pulse-position modulation (PPM)
 .. note::
 
 	<PRESENTER_NOTE>
+
+----
+
+Modulation Schemes
+========================================
+
+* OOK
+* FSK
+* Narrow/Wideband FM
+* BPSK
+* QPSK
+* PPM
+
+.. note::
+
+	Do a quick recap here.
 
 ----
 
