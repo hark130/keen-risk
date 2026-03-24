@@ -127,6 +127,8 @@ Modulation 101
 	Seemingly, not part of the objective: AM, FM, and PM are the major families.
 	Some derivative forms of modulation include more than one.  E.g., QAM.
 	Quadrature Amplitude Modulation (QAM) - Information encoded in both amplitude and phase
+	However, there are forms of modulation that don't necessarily fall into AM, FM, or PM.
+	E.g., the pulse modulation family: PAM (Pulse Amplitude Modulation), PWM (Pulse Width Modulation), PPM (Pulse Position Modulation).
 
 ----
 
@@ -151,6 +153,8 @@ Modulation 101 - FM
 .. image:: images/RF-05-03_001_03-frequency_modulation.png
 
 .. note::
+
+	Information is encoded by varying the instantaneous frequency of a carrier while amplitude remains constant.
 
 	CREDIT: https://www.ti.com/document-viewer/lit/html/SSZT995
 
@@ -183,7 +187,8 @@ Modulation 101
 
 .. note::
 
-	Every(?) other modulation scheme falls into one, or more, of these bins.
+	Many other modulation scheme falls into one, or more, of these bins.
+	However, there are exceptions (e.g., PPM which is part of the pulse modulation family)
 
 ----
 
@@ -354,14 +359,25 @@ Modulation Schemes - FSK
 
 ----
 
+:class: split-table
+
 Modulation Schemes - Narrow/Wideband FM
 ========================================
 
-* <STUDENTS_SEE_THIS>
++---------+--------------+----------------+
+| FM Type | Bandwidth    | Uses           |
++---------+--------------+----------------+
+| Narrow  | ~10–25 kHz   | Reliable Audio |
++---------+--------------+----------------+
+| Wide    | ~150–200 kHz | Quality Audio  |
++---------+--------------+----------------+
 
 .. note::
 
-	<PRESENTER_NOTE>
+	The Wideband FM bandwidth is indicative of FM radio.  It could be wider.
+
+	Narrowband FM examples: Walkie-talkies / two-way radios, Public safety / emergency services, Aviation communications.
+	Wideband FM examples: FM Radio.
 
 ----
 
@@ -393,14 +409,30 @@ Modulation Schemes - QPSK
 
 ----
 
-Pulse-position modulation (PPM)
+:class: shrink-image center-image block-image
+
+Modulation Schemes - PPM
 ========================================
 
-* <STUDENTS_SEE_THIS>
+.. image:: images/RF-05-03_002_07-PPM.png
+
+* Information is encoded in the timing (position) of pulses relative to a timing reference
+* Amplitude and width (duration) are fixed
+* Each symbol is one pulse shifted in time
+* Converting Pulse Width Modulation (PWM) is one method to generate PPM
 
 .. note::
 
-	<PRESENTER_NOTE>
+	Given the fact that PPM relies on a reference clock, "the receiver must be properly synchronized to align the local clock with the beginning of each symbol. Therefore, it is often implemented differentially as differential pulse-position modulation."
+
+	PPM only requires a reference timing (clock or frame) and a way to shift pulse timing within that frame
+
+	There are different methods to generate PPM:
+	- clock tick --> apply variable delay --> emit pulse
+	- PWM --> edge detection --> convert width --> position
+
+	Source: https://en.wikipedia.org/wiki/Pulse-position_modulation
+	CREDIT: https://youtu.be/b3sSlE6tdmM?si=0PFk0hjZroIyZpdw
 
 ----
 
