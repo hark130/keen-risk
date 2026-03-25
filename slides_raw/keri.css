@@ -37,6 +37,11 @@
 	height: auto;
 }
 
+.barely-shrink-image img {
+	width: 75%;
+	height: auto;
+}
+
 .block-image img {
 	background-color: #ffffff;
 	@include border-top-radius(5px);
@@ -55,6 +60,12 @@
 	margin: auto;
 	display: block;
 }
+
+.align-left {
+  float: left;
+  margin: 0 15px 15px 0; /* Top, Right, Bottom, Left margins */
+}
+
 
 pre {
 	color: black;
